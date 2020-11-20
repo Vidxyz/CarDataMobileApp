@@ -31,6 +31,7 @@ dependencies:
   rxdart: ^0.23.1
   http: ^0.12.0+4
   graphql: ^3.0.0
+  quiver: ^2.1.5
 
 dev_dependencies:
   flutter_test:

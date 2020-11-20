@@ -6,4 +6,8 @@ class Transmission {
     _type = parsedJson['type'];
     _descriptor = parsedJson['transmission_descriptor'];
   }
+
+  String get descriptor => _descriptor;
+
+  String get type => _type;
 }

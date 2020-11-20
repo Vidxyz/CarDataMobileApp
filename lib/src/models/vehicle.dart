@@ -1,6 +1,9 @@
+import 'package:car_data_app/src/models/dimensions.dart';
+import 'package:car_data_app/src/models/engine.dart';
 import 'package:car_data_app/src/models/transmission.dart';
 
-class Vehicle {
+class
+Vehicle {
   String _id;
   String _make;
   String _model;
@@ -12,7 +15,10 @@ class Vehicle {
   int _recordId;
   String _alternateFuelType;
   String _vehicleClass;
+
   Transmission _transmission;
+  Engine _engine;
+  Dimensions _dimensions;
 
   Vehicle.fromJson(Map<String, dynamic> parsedJson) {
     _id = parsedJson['id'];
@@ -26,29 +32,38 @@ class Vehicle {
     _recordId = parsedJson['record_id'];
     _alternateFuelType = parsedJson['alternative_fuel_type'];
     _vehicleClass = parsedJson['vehicle_class'];
+
     _transmission =  Transmission.fromJson(parsedJson['transmission']);
+    _engine = Engine.fromJson(parsedJson['engine']);
+    _dimensions = Dimensions.fromJson(parsedJson['dimensions']);
+
   }
-  String get id => _id;
 
-  String get make => _make;
+  Dimensions get dimensions => _dimensions;
 
-  String get model => _model;
+  Engine get engine => _engine;
+
+  Transmission get transmission => _transmission;
+
+  String get vehicleClass => _vehicleClass;
+
+  String get alternateFuelType => _alternateFuelType;
+
+  int get recordId => _recordId;
+
+  String get manufacturerCode => _manufacturerCode;
+
+  String get fuelType => _fuelType;
+
+  String get secondaryFuel => _secondaryFuel;
+
+  String get primaryFuel => _primaryFuel;
 
   int get year => _year;
 
-  String get primary_fuel => _primaryFuel;
+  String get model => _model;
 
-  String get secondary_fuel => _secondaryFuel;
+  String get make => _make;
 
-  String get fuel_type => _fuelType;
-
-  String get manufacturer_code => _manufacturerCode;
-
-  int get record_id => _recordId;
-
-  String get alternate_fuel_type => _alternateFuelType;
-
-  String get vehicle_class => _vehicleClass;
-
-  Transmission get transmission => _transmission;
+  String get id => _id;
 }

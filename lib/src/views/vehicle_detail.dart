@@ -1,17 +1,219 @@
+import 'package:car_data_app/src/blocs/bloc_provider.dart';
+import 'package:car_data_app/src/blocs/vehicle_images_bloc.dart';
 import 'package:car_data_app/src/models/vehicle.dart';
+import 'package:car_data_app/src/models/vehicle_image.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:quiver/iterables.dart';
 
 class VehicleDetail extends StatefulWidget {
-  final Vehicle data;
+  final Vehicle vehicle;
 
-  VehicleDetail({this.data});
+  // todo - gracefully handle nulls
+  VehicleDetail({this.vehicle});
 
   @override
   State createState() {
-
+    return VehicleDetailState(vehicle: vehicle);
   }
 }
 
-// class VehicleDetailState extends State<VehicleDetail> {
-//
-// }
+class VehicleDetailState extends State<VehicleDetail> {
+  
+  final Vehicle vehicle;
+  
+  VehicleImagesBloc bloc;
+  
+  VehicleDetailState({this.vehicle});
+
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    bloc = BlocProvider.of<VehicleImagesBloc>(context);
+    bloc.fetchImagesByVehicleId(vehicle.id);
+    print("Recreated");
+    super.didChangeDependencies();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        top: true,
+        bottom: false,
+        child: NestedScrollView(
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                SliverAppBar(
+                  expandedHeight: 200.0,
+                  floating: false,
+                  pinned: true,
+                  elevation: 0.0,
+                  flexibleSpace: StreamBuilder(
+                    stream: bloc.vehicleImages,
+                    builder: (context,
+                        AsyncSnapshot<Future<List<VehicleImage>>> snapshot) {
+                      if (snapshot.hasData) {
+                        return FutureBuilder(
+                          future: snapshot.data,
+                          builder: (context,
+                              AsyncSnapshot<List<VehicleImage>> itemSnapShot) {
+                            if (itemSnapShot.hasData) {
+                              if (itemSnapShot.data.length > 0)
+                                return imageLayout(itemSnapShot.data, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
+                              else
+                                return noImage();
+                            } else {
+                              return Center(
+                                  child: CircularProgressIndicator());
+                            }
+                          },
+                        );
+                      } else {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                    },
+                  ),
+                ),
+              ];
+            },
+            body: ListView(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(margin: EdgeInsets.only(top: 5.0)),
+                      Text(
+                        vehicle.make + " " + vehicle.model, // Make and Model
+                        style: TextStyle(
+                          fontSize: 30.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Gap(),
+                      Row(
+                        children: <Widget>[
+                          Container(
+                            margin: EdgeInsets.only(left: 1.0, right: 1.0),
+                          ),
+                          Text(
+                            vehicle.year.toString(), // Year
+                            style: TextStyle(fontSize: 20.0),
+                          ),
+                          Container(margin: EdgeInsets.only(left: 10.0, right: 10.0)),
+                          Text(
+                            vehicle.vehicleClass, // Class
+                            style: TextStyle(
+                              fontSize: 18.0,
+                            ),
+                          ),
+                          Spacer(),
+                          Icon(
+                            Icons.favorite,
+                            color: Colors.red,
+                            size: 35.0,
+                          ),
+                        ],
+                      ),
+                      Gap(),
+                      Text(vehicle.manufacturerCode ?? "N/A"), // Manufacturer code
+                      Divider(),
+                      Gap(),
+                      Row(
+                        children: [
+                          Spacer(),
+                          Text(
+                            "Specifications",
+                            style: TextStyle(
+                              fontSize: 25.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Spacer()
+                        ],
+                      ),
+                      Gap(),
+                      Divider(),
+                    ]
+                        + generateStaticSpecifications(vehicle), // other vehicle stats to show
+                  ),
+                ),
+              ],
+            )),
+      ),
+    );
+  }
+
+  // todo - add all other static types - fun for dynamic types
+  // null safe contructuror of oter types too
+  List<Widget> generateStaticSpecifications(Vehicle vehicle) {
+    final staticSpecs = [vehicle.primaryFuel, vehicle.secondaryFuel, vehicle.alternateFuelType,
+      vehicle.transmission.type, vehicle.engine.cylinders, vehicle.engine.displacement, vehicle.engine.engineType];
+    final headings = ["Fuel", "Alternate Fuel", "Alternate Fuel Type", "Transmission", "Cylinders", "Displacement (l)", "Engine Type"];
+    final defaults = ["Gasoline", null, null, "-", "-", "-", "-"];
+
+    return zip([staticSpecs, headings, defaults]).map((e) {
+      if(e[2] != null) {
+        return <Widget>[
+          Gap(),
+          Row(
+              children: <Widget>[
+                Spacer(),
+                Text(
+                    e[1],
+                    style: _keyTextStyle()
+                ),
+                Spacer(),
+                Text(e[0].toString() ?? e[2], style: _valueTextStyle()),
+                Spacer(),
+              ]
+          )
+        ];
+      } else return <Widget>[];
+    }).expand((i) => i).toList();
+  }
+
+  Widget noImage() {
+    return Center(
+      child: Container(
+        child: Text("No Image available"),
+      ),
+    );
+  }
+
+  Widget Gap() => Container(margin: EdgeInsets.only(top: 8.0, bottom: 8.0));
+  TextStyle _keyTextStyle() => TextStyle(fontSize: 15);
+  TextStyle _valueTextStyle() => TextStyle(fontSize: 15, fontWeight: FontWeight.bold);
+
+  Widget imageLayout(List<VehicleImage> images, double screenWidth, double screenHeight) {
+    images.sort((i1, i2) => (i2.width * i2.height).compareTo((i1.width * i1.height)));
+    return ListView(
+        scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
+        children: createImagesForVehicle(images, screenWidth, screenHeight)
+    );
+  }
+
+  List<Widget> createImagesForVehicle(List<VehicleImage> images, double screenWidth, double screenHeight) {
+      return images.map((e) => Center(
+        child: Container(
+          width: screenWidth,
+          height: screenHeight,
+          child: FittedBox(
+            child: e.image,
+            fit: BoxFit.fill,
+          ),
+        ),
+      )).toList();
+    }
+
+}

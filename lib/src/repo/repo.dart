@@ -1,4 +1,5 @@
 import 'package:car_data_app/src/models/vehicle.dart';
+import 'package:car_data_app/src/models/vehicle_image.dart';
 import 'package:car_data_app/src/repo/providers/car_data_api.dart';
 
 class Repo {
@@ -8,5 +9,7 @@ class Repo {
   Future<List<Vehicle>> getAllVehicles() => carDataApiProvider.getAllVehicles();
 
   Future<List<Vehicle>> getVehiclesBySearchQuery(String query) => carDataApiProvider.getVehiclesBySearchQuery(query);
+
+  Future<List<VehicleImage>> getVehicleImages(String vehicleId) => carDataApiProvider.getVehicleImages(vehicleId);
 
 }

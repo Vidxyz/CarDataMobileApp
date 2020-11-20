@@ -1,3 +1,4 @@
+import 'package:car_data_app/src/blocs/vehicle_images_bloc.dart';
 import 'package:car_data_app/src/models/vehicle.dart';
 import 'package:flutter/material.dart';
 import 'package:car_data_app/src/blocs/vehicles_bloc.dart';
@@ -35,7 +36,6 @@ class VehicleList extends StatelessWidget {
                     onPressed: () => bloc.searchVehicles(_controller.value.text),
                     icon: Icon(Icons.search),
                   ),
-                
               ),
             ),
           ),
@@ -72,78 +72,25 @@ class VehicleList extends StatelessWidget {
           title: Text(vehicle.make + " " + vehicle.model, style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text(vehicle.year.toString()),
           leading: Icon(Icons.directions_car, color: Colors.teal),
-          // onTap: () => openDetailPage(snapshot.data[index]),
-        );
-      },
-    );
-  }
-}
-
-
-/*
-class VehicleListState extends State<VehicleList> {
-
-  VehiclesBloc bloc;
-
-  @override
-  void initState() {
-    super.initState();
-    // vehiclesBloc.fetchAllVehicles();
-    // bloc = BlocProvider.of<VehiclesBloc>(context);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-
-    final bloc = VehiclesBloc();
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('All Vehicles'),
-      ),
-      body: StreamBuilder(
-        stream: vehiclesBloc.allVehicles,
-        builder: (context, AsyncSnapshot<List<Vehicle>> snapshot) {
-          if (snapshot.hasData) return buildList(snapshot);
-          else if (snapshot.hasError) return Text(snapshot.error.toString());
-          return Center(child: CircularProgressIndicator());
-        },
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    vehiclesBloc.dispose();
-    super.dispose();
-  }
-
-  Widget buildList(AsyncSnapshot<List<Vehicle>> snapshot) {
-    return ListView.builder(
-      itemCount: snapshot.data.length,
-      itemBuilder: (BuildContext context, int index) {
-        return ListTile(
-          title: Text(snapshot.data[index].make + " " + snapshot.data[index].model, style: TextStyle(fontWeight: FontWeight.w500)),
-          subtitle: Text(snapshot.data[index].year.toString()),
-          leading: Icon(Icons.directions_car, color: Colors.teal),
-          // onTap: () => openDetailPage(snapshot.data[index]),
+          onTap: () => openDetailPage(vehicle, context),
         );
       },
     );
   }
 
-  openDetailPage(Vehicle data) {
-    final page = BlocProvider(
-      child: VehicleDetail(data: data)
+
+  Widget openDetailPage(Vehicle vehicle, BuildContext context) {
+    final bloc = VehicleImagesBloc();
+    final page = BlocProvider<VehicleImagesBloc>(
+        bloc: bloc,
+        child: VehicleDetail(vehicle: vehicle)
     );
+
     Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) {
-        return page;
-      }),
+        context,
+        MaterialPageRoute(builder: (context) {
+          return page;
+        }),
     );
   }
-
 }
-
- */
