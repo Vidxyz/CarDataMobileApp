@@ -36,7 +36,6 @@ class VehicleDetailState extends State<VehicleDetail> {
   void didChangeDependencies() {
     bloc = BlocProvider.of<VehicleImagesBloc>(context);
     bloc.fetchImagesByVehicleId(vehicle.id);
-    print("Recreated");
     super.didChangeDependencies();
   }
 
@@ -66,12 +65,11 @@ class VehicleDetailState extends State<VehicleDetail> {
                               AsyncSnapshot<List<VehicleImage>> itemSnapShot) {
                             if (itemSnapShot.hasData) {
                               if (itemSnapShot.data.length > 0)
-                                return imageLayout(itemSnapShot.data, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
+                                return imageLayout(vehicle, itemSnapShot.data, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
                               else
                                 return noImage();
                             } else {
-                              return Center(
-                                  child: CircularProgressIndicator());
+                              return Center(child: CircularProgressIndicator());
                             }
                           },
                         );
@@ -86,7 +84,7 @@ class VehicleDetailState extends State<VehicleDetail> {
             body: ListView(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(25.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -144,7 +142,10 @@ class VehicleDetailState extends State<VehicleDetail> {
                       Gap(),
                       Divider(),
                     ]
-                        + generateStaticSpecifications(vehicle), // other vehicle stats to show
+                    + generateStaticSpecifications(vehicle) // other vehicle stats to show
+                    + [Gap(), Divider()]
+                    + generateBooleanSpecifications(vehicle)
+                    + [Gap(), Divider()],
                   ),
                 ),
               ],
@@ -153,32 +154,103 @@ class VehicleDetailState extends State<VehicleDetail> {
     );
   }
 
-  // todo - add all other static types - fun for dynamic types
+  List<Widget> generateBooleanSpecifications(Vehicle vehicle) {
+      final specs = [
+        vehicle.engine.isSupercharged,
+        vehicle.engine.isTurbocharged,
+        vehicle.engine.fuelEconomy.isGuzzler
+      ];
+
+      final headings = ["Supercharger", "Turbocharger", "Guzzler"];
+      final defaults = ["No", "No", "No"];
+
+      return zip([specs, headings, defaults]).map((e) {
+        if(e[2] != null || (e[0] != null && e[0] != 0)) { // If spec isn't null, or if a default is provided
+          return <Widget>[
+            Gap(),
+            Row(
+                children: <Widget>[
+                  Expanded(
+                    flex: 5,
+                    child: Text( // Spec name
+                      e[1],
+                      style: _keyTextStyle(),
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 5,
+                    child: Container(
+                      decoration: BoxDecoration(), // this is left in to be filled later
+                      child: Text( // Spec value
+                        e[0] ? "Yes" : e[2],
+                        style: _valueTextStyle(),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ),
+                ]
+            ),
+          ];
+        } else return <Widget>[];
+
+      }).expand((i) => i).toList();
+  }
   // null safe contructuror of oter types too
   List<Widget> generateStaticSpecifications(Vehicle vehicle) {
-    final staticSpecs = [vehicle.primaryFuel, vehicle.secondaryFuel, vehicle.alternateFuelType,
-      vehicle.transmission.type, vehicle.engine.cylinders, vehicle.engine.displacement, vehicle.engine.engineType];
-    final headings = ["Fuel", "Alternate Fuel", "Alternate Fuel Type", "Transmission", "Cylinders", "Displacement (l)", "Engine Type"];
-    final defaults = ["Gasoline", null, null, "-", "-", "-", "-"];
+    final staticSpecs = [
+      vehicle.primaryFuel,
+      vehicle.secondaryFuel,
+      vehicle.alternateFuelType,
+      vehicle.transmission.type,
+      vehicle.engine.cylinders,
+      vehicle.engine.displacement,
+      vehicle.engine.engineType,
+      vehicle.engine.evMotor,
+      vehicle.engine.fuelEconomy.combinedMpgPrimary,
+      vehicle.engine.fuelEconomy.cityMpgPrimary,
+      vehicle.engine.fuelEconomy.highwayMpgPrimary,
+      vehicle.engine.fuelEconomy.combinedMpgSecondary,
+      vehicle.engine.fuelEconomy.cityMpgSecondary,
+      vehicle.engine.fuelEconomy.highwayMpgSecondary,
+      vehicle.engine.driveTrain,
+    ];
+
+    final headings = ["Fuel", "Alternate Fuel", "Alternate Fuel Type", "Transmission", "Cylinders", "Displacement (L)",
+      "Engine Type",  "EV Motor", "MpG Combined", "MpG City", "MpG Highway", "MpG Alternate Combined", "MpG Alternate City",
+      "MpG Alternate Highway", "Drive Train"];
+    final defaults = ["Gasoline", null, null, "-", "-", "-", "-", null, "-", "-", "-", null, null, null, "-"];
 
     return zip([staticSpecs, headings, defaults]).map((e) {
-      if(e[2] != null) {
+      if(e[2] != null || (e[0] != null && e[0] != 0)) { // If spec isn't null, or if a default is provided
         return <Widget>[
           Gap(),
           Row(
               children: <Widget>[
-                Spacer(),
-                Text(
+                Expanded(
+                  flex: 5,
+                  child: Text( // Spec name
                     e[1],
-                    style: _keyTextStyle()
+                    style: _keyTextStyle(),
+                    textAlign: TextAlign.left,
+                  ),
                 ),
-                Spacer(),
-                Text(e[0].toString() ?? e[2], style: _valueTextStyle()),
-                Spacer(),
+                Expanded(
+                  flex: 5,
+                  child: Container(
+                    decoration: BoxDecoration(), // this is left in to be filled later
+                    child: Text( // Spec value
+                        e[0] != null ? e[0].toString() : e[2],
+                        style: _valueTextStyle(),
+                        textAlign: TextAlign.left,
+                    ),
+                  ),
+                ),
               ]
-          )
+          ),
         ];
       } else return <Widget>[];
+
     }).expand((i) => i).toList();
   }
 
@@ -194,13 +266,13 @@ class VehicleDetailState extends State<VehicleDetail> {
   TextStyle _keyTextStyle() => TextStyle(fontSize: 15);
   TextStyle _valueTextStyle() => TextStyle(fontSize: 15, fontWeight: FontWeight.bold);
 
-  Widget imageLayout(List<VehicleImage> images, double screenWidth, double screenHeight) {
+  Widget imageLayout(Vehicle vehicle, List<VehicleImage> images, double screenWidth, double screenHeight) {
     images.sort((i1, i2) => (i2.width * i2.height).compareTo((i1.width * i1.height)));
     return ListView(
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        children: createImagesForVehicle(images, screenWidth, screenHeight)
-    );
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          children: createImagesForVehicle(images, screenWidth, screenHeight)
+      );
   }
 
   List<Widget> createImagesForVehicle(List<VehicleImage> images, double screenWidth, double screenHeight) {

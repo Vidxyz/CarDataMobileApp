@@ -25,8 +25,8 @@ Vehicle {
     _make = parsedJson['make'];
     _model = parsedJson['model'];
     _year = parsedJson['year'];
-    _primaryFuel = parsedJson['fuel_type_primary'];
-    _secondaryFuel = parsedJson['fuel_type_secondary'];
+    _primaryFuel = parsedJson['primary_fuel'];
+    _secondaryFuel = parsedJson['alternate_fuel'];
     _fuelType = parsedJson['fuel_type'];
     _manufacturerCode = parsedJson['manufacturer_code'];
     _recordId = parsedJson['record_id'];
@@ -66,4 +66,5 @@ Vehicle {
   String get make => _make;
 
   String get id => _id;
+
 }

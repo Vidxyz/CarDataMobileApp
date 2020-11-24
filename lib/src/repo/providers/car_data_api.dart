@@ -50,8 +50,8 @@ class CarDataApi {
       make
       model 
       year
-      primaryFuel
-      alternateFuel
+      primary_fuel
+      alternate_fuel
       fuel_type
       manufacturer_code
       record_id
@@ -101,8 +101,8 @@ class CarDataApi {
         fuel_emission {
           tailpipe_co2_primary
           tailpipe_co2_secondary
-          greenhouseGasScorePrimary
-          greenhouseGasScoreSecondary
+          greenhouse_gas_score_primary
+          greenhouse_gas_score_secondary
         }
       }
     }
@@ -131,7 +131,6 @@ class CarDataApi {
 
     );
     QueryResult result = await _client.query(options);
-    print("Result is attained");
     final List<dynamic> results = result.data['search'] as List<dynamic>;
     return results.map<Vehicle>((json) => Vehicle.fromJson(json)).toList();
 
