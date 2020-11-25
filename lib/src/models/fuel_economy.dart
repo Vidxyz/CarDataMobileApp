@@ -9,8 +9,8 @@ class FuelEconomy {
   int _highwayMpgSecondary;
   int _combinedMpgPrimary;
   int _combinedMpgSecondary;
-  String _epaCityRangeSecondary;
-  String _epaHighwayRangeSecondary;
+  double _epaCityRangeSecondary;
+  double _epaHighwayRangeSecondary;
   String _epaRangeSecondary;
   int _fuelEconomyScore;
   bool _isGuzzler;
@@ -53,9 +53,9 @@ class FuelEconomy {
 
   String get epaRangeSecondary => _epaRangeSecondary;
 
-  String get epaHighwayRangeSecondary => _epaHighwayRangeSecondary;
+  double get epaHighwayRangeSecondary => _epaHighwayRangeSecondary;
 
-  String get epaCityRangeSecondary => _epaCityRangeSecondary;
+  double get epaCityRangeSecondary => _epaCityRangeSecondary;
 
   int get combinedMpgSecondary => _combinedMpgSecondary;
 

@@ -145,7 +145,8 @@ class VehicleDetailState extends State<VehicleDetail> {
                     + generateStaticSpecifications(vehicle) // other vehicle stats to show
                     + [Gap(), Divider()]
                     + generateBooleanSpecifications(vehicle)
-                    + [Gap(), Divider()],
+                    + [Gap(), Divider()]
+                    + generateAccordionLists(vehicle)
                   ),
                 ),
               ],
@@ -168,22 +169,87 @@ class VehicleDetailState extends State<VehicleDetail> {
         if(e[2] != null || (e[0] != null && e[0] != 0)) { // If spec isn't null, or if a default is provided
           return <Widget>[
             Gap(),
-            Row(
-                children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(left: 10),
+              child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 5,
+                      child: Container(
+                        child: Text( // Spec name
+                          e[1],
+                          style: _keyTextStyle(),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 5,
+                      child: Container(
+                        margin: EdgeInsets.only(left:15),
+                        decoration: BoxDecoration(), // this is left in to be filled later
+                        child: Text( // Spec value
+                          e[0] ? "Yes" : e[2],
+                          style: _valueTextStyle(),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ),
+                  ]
+              ),
+            ),
+          ];
+        } else return <Widget>[];
+
+      }).expand((i) => i).toList();
+  }
+
+
+  List<Widget> generateFuelEconomySpecifics(Vehicle vehicle) {
+    final fuelEconomies = [
+      vehicle.engine.fuelEconomy.barrelsPerYearPrimary,
+      vehicle.engine.fuelEconomy.barrelsPerYearSecondary,
+      vehicle.engine.fuelEconomy.annualFuelCostPrimary,
+      vehicle.engine.fuelEconomy.annualFuelCostSecondary,
+      vehicle.engine.fuelEconomy.fuelEconomyScore,
+      vehicle.engine.fuelEconomy.combinedPowerConsumption,
+      vehicle.engine.fuelEconomy.epaCityRangeSecondary,
+      vehicle.engine.fuelEconomy.epaHighwayRangeSecondary,
+      vehicle.engine.fuelEconomy.epaRangeSecondary,
+      vehicle.engine.fuelEconomy.timeToCharge120v,
+      vehicle.engine.fuelEconomy.timeToCharge240v,
+    ];
+
+    final headings = ["Yearly Barrels", "Yearly Barrels Secondary",
+      "Annual Fuel Cost (\$)", "Secondary Fuel Cost", "Fuel Economy Score",
+    "Power Consumption", "EPA City Range", "EPA Highway Range", "EPA Range", "Charging time (120V)", "Charging Time (240V)"];
+
+    final defaults = [null, null, null, null, null, null, null, null, null, null, null];
+
+    return zip([fuelEconomies, headings, defaults]).map((e) {
+      if(e[2] != null || (e[0] != null && e[0] != 0)) { // If spec isn't null, or if a default is provided
+        return <Widget>[
+          Container(
+            margin: EdgeInsets.only(top: 10.0, bottom: 10.0, left:15),
+            child: Row(
+                children: [
                   Expanded(
                     flex: 5,
-                    child: Text( // Spec name
-                      e[1],
-                      style: _keyTextStyle(),
-                      textAlign: TextAlign.left,
+                    child: Container(
+                      child: Text( // Spec name
+                        e[1],
+                        style: _keyTextStyle(),
+                        textAlign: TextAlign.left,
+                      ),
                     ),
                   ),
                   Expanded(
                     flex: 5,
                     child: Container(
+                      margin: EdgeInsets.only(left:10),
                       decoration: BoxDecoration(), // this is left in to be filled later
                       child: Text( // Spec value
-                        e[0] ? "Yes" : e[2],
+                        e[0].toString(),
                         style: _valueTextStyle(),
                         textAlign: TextAlign.left,
                       ),
@@ -191,11 +257,167 @@ class VehicleDetailState extends State<VehicleDetail> {
                   ),
                 ]
             ),
-          ];
-        } else return <Widget>[];
+          )
+        ];
+      } else return <Widget>[];
 
-      }).expand((i) => i).toList();
+    }).expand((i) => i).toList();
+
   }
+
+  List<Widget> generateFuelEmissionSpecifics(Vehicle vehicle) {
+    final dimensions = [
+      vehicle.engine.fuelEmission.greenhouseScorePrimary,
+      vehicle.engine.fuelEmission.greenhouseScoreSecondary,
+      vehicle.engine.fuelEmission.tailpipeCo2Primary,
+      vehicle.engine.fuelEmission.tailpipeCo2Secondary,
+    ];
+
+    final headings = ["Greenhouse Score", "Greenhouse Score Secondary", "Tailpipe CO2",
+      "Tailpipe CO2 Seconadry"];
+
+    final defaults = [null, null, null, null];
+
+    return zip([dimensions, headings, defaults]).map((e) {
+      if(e[2] != null || (e[0] != null && e[0] != 0)) { // If spec isn't null, or if a default is provided
+        return <Widget>[
+          Container(
+            margin: EdgeInsets.only(top: 10.0, bottom: 10.0, left:15),
+            child: Row(
+                children: [
+                  Expanded(
+                    flex: 5,
+                    child: Container(
+                      child: Text( // Spec name
+                        e[1],
+                        style: _keyTextStyle(),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 5,
+                    child: Container(
+                      margin: EdgeInsets.only(left:10),
+                      decoration: BoxDecoration(), // this is left in to be filled later
+                      child: Text( // Spec value
+                        e[0].toString(),
+                        style: _valueTextStyle(),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ),
+                ]
+            ),
+          )
+        ];
+      } else return <Widget>[];
+
+    }).expand((i) => i).toList();
+
+  }
+
+
+  List<Widget> generateDimensionSpecs(Vehicle vehicle) {
+    final dimensions = [
+      vehicle.dimensions.fourDoorLuggageVolume,
+      vehicle.dimensions.fourDoorPassengerVolume,
+      vehicle.dimensions.hatchbackLuggageVolume,
+      vehicle.dimensions.hatchbackPassengerVolume,
+      vehicle.dimensions.twoDoorLuggageVolume,
+      vehicle.dimensions.fourDoorLuggageVolume,
+    ];
+
+    final headings = ["4Dr Luggage Volume", "4Dr Passenger Volume", "Hatchback Luggage Volume",
+      "Hatchback Passenger Volume", "2Dr Luggage Volume", "2Dr Passenger Volume"];
+
+    final defaults = [null, null, null, null, null, null];
+
+    return zip([dimensions, headings, defaults]).map((e) {
+      if(e[2] != null || (e[0] != null && e[0] != 0)) { // If spec isn't null, or if a default is provided
+      return <Widget>[
+                  Container(
+                    margin: EdgeInsets.only(top: 10.0, bottom: 10.0, left:15),
+                    child: Row(
+                      children: [
+                      Expanded(
+                        flex: 5,
+                        child: Container(
+                          child: Text( // Spec name
+                            e[1],
+                            style: _keyTextStyle(),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 5,
+                        child: Container(
+                          margin: EdgeInsets.only(left:10),
+                          decoration: BoxDecoration(), // this is left in to be filled later
+                          child: Text( // Spec value
+                            e[0].toString() + " litres",
+                            style: _valueTextStyle(),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ),
+                        ]
+                    ),
+                  )
+                ];
+      } else return <Widget>[];
+
+    }).expand((i) => i).toList();
+
+  }
+
+  List<Widget> generateAccordionLists(Vehicle vehicle) {
+    return <Widget>[
+      Container(
+        // padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: ExpansionTile(
+          title: Text(
+            "More Info",
+            textAlign: TextAlign.start,
+            style: TextStyle(
+                fontSize: 22.0,
+                fontWeight: FontWeight.bold
+            ),
+          ),
+          children: <Widget> [
+            ExpansionTile(
+              title: Text(
+                "Dimensions",
+                style: TextStyle(
+                    fontSize: 17.0,
+                ),
+              ),
+              children: generateDimensionSpecs(vehicle)
+            ),
+            ExpansionTile(
+                title: Text(
+                  "Fuel Economy",
+                  style: TextStyle(
+                    fontSize: 17.0,
+                  ),
+                ),
+                children: generateFuelEconomySpecifics(vehicle)
+            ),
+            ExpansionTile(
+                title: Text(
+                  "Fuel Emissions",
+                  style: TextStyle(
+                    fontSize: 17.0,
+                  ),
+                ),
+                children: generateFuelEmissionSpecifics(vehicle)
+            ),
+
+        ]),
+      )];
+  }
+
   // null safe contructuror of oter types too
   List<Widget> generateStaticSpecifications(Vehicle vehicle) {
     final staticSpecs = [
@@ -225,28 +447,34 @@ class VehicleDetailState extends State<VehicleDetail> {
       if(e[2] != null || (e[0] != null && e[0] != 0)) { // If spec isn't null, or if a default is provided
         return <Widget>[
           Gap(),
-          Row(
-              children: <Widget>[
-                Expanded(
-                  flex: 5,
-                  child: Text( // Spec name
-                    e[1],
-                    style: _keyTextStyle(),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-                Expanded(
-                  flex: 5,
-                  child: Container(
-                    decoration: BoxDecoration(), // this is left in to be filled later
-                    child: Text( // Spec value
-                        e[0] != null ? e[0].toString() : e[2],
-                        style: _valueTextStyle(),
+          Container(
+            margin: EdgeInsets.only(left: 10),
+            child: Row(
+                children: <Widget>[
+                  Expanded(
+                    flex: 5,
+                    child: Container(
+                      child: Text( // Spec name
+                        e[1],
+                        style: _keyTextStyle(),
                         textAlign: TextAlign.left,
+                      ),
                     ),
                   ),
-                ),
-              ]
+                  Expanded(
+                    flex: 5,
+                    child: Container(
+                      margin: EdgeInsets.only(left:15),
+                      decoration: BoxDecoration(), // this is left in to be filled later
+                      child: Text( // Spec value
+                          e[0] != null ? e[0].toString() : e[2],
+                          style: _valueTextStyle(),
+                          textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ),
+                ]
+            ),
           ),
         ];
       } else return <Widget>[];
