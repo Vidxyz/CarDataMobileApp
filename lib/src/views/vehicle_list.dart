@@ -28,6 +28,9 @@ class VehicleList extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: TextField(
+              onChanged: (text) {
+                // todo - implement auto search population - need API to do the same
+              },
               controller: _controller,
               decoration: InputDecoration(
                   border: OutlineInputBorder(),

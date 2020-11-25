@@ -89,7 +89,6 @@ class VehicleDetailState extends State<VehicleDetail> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Container(margin: EdgeInsets.only(top: 5.0)),
                       Text(
                         vehicle.make + " " + vehicle.model, // Make and Model
                         style: TextStyle(
@@ -100,20 +99,11 @@ class VehicleDetailState extends State<VehicleDetail> {
                       Gap(),
                       Row(
                         children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.only(left: 1.0, right: 1.0),
-                          ),
                           Text(
                             vehicle.year.toString(), // Year
                             style: TextStyle(fontSize: 20.0),
                           ),
                           Container(margin: EdgeInsets.only(left: 10.0, right: 10.0)),
-                          Text(
-                            vehicle.vehicleClass, // Class
-                            style: TextStyle(
-                              fontSize: 18.0,
-                            ),
-                          ),
                           Spacer(),
                           Icon(
                             Icons.favorite,
@@ -123,7 +113,15 @@ class VehicleDetailState extends State<VehicleDetail> {
                         ],
                       ),
                       Gap(),
-                      Text(vehicle.manufacturerCode ?? "N/A"), // Manufacturer code
+                      Text(
+                        vehicle.vehicleClass, // Class
+                        style: TextStyle(
+                          fontSize: 18.0,
+                        ),
+                      ),
+                      Gap(),
+                      Text(vehicle.manufacturerCode ?? "N/A", style: TextStyle(fontSize: 15.0),), // Manufacturer code
+                      Gap(),
                       Divider(),
                       Gap(),
                       Row(

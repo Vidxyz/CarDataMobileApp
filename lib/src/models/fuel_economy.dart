@@ -69,9 +69,9 @@ class FuelEconomy {
 
   int get cityMpgPrimary => _cityMpgPrimary;
 
-  double get barrelsPerYearSecondary => _barrelsPerYearSecondary;
+  double get barrelsPerYearSecondary => double.parse(_barrelsPerYearSecondary.toStringAsFixed(2));
 
-  double get barrelsPerYearPrimary => _barrelsPerYearPrimary;
+  double get barrelsPerYearPrimary => double.parse(_barrelsPerYearPrimary.toStringAsFixed(2));
 
   int get annualFuelCostSecondary => _annualFuelCostSecondary;
 
