@@ -1,9 +1,12 @@
 import 'package:car_data_app/src/blocs/vehicle_images_bloc.dart';
+import 'package:car_data_app/src/models/search_suggestion.dart';
 import 'package:car_data_app/src/models/vehicle.dart';
+import 'package:car_data_app/src/repo/repo.dart';
 import 'package:flutter/material.dart';
 import 'package:car_data_app/src/blocs/vehicles_bloc.dart';
 import 'package:car_data_app/src/views/vehicle_detail.dart';
 import 'package:car_data_app/src/blocs/bloc_provider.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class VehicleList extends StatelessWidget {
 
@@ -17,33 +20,58 @@ class VehicleList extends StatelessWidget {
     );
   }
 
+
   Widget _buildSearch(BuildContext context) {
-    final bloc = VehiclesBloc();
-    var _controller = TextEditingController();
+    final vehiclesBloc = VehiclesBloc();
+    final _controller = TextEditingController();
+    final _suggestionsController = SuggestionsBoxController();
+    final repo = Repo();
+    var shouldShow = false;
 
     return BlocProvider<VehiclesBloc>(
-      bloc: bloc,
+      bloc: vehiclesBloc,
       child: Column(
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: TextField(
-              onChanged: (text) {
-                // todo - implement auto search population - need API to do the same
-              },
-              controller: _controller,
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Search by make/model/year?',
-                  suffixIcon: IconButton(
-                    onPressed: () => bloc.searchVehicles(_controller.value.text),
-                    icon: Icon(Icons.search),
-                  ),
+            child: TypeAheadField<SearchSuggestion>(
+              suggestionsBoxController: _suggestionsController,
+              textFieldConfiguration: TextFieldConfiguration(
+                  onChanged: (text) => shouldShow = true,
+                  autofocus: true,
+                  controller: _controller,
+                  style: DefaultTextStyle.of(context).style.copyWith(fontSize: 15),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Search by make/model/year",
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        shouldShow = false;
+                        _suggestionsController.close();
+                        vehiclesBloc.searchVehicles(_controller.value.text);
+                      },
+                      icon: Icon(Icons.search),
+                    )
+                  )
               ),
-            ),
+              suggestionsCallback: (pattern) {
+                if(shouldShow) return repo.carDataApiProvider.getSuggestions(pattern);
+                else return List.empty();
+              },
+              itemBuilder: (context, suggestion) {
+                final s = suggestion;
+                return ListTile(
+                  leading: Icon(Icons.directions_car),
+                  title: Text(s.make + " " + s.model),
+                  subtitle: Text(s.year.toString()),
+                );
+              },
+              onSuggestionSelected: (suggestion) => _controller.text = suggestion.toString(),
+              hideOnEmpty: true,
+            )
           ),
           Expanded(
-            child: _buildStreamBuilder(bloc),
+            child: _buildStreamBuilder(vehiclesBloc),
           )
         ],
       ),
@@ -55,12 +83,8 @@ class VehicleList extends StatelessWidget {
       stream: bloc.allVehicles,
       builder: (context, snapshot) {
         final results = snapshot.data;
-        if (results == null) {
-          return Center(child: Text('Search for a vehicle by make/model/year'));
-        }
-        if (results.isEmpty) {
-          return Center(child: Text('No Results'));
-        }
+        if (results == null) return Center(child: Text('Search for a vehicle by make/model/year'));
+        if (results.isEmpty) return Center(child: Text('No Results'));
         return _buildSearchResults(results);
       },
     );

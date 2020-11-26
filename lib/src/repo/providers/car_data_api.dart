@@ -1,3 +1,4 @@
+import 'package:car_data_app/src/models/search_suggestion.dart';
 import 'package:car_data_app/src/models/vehicle.dart';
 import 'package:car_data_app/src/models/vehicle_image.dart';
 import 'package:graphql/client.dart';
@@ -42,6 +43,18 @@ class CarDataApi {
     }
   }
   ''';
+
+  String searchSuggestionsQuery(String query) {
+    return r'''
+    query GetSuggestions($queryString: String!) {
+      search(query: $queryString, limit: 5) {
+        make
+        model
+        year
+      }
+    } 
+  ''';
+  }
 
   String vehicleSearchQuery(String query) { return r'''
   query SearchVehicles($queryString: String!){
@@ -146,6 +159,20 @@ class CarDataApi {
     else {
       print("Bad response: Status code " + response.statusCode.toString());
     }
+  }
+
+  Future<List<SearchSuggestion>> getSuggestions(String query) async {
+    final QueryOptions options = QueryOptions(
+      documentNode: gql(searchSuggestionsQuery(query)),
+      variables: <String, dynamic> {
+        'queryString': query
+      },
+
+    );
+    QueryResult result = await _client.query(options);
+    final List<dynamic> results = result.data['search'] as List<dynamic>;
+    return results.map<SearchSuggestion>((json) => SearchSuggestion.fromJson(json)).toList();
+
   }
 
 }
