@@ -31,31 +31,15 @@ class _SearchScreenState extends State<SearchScreen> {
   bool shouldShow = false;
 
   TextEditingController _searchTextController;
-  ScrollController _listScrollController;
   SuggestionsBoxController _suggestionsController;
-
 
   @override
   void initState() {
     super.initState();
-    _listScrollController = new ScrollController(initialScrollOffset: 5.0)..addListener(_scrollListener);
     _searchTextController = TextEditingController();
     _suggestionsController = SuggestionsBoxController();
     vehiclesBloc = VehiclesBloc();
     repo = Repo();
-  }
-
-  // todo - rework this to make sure that fetching is smooth and hiccup free, especially when
-  //        new fetches are started when user is already at the bottom of the list view
-  _scrollListener() {
-    if (_listScrollController.offset >= _listScrollController.position.maxScrollExtent &&
-        !_listScrollController.position.outOfRange) {
-
-      if (isLoading) {
-        pageCount = pageCount + 1;
-        vehiclesBloc.searchVehicles(searchText, pageCount * pageSize, pageSize);
-      }
-    }
   }
 
   @override
@@ -159,10 +143,14 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildSearchResults(List<Vehicle> results) {
     return ListView.builder(
-      controller: _listScrollController,
       physics: ScrollPhysics(),
       itemCount: isLoading ? results.length + 1 : results.length,
       itemBuilder: (BuildContext context, int index) {
+        // Need to check if we need to load more
+        if (index == results.length - 2 && isLoading) {
+          pageCount = pageCount + 1;
+          vehiclesBloc.searchVehicles(searchText, pageCount * pageSize, pageSize);
+        }
         if (index == results.length) return Center(child: CircularProgressIndicator());
         else {
           final vehicle = results[index];
@@ -195,9 +183,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   void dispose() {
-    _listScrollController.dispose();
     _searchTextController.dispose();
-    // _suggestionsController.dispose();
     vehiclesBloc.dispose();
     super.dispose();
   }

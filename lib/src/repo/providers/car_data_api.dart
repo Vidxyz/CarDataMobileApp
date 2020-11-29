@@ -20,29 +20,7 @@ class CarDataApi {
   static final Link _link = Link.from([_errorLink, _httpLink]);
   final GraphQLClient _client = GraphQLClient(link: _link, cache: InMemoryCache());
 
-  final int max_limit = 500;
-
-  final String vehicleDataQuery = r'''
-  query {
-    vehicles(limit: 500) {
-      id
-      make
-      model 
-      year
-      primaryFuel
-      alternateFuel
-      fuel_type
-      manufacturer_code
-      record_id
-      alternate_fuel_type
-      vehicle_class
-      transmission {
-        transmission_descriptor
-         type
-      }
-    }
-  }
-  ''';
+  final int maxLimit = 500;
 
   String searchSuggestionsQuery(String query) {
     return r'''
@@ -121,18 +99,6 @@ class CarDataApi {
     }
   }
   ''';
-  }
-
-  Future<List<Vehicle>> getAllVehicles() async {
-    QueryResult result;
-    final QueryOptions options = QueryOptions(
-      documentNode: gql(vehicleDataQuery)
-    );
-
-    result = await _client.query(options);
-
-    final List<dynamic> results = result.data['vehicles'] as List<dynamic>;
-    return results.map<Vehicle>((json) => Vehicle.fromJson(json)).toList();
   }
 
   Future<List<Vehicle>> getVehiclesBySearchQuery(String query, int limit, int offset) async {
