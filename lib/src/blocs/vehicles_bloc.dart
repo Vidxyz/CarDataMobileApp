@@ -12,8 +12,8 @@ class VehiclesBloc implements Bloc {
 
   Stream<List<Vehicle>> get allVehicles => _vehiclesFetcher.stream;
 
-  void searchVehicles(String query) async {
-    List<Vehicle> vehicles = await _repo.getVehiclesBySearchQuery(query);
+  void searchVehicles(String query, int offset, int limit) async {
+    List<Vehicle> vehicles = await _repo.getVehiclesBySearchQuery(query, limit, offset);
     _vehiclesFetcher.sink.add(vehicles);
   }
 

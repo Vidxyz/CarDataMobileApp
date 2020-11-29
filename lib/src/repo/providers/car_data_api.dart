@@ -4,7 +4,7 @@ import 'package:car_data_app/src/models/vehicle_image.dart';
 import 'package:graphql/client.dart';
 import 'dart:async';
 import 'dart:convert';
-import 'package:http/http.dart' show Client, Response;
+import 'package:http/http.dart' show Client;
 
 class CarDataApi {
 
@@ -20,7 +20,7 @@ class CarDataApi {
   static final Link _link = Link.from([_errorLink, _httpLink]);
   final GraphQLClient _client = GraphQLClient(link: _link, cache: InMemoryCache());
 
-  final int limit = 500;
+  final int max_limit = 500;
 
   final String vehicleDataQuery = r'''
   query {
@@ -56,9 +56,9 @@ class CarDataApi {
   ''';
   }
 
-  String vehicleSearchQuery(String query) { return r'''
-  query SearchVehicles($queryString: String!){
-    search(query: $queryString) {
+  String vehicleSearchQuery(String query, int limit, int offset) { return r'''
+  query SearchVehicles($queryString: String!, $limit: int!, $offset: int!){
+    search(query: $queryString, limit: $limit, offset: $offset) {
       id
       make
       model 
@@ -135,11 +135,13 @@ class CarDataApi {
     return results.map<Vehicle>((json) => Vehicle.fromJson(json)).toList();
   }
 
-  Future<List<Vehicle>> getVehiclesBySearchQuery(String query) async {
+  Future<List<Vehicle>> getVehiclesBySearchQuery(String query, int limit, int offset) async {
     final QueryOptions options = QueryOptions(
-      documentNode: gql(vehicleSearchQuery(query)),
+      documentNode: gql(vehicleSearchQuery(query, limit, offset)),
       variables: <String, dynamic> {
-        'queryString': query
+        'queryString': query,
+        'limit': limit,
+        'offset': offset
       },
 
     );
@@ -167,7 +169,6 @@ class CarDataApi {
       variables: <String, dynamic> {
         'queryString': query
       },
-
     );
     QueryResult result = await _client.query(options);
     final List<dynamic> results = result.data['search'] as List<dynamic>;

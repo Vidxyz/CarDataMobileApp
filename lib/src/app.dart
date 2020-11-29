@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'views/vehicle_list.dart';
+import 'views/search_screen.dart';
 
 class App extends StatelessWidget {
   @override
@@ -7,7 +7,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData.dark(),
       home: Scaffold(
-        body: VehicleList(),
+        body: SearchScreen(),
       ),
     );
   }

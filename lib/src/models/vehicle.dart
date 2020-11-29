@@ -67,4 +67,6 @@ Vehicle {
 
   String get id => _id;
 
+  String toString() => _model + " " + _make + " " + _year.toString();
+
 }
