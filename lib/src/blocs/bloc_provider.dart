@@ -25,6 +25,7 @@ class _BlocProviderState extends State<BlocProvider> {
 
   @override
   void dispose() {
+    print("Bloc provider dispose called");
     widget.bloc.dispose();
     super.dispose();
   }

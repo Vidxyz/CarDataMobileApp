@@ -1,8 +1,8 @@
+import 'package:car_data_app/src/blocs/app_properties_bloc.dart';
 import 'package:car_data_app/src/blocs/vehicle_images_bloc.dart';
 import 'package:car_data_app/src/models/search_suggestion.dart';
 import 'package:car_data_app/src/models/vehicle.dart';
 import 'package:car_data_app/src/repo/repo.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:car_data_app/src/blocs/vehicles_bloc.dart';
 import 'package:car_data_app/src/views/vehicle_detail.dart';
@@ -18,10 +18,15 @@ class SearchScreen extends StatefulWidget {
   }
 }
 
-class _SearchScreenState extends State<SearchScreen> {
+class _SearchScreenState extends State<SearchScreen> with AutomaticKeepAliveClientMixin {
+
+  // this is so that the framework doesn't dispose
+  @override
+  bool wantKeepAlive = true;
 
   static final int pageSize = 15;
-  VehiclesBloc vehiclesBloc;
+  VehiclesBloc _vehiclesBloc;
+  AppPropertiesBloc _appPropertiesBloc;
   Repo repo;
 
   List<Vehicle> vehicleList = new List<Vehicle>();
@@ -35,28 +40,32 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   void initState() {
+    print("Init method called");
     super.initState();
     _searchTextController = TextEditingController();
     _suggestionsController = SuggestionsBoxController();
-    vehiclesBloc = VehiclesBloc();
+    _vehiclesBloc = VehiclesBloc();
     repo = Repo();
+
+    _appPropertiesBloc = BlocProvider.of<AppPropertiesBloc>(context);
+    print("App bar update command being sent now");
+    _appPropertiesBloc.updateTitle("Find Vehicles");
+    print("Init method setup complete");
   }
+
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Find Vehicles"),
-      ),
-      body: _buildSearch(context)
-    );
+    print("Search screen build widget called");
+    return _buildSearch(context);
   }
 
-
   Widget _buildSearch(BuildContext context) {
+    print("Build search is called now");
     final searchWidget = BlocProvider<VehiclesBloc>(
-      bloc: vehiclesBloc,
+      bloc: _vehiclesBloc,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(10.0),
@@ -81,7 +90,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       pageCount = 0;
                       searchText = _searchTextController.value.text;
                       vehicleList = new List();
-                      vehiclesBloc.searchVehicles(_searchTextController.value.text, pageCount * pageSize, pageSize);
+                      _vehiclesBloc.searchVehicles(_searchTextController.value.text, pageCount * pageSize, pageSize);
                     },
                     icon: Icon(Icons.search),
                   )
@@ -104,7 +113,7 @@ class _SearchScreenState extends State<SearchScreen> {
             )
           ),
           Expanded(
-            child: _buildStreamBuilder(vehiclesBloc),
+            child: _buildStreamBuilder(_vehiclesBloc),
           )
         ],
       ),
@@ -149,7 +158,7 @@ class _SearchScreenState extends State<SearchScreen> {
         // Need to check if we need to load more
         if (index == results.length - 2 && isLoading) {
           pageCount = pageCount + 1;
-          vehiclesBloc.searchVehicles(searchText, pageCount * pageSize, pageSize);
+          _vehiclesBloc.searchVehicles(searchText, pageCount * pageSize, pageSize);
         }
         if (index == results.length) return Center(child: CircularProgressIndicator());
         else {
@@ -183,8 +192,10 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   void dispose() {
+    print("Search screen dispose method called");
     _searchTextController.dispose();
-    vehiclesBloc.dispose();
+    _vehiclesBloc.dispose();
+    _appPropertiesBloc.dispose();
     super.dispose();
   }
 }

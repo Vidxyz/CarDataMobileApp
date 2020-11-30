@@ -2,6 +2,7 @@ import 'package:car_data_app/src/blocs/bloc_provider.dart';
 import 'package:car_data_app/src/blocs/vehicle_images_bloc.dart';
 import 'package:car_data_app/src/models/vehicle.dart';
 import 'package:car_data_app/src/models/vehicle_image.dart';
+import 'package:car_data_app/src/utils/Utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:quiver/iterables.dart';
@@ -9,7 +10,6 @@ import 'package:quiver/iterables.dart';
 class VehicleDetail extends StatefulWidget {
   final Vehicle vehicle;
 
-  // todo - gracefully handle nulls
   VehicleDetail({this.vehicle});
 
   @override
@@ -22,20 +22,22 @@ class VehicleDetailState extends State<VehicleDetail> {
   
   final Vehicle vehicle;
   
-  VehicleImagesBloc bloc;
+  VehicleImagesBloc vehicleImagesBloc;
   
   VehicleDetailState({this.vehicle});
 
   @override
   void dispose() {
-    bloc.dispose();
+    print("Vehicle Detail screen dispose method");
+    vehicleImagesBloc.dispose();
     super.dispose();
   }
 
   @override
   void didChangeDependencies() {
-    bloc = BlocProvider.of<VehicleImagesBloc>(context);
-    bloc.fetchImagesByVehicleId(vehicle.id);
+    print("Vehicle Detail screen didChangeDependencies method");
+    vehicleImagesBloc = BlocProvider.of<VehicleImagesBloc>(context);
+    vehicleImagesBloc.fetchImagesByVehicleId(vehicle.id);
     super.didChangeDependencies();
   }
 
@@ -55,7 +57,7 @@ class VehicleDetailState extends State<VehicleDetail> {
                   pinned: true,
                   elevation: 0.0,
                   flexibleSpace: StreamBuilder(
-                    stream: bloc.vehicleImages,
+                    stream: vehicleImagesBloc.vehicleImages,
                     builder: (context,
                         AsyncSnapshot<Future<List<VehicleImage>>> snapshot) {
                       if (snapshot.hasData) {
@@ -65,7 +67,7 @@ class VehicleDetailState extends State<VehicleDetail> {
                               AsyncSnapshot<List<VehicleImage>> itemSnapShot) {
                             if (itemSnapShot.hasData) {
                               if (itemSnapShot.data.length > 0)
-                                return imageLayout(vehicle, itemSnapShot.data, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
+                                return imageLayout(vehicle, itemSnapShot.data, Utils.getScreenWidth(context), Utils.getScreenHeight(context));
                               else
                                 return noImage();
                             } else {
