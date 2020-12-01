@@ -1,35 +1,36 @@
-import 'package:car_data_app/src/blocs/bloc_provider.dart';
-import 'package:car_data_app/src/blocs/vehicle_images_bloc.dart';
+import 'package:car_data_app/src/blocs/vehicle_images_bloc/vehicle_images_bloc.dart';
+import 'package:car_data_app/src/blocs/vehicle_images_bloc/vehicle_images_event.dart';
+import 'package:car_data_app/src/blocs/vehicle_images_bloc/vehicle_images_state.dart';
 import 'package:car_data_app/src/models/vehicle.dart';
 import 'package:car_data_app/src/models/vehicle_image.dart';
 import 'package:car_data_app/src/utils/Utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quiver/iterables.dart';
 
-class VehicleDetail extends StatefulWidget {
+class VehicleDetailScreen extends StatefulWidget {
   final Vehicle vehicle;
 
-  VehicleDetail({this.vehicle});
+  VehicleDetailScreen({this.vehicle});
 
   @override
   State createState() {
-    return VehicleDetailState(vehicle: vehicle);
+    return VehicleDetailScreenState(vehicle: vehicle);
   }
 }
 
-class VehicleDetailState extends State<VehicleDetail> {
+class VehicleDetailScreenState extends State<VehicleDetailScreen> {
   
   final Vehicle vehicle;
   
   VehicleImagesBloc vehicleImagesBloc;
   
-  VehicleDetailState({this.vehicle});
+  VehicleDetailScreenState({this.vehicle});
 
   @override
   void dispose() {
     print("Vehicle Detail screen dispose method");
-    vehicleImagesBloc.dispose();
     super.dispose();
   }
 
@@ -37,7 +38,7 @@ class VehicleDetailState extends State<VehicleDetail> {
   void didChangeDependencies() {
     print("Vehicle Detail screen didChangeDependencies method");
     vehicleImagesBloc = BlocProvider.of<VehicleImagesBloc>(context);
-    vehicleImagesBloc.fetchImagesByVehicleId(vehicle.id);
+    vehicleImagesBloc.add(ImageFetchStarted(vehicleId: vehicle.id));
     super.didChangeDependencies();
   }
 
@@ -56,104 +57,102 @@ class VehicleDetailState extends State<VehicleDetail> {
                   floating: false,
                   pinned: true,
                   elevation: 0.0,
-                  flexibleSpace: StreamBuilder(
-                    stream: vehicleImagesBloc.vehicleImages,
-                    builder: (context,
-                        AsyncSnapshot<Future<List<VehicleImage>>> snapshot) {
-                      if (snapshot.hasData) {
-                        return FutureBuilder(
-                          future: snapshot.data,
-                          builder: (context,
-                              AsyncSnapshot<List<VehicleImage>> itemSnapShot) {
-                            if (itemSnapShot.hasData) {
-                              if (itemSnapShot.data.length > 0)
-                                return imageLayout(vehicle, itemSnapShot.data, Utils.getScreenWidth(context), Utils.getScreenHeight(context));
-                              else
-                                return noImage();
-                            } else {
-                              return Center(child: CircularProgressIndicator());
-                            }
-                          },
+                  flexibleSpace: BlocBuilder<VehicleImagesBloc, VehicleImagesState>(
+                    builder: (BuildContext context, VehicleImagesState state) {
+                      if (state is ImageFetchLoading || state is ImageFetchInitial) {
+                        return Center(
+                            child: CircularProgressIndicator()
                         );
-                      } else {
-                        return Center(child: CircularProgressIndicator());
                       }
+                      if (state is ImageFetchError) return Expanded(child: Center(child: Text(state.error)));
+
+                      if (state is ImageFetchSuccess) {
+                        return state.vehicleImages.isEmpty
+                            ? noImage()
+                            : imageLayout(vehicle, state.vehicleImages, Utils.getScreenWidth(context), Utils.getScreenHeight(context));
+                      }
+                      else return Center(child: Text("Error: Something went wrong"));
+
                     },
                   ),
                 ),
               ];
             },
-            body: ListView(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(25.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        vehicle.make + " " + vehicle.model, // Make and Model
-                        style: TextStyle(
-                          fontSize: 30.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Gap(),
-                      Row(
-                        children: <Widget>[
-                          Text(
-                            vehicle.year.toString(), // Year
-                            style: TextStyle(fontSize: 20.0),
-                          ),
-                          Container(margin: EdgeInsets.only(left: 10.0, right: 10.0)),
-                          Spacer(),
-                          Icon(
-                            Icons.favorite,
-                            color: Colors.red,
-                            size: 35.0,
-                          ),
-                        ],
-                      ),
-                      Gap(),
-                      Text(
-                        vehicle.vehicleClass, // Class
-                        style: TextStyle(
-                          fontSize: 18.0,
-                        ),
-                      ),
-                      Gap(),
-                      Text(vehicle.manufacturerCode ?? "N/A", style: TextStyle(fontSize: 15.0),), // Manufacturer code
-                      Gap(),
-                      Divider(),
-                      Gap(),
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(
-                            "Specifications",
-                            style: TextStyle(
-                              fontSize: 25.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Spacer()
-                        ],
-                      ),
-                      Gap(),
-                      Divider(),
-                    ]
-                    + generateStaticSpecifications(vehicle) // other vehicle stats to show
-                    + [Gap(), Divider()]
-                    + generateBooleanSpecifications(vehicle)
-                    + [Gap(), Divider()]
-                    + generateAccordionLists(vehicle)
-                  ),
-                ),
-              ],
-            )),
+            body: _buildVehicleStats()
+        ),
       ),
     );
   }
+
+
+  Widget _buildVehicleStats() => ListView(
+    children: <Widget>[
+      Padding(
+        padding: const EdgeInsets.all(25.0),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                vehicle.make + " " + vehicle.model, // Make and Model
+                style: TextStyle(
+                  fontSize: 30.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Gap(),
+              Row(
+                children: <Widget>[
+                  Text(
+                    vehicle.year.toString(), // Year
+                    style: TextStyle(fontSize: 20.0),
+                  ),
+                  Container(margin: EdgeInsets.only(left: 10.0, right: 10.0)),
+                  Spacer(),
+                  Icon(
+                    Icons.favorite,
+                    color: Colors.red,
+                    size: 35.0,
+                  ),
+                ],
+              ),
+              Gap(),
+              Text(
+                vehicle.vehicleClass, // Class
+                style: TextStyle(
+                  fontSize: 18.0,
+                ),
+              ),
+              Gap(),
+              Text(vehicle.manufacturerCode ?? "N/A", style: TextStyle(fontSize: 15.0),), // Manufacturer code
+              Gap(),
+              Divider(),
+              Gap(),
+              Row(
+                children: [
+                  Spacer(),
+                  Text(
+                    "Specifications",
+                    style: TextStyle(
+                      fontSize: 25.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Spacer()
+                ],
+              ),
+              Gap(),
+              Divider(),
+            ]
+                + generateStaticSpecifications(vehicle) // other vehicle stats to show
+                + [Gap(), Divider()]
+                + generateBooleanSpecifications(vehicle)
+                + [Gap(), Divider()]
+                + generateAccordionLists(vehicle)
+        ),
+      ),
+    ],
+  );
 
   List<Widget> generateBooleanSpecifications(Vehicle vehicle) {
       final specs = [

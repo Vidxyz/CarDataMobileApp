@@ -1,5 +1,3 @@
-import 'package:car_data_app/src/blocs/app_properties_bloc.dart';
-import 'package:car_data_app/src/blocs/bloc_provider.dart';
 import 'package:flutter/cupertino.dart';
 
 class AdvancedSearchScreen extends StatefulWidget {
@@ -16,14 +14,14 @@ class _AdvancedSearchScreenState extends State<AdvancedSearchScreen> {
   // @override
   // bool wantKeepAlive = true;
 
-  AppPropertiesBloc _appPropertiesBloc;
+  // AppPropertiesBloc _appPropertiesBloc;
 
   @override
   void initState() {
     super.initState();
-    _appPropertiesBloc = BlocProvider.of<AppPropertiesBloc>(context);
-    print("App bar update command being sent now");
-    _appPropertiesBloc.updateTitle("Search Vehicles");
+    // _appPropertiesBloc = BlocProvider.of<AppPropertiesBloc>(context);
+    // print("App bar update command being sent now");
+    // _appPropertiesBloc.updateTitle("Search Vehicles");
   }
 
 
