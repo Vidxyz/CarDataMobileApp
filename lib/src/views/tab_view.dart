@@ -1,6 +1,7 @@
 import 'package:car_data_app/src/blocs/app_properties_bloc.dart';
 import 'package:car_data_app/src/blocs/bloc_provider.dart';
-import 'package:car_data_app/src/views/search_screen.dart';
+import 'package:car_data_app/src/views/advanced_search_screen.dart';
+import 'package:car_data_app/src/views/basic_search_screen.dart';
 import 'package:flutter/material.dart';
 
 class TabView extends StatelessWidget{
@@ -31,10 +32,11 @@ class TabView extends StatelessWidget{
           children: [
             BlocProvider<AppPropertiesBloc>(
               bloc: appBloc,
-              child: SearchScreen()
+              child: BasicSearchScreen()
             ),
-            Center(
-              child: Text("More content to come soon...")
+            BlocProvider<AppPropertiesBloc>(
+              bloc: appBloc,
+              child: AdvancedSearchScreen()
             )
           ],
         ),

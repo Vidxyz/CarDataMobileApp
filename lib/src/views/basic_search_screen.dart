@@ -10,19 +10,20 @@ import 'package:car_data_app/src/blocs/bloc_provider.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 
-class SearchScreen extends StatefulWidget {
+class BasicSearchScreen extends StatefulWidget {
 
   @override
   State createState() {
-    return _SearchScreenState();
+    return _BasicSearchScreenState();
   }
 }
 
-class _SearchScreenState extends State<SearchScreen> with AutomaticKeepAliveClientMixin {
+class _BasicSearchScreenState extends State<BasicSearchScreen> {
 
   // this is so that the framework doesn't dispose
-  @override
-  bool wantKeepAlive = true;
+  // @override
+  // bool wantKeepAlive = true;
+  // todo - evaluate if changing app bar title is even required, and if so, how to get around the fact that it is a stack of operations
 
   static final int pageSize = 15;
   VehiclesBloc _vehiclesBloc;
@@ -52,7 +53,6 @@ class _SearchScreenState extends State<SearchScreen> with AutomaticKeepAliveClie
     _appPropertiesBloc.updateTitle("Find Vehicles");
     print("Init method setup complete");
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +195,7 @@ class _SearchScreenState extends State<SearchScreen> with AutomaticKeepAliveClie
     print("Search screen dispose method called");
     _searchTextController.dispose();
     _vehiclesBloc.dispose();
-    _appPropertiesBloc.dispose();
+    // _appPropertiesBloc.dispose();
     super.dispose();
   }
 }
