@@ -1,6 +1,7 @@
 import 'package:car_data_app/src/blocs/vehicle_images_bloc/vehicle_images_bloc.dart';
 import 'package:car_data_app/src/blocs/vehicle_images_bloc/vehicle_images_event.dart';
 import 'package:car_data_app/src/blocs/vehicle_images_bloc/vehicle_images_state.dart';
+import 'package:car_data_app/src/custom_widgets/dynamic_flexible_space_bar_title.dart';
 import 'package:car_data_app/src/models/vehicle.dart';
 import 'package:car_data_app/src/models/vehicle_image.dart';
 import 'package:car_data_app/src/utils/Utils.dart';
@@ -53,27 +54,45 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
                 (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
                 SliverAppBar(
-                  expandedHeight: 200.0,
+                  expandedHeight: 220.0,
                   floating: false,
                   pinned: true,
                   elevation: 0.0,
-                  flexibleSpace: BlocBuilder<VehicleImagesBloc, VehicleImagesState>(
-                    builder: (BuildContext context, VehicleImagesState state) {
-                      if (state is ImageFetchLoading || state is ImageFetchInitial) {
-                        return Center(
-                            child: CircularProgressIndicator()
-                        );
-                      }
-                      if (state is ImageFetchError) return Expanded(child: Center(child: Text(state.error)));
+                  flexibleSpace: FlexibleSpaceBar(
+                    centerTitle: true,
+                    titlePadding:  EdgeInsets.zero,
+                    title: DynamicFlexibleSpaceBarTitle(
+                        child: Container(
+                          child: FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                                vehicle.make + " " + vehicle.model + " " + vehicle.year.toString(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 25.0,
+                                  fontWeight: FontWeight.bold,
+                                )
+                              ),
+                          ),
+                        )
+                        ),
+                    background: BlocBuilder<VehicleImagesBloc, VehicleImagesState>(
+                      builder: (BuildContext context, VehicleImagesState state) {
+                        if (state is ImageFetchLoading || state is ImageFetchInitial) {
+                          return Center(
+                              child: CircularProgressIndicator()
+                          );
+                        }
+                        if (state is ImageFetchError) return Expanded(child: Center(child: Text(state.error)));
 
-                      if (state is ImageFetchSuccess) {
-                        return state.vehicleImages.isEmpty
-                            ? noImage()
-                            : imageLayout(vehicle, state.vehicleImages, Utils.getScreenWidth(context), Utils.getScreenHeight(context));
-                      }
-                      else return Center(child: Text("Error: Something went wrong"));
-
-                    },
+                        if (state is ImageFetchSuccess) {
+                          return state.vehicleImages.isEmpty
+                              ? noImage()
+                              : imageLayout(vehicle, state.vehicleImages, Utils.getScreenWidth(context), Utils.getScreenHeight(context));
+                        }
+                        else return Center(child: Text("Error: Something went wrong"));
+                      },
+                    ),
                   ),
                 ),
               ];

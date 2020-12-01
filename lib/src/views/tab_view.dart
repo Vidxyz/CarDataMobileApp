@@ -23,21 +23,11 @@ class TabView extends StatelessWidget{
         ),
         body: TabBarView(
           children: [
-
             BlocProvider(
               create: (context) => VehicleSearchBloc(repository: Repo()),
               child: BasicSearchScreen(),
             ),
-
             AdvancedSearchScreen()
-            // BlocProvider<AppPropertiesBloc>(
-            //   bloc: appBloc,
-            //   child: BasicSearchScreen()
-            // ),
-            // BlocProvider<AppPropertiesBloc>(
-            //   bloc: appBloc,
-            //   child: AdvancedSearchScreen()
-            // )
           ],
         ),
       ),
