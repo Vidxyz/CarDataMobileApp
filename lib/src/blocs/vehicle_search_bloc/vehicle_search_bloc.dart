@@ -44,15 +44,19 @@ class VehicleSearchBloc extends Bloc<VehicleSearchEvent, VehicleSearchState> {
             yield SearchStateLoading();
             final results = await repository.carDataApiProvider.getVehiclesBySearchQuery(searchTerm, pageSize, 0);
             yield results.length == pageSize ?
-              SearchStateSuccess(vehicles: results, hasReachedMax: false) :
-              SearchStateSuccess(vehicles: results, hasReachedMax: true);
+              SearchStateSuccess(vehicles: results, hasReachedMax: false, searchQuery: searchTerm) :
+              SearchStateSuccess(vehicles: results, hasReachedMax: true, searchQuery: searchTerm);
             return;
           }
           if (currentState is SearchStateSuccess) {
             final results = await repository.carDataApiProvider.getVehiclesBySearchQuery(searchTerm, pageSize, currentState.vehicles.length);
             yield results.length != pageSize ?
               currentState.copyWith(hasReachedMax: true) :
-              SearchStateSuccess(vehicles: currentState.vehicles + results, hasReachedMax: false);
+              SearchStateSuccess(
+                  vehicles: currentState.vehicles + results,
+                  hasReachedMax: false,
+                  searchQuery: searchTerm
+              );
             return;
           }
         }

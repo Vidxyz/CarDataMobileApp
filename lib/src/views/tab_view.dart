@@ -1,7 +1,7 @@
 import 'package:car_data_app/src/blocs/vehicle_search_bloc/vehicle_search_bloc.dart';
 import 'package:car_data_app/src/repo/repo.dart';
 import 'package:car_data_app/src/views/advanced_search_screen.dart';
-import 'package:car_data_app/src/views/basic_search_screen.dart';
+import 'package:car_data_app/src/views/basic_search/basic_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -25,7 +25,7 @@ class TabView extends StatelessWidget{
           children: [
             BlocProvider(
               create: (context) => VehicleSearchBloc(repository: Repo()),
-              child: BasicSearchScreen(),
+              child: BasicSearch(),
             ),
             AdvancedSearchScreen()
           ],
