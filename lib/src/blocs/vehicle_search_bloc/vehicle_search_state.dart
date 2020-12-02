@@ -14,14 +14,29 @@ class SearchStateLoading extends VehicleSearchState {}
 
 class SearchStateSuccess extends VehicleSearchState {
   final List<Vehicle> vehicles;
+  final bool hasReachedMax;
 
-  const SearchStateSuccess(this.vehicles);
+  const SearchStateSuccess({
+      this.vehicles,
+      this.hasReachedMax
+  });
+
+  SearchStateSuccess copyWith({
+    List<Vehicle> vehicles,
+    bool hasReachedMax
+  }) {
+    return SearchStateSuccess(
+        vehicles: vehicles ?? this.vehicles,
+        hasReachedMax: hasReachedMax ?? this.hasReachedMax
+    );
+  }
 
   @override
-  List<Object> get props => [vehicles];
+  String toString() => "${this.runtimeType} with length of items ${vehicles.length}. HasReachedMax $hasReachedMax";
 
   @override
-  String toString() => 'SearchStateSuccess { items: ${vehicles.toString()} }';
+  List<Object> get props => [vehicles, hasReachedMax];
+
 }
 
 class SearchStateError extends VehicleSearchState {

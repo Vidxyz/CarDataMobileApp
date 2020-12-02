@@ -25,35 +25,27 @@ class _BasicSearchScreenState extends State<BasicSearchScreen> {
   // @override
   // bool wantKeepAlive = true;
   // todo - evaluate if changing app bar title is even required, and if so, how to get around the fact that it is a stack of operations
-  // todo - uniformity in sub widgets being classes or methods
+  // todo - uniformity in sub widgets being classes or methods -  as well as other niformity
+  static final double _scrollThreshold = 200.0;
 
-  static final int pageSize = 15;
   VehicleSearchBloc _vehicleSearchBloc;
-  // AppPropertiesBloc _appPropertiesBloc;
-  Repo repo;
 
   List<Vehicle> vehicleList = new List<Vehicle>();
-  bool isLoading = false;
   String searchText = "";
-  int pageCount = 0;
   bool shouldShow = false;
 
-  TextEditingController _searchTextController;
-  SuggestionsBoxController _suggestionsController;
+  final _searchTextController = TextEditingController();
+  final _suggestionsController = SuggestionsBoxController();
+  final _scrollController = ScrollController();
+
+  final repo = Repo();
 
   @override
   void initState() {
     print("Init method called");
     super.initState();
-    _searchTextController = TextEditingController();
-    _suggestionsController = SuggestionsBoxController();
     _vehicleSearchBloc = BlocProvider.of<VehicleSearchBloc>(context);
-    repo = Repo();
-
-    // _appPropertiesBloc = BlocProvider.of<AppPropertiesBloc>(context);
-    // print("App bar update command being sent now");
-    // _appPropertiesBloc.updateTitle("Find Vehicles");
-    print("Init method setup complete");
+    _scrollController.addListener(_onScroll);
   }
 
   @override
@@ -104,11 +96,11 @@ class _BasicSearchScreenState extends State<BasicSearchScreen> {
                     onPressed: () {
                       _suggestionsController.close();
                       shouldShow = false;
-                      pageCount = 0;
                       searchText = _searchTextController.value.text;
                       vehicleList = new List();
-                      // _vehiclesBloc.searchVehicles(_searchTextController.value.text, pageCount * pageSize, pageSize);
-                      _vehicleSearchBloc.add(SearchQueryChanged(text: searchText));
+                      _vehicleSearchBloc.add(SearchQueryReset());
+                      // This is so that debounce filter is avoided
+                      Future.delayed(Duration(milliseconds: 350), () => _vehicleSearchBloc.add(SearchQueryChanged(text: searchText)));
                     },
                     icon: Icon(Icons.search),
                   )
@@ -132,18 +124,7 @@ class _BasicSearchScreenState extends State<BasicSearchScreen> {
     );
   }
 
-  @override
-  void dispose() {
-    print("Search screen dispose method called");
-    _searchTextController.dispose();
-    // _appPropertiesBloc.dispose();
-    super.dispose();
-  }
-}
-
-class _SearchBody extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+  Widget _SearchBody() {
     return BlocBuilder<VehicleSearchBloc, VehicleSearchState>(
       builder: (BuildContext context, VehicleSearchState state) {
         if (state is SearchStateEmpty) {
@@ -151,8 +132,8 @@ class _SearchBody extends StatelessWidget {
         }
         if (state is SearchStateLoading) {
           return Container(
-            padding: EdgeInsets.fromLTRB(100, 250, 100, 250),
-            child: CircularProgressIndicator()
+              padding: EdgeInsets.fromLTRB(100, 250, 100, 250),
+              child: CircularProgressIndicator()
           );
         }
         if (state is SearchStateError) {
@@ -161,7 +142,9 @@ class _SearchBody extends StatelessWidget {
         if (state is SearchStateSuccess) {
           return state.vehicles.isEmpty
               ? Expanded(child: Center(child: Text('No Results')))
-              : Expanded(child: _SearchResults(items: state.vehicles));
+              : Expanded(
+              child: SearchResults(state.vehicles, state.hasReachedMax)
+          );
         }
         else {
           return Center(child: Text("Error: Something went wrong"));
@@ -169,23 +152,38 @@ class _SearchBody extends StatelessWidget {
       },
     );
   }
-}
 
-class _SearchResults extends StatelessWidget {
-  final List<Vehicle> items;
-
-  const _SearchResults({Key key, this.items}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
+  Widget SearchResults(List<Vehicle> items, bool hasReachedMax) {
     return ListView.builder(
-      itemCount: items.length,
+      controller: _scrollController,
+      itemCount: hasReachedMax ? items.length : items.length + 1,
       itemBuilder: (BuildContext context, int index) {
-        return _SearchResultItem(vehicle: items[index]);
+        if (index >= items.length) {
+          return  Center(child: CircularProgressIndicator());
+        }
+        else {
+          return _SearchResultItem(vehicle: items[index]);
+        }
       },
     );
   }
+
+  @override
+  void dispose() {
+    print("Search screen dispose method called");
+    _searchTextController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    if (maxScroll - currentScroll <= _scrollThreshold) {
+      _vehicleSearchBloc.add(SearchQueryChanged(text: searchText));
+    }
+  }
 }
+
 
 class _SearchResultItem extends StatelessWidget {
   final Vehicle vehicle;
