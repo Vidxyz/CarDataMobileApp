@@ -30,14 +30,9 @@ class AttributeValuesBloc extends Bloc<AttributeValueEvent, AttributeValuesState
       print("Event is values requested");
       try {
         // write code here
-        print("About to load");
-        // yield AttributeValuesLoading();
+        yield AttributeValuesLoading();
         final attributeValues = await repository.getAttributeValues();
-        print("Attained results");
-        print(attributeValues);
-        yield AttributeValuesSuccess(
-            attributeValues: attributeValues
-        );
+        yield AttributeValuesSuccess(attributeValues: attributeValues);
       } catch (error) {
         yield AttributeValuesError('An error occurred fetching vehicle images: ${error.toString()}');
       }
