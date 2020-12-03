@@ -13,15 +13,13 @@ class BasicSearch extends StatelessWidget {
 
   Widget _buildSearch(BuildContext context) {
     print("Build search is called now");
-    final searchWidget = Column(
+    return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         SearchBar(),
         SearchBody()
       ],
     );
-
-    return searchWidget;
   }
 }
 

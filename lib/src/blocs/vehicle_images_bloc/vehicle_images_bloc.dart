@@ -28,7 +28,7 @@ class VehicleImagesBloc extends Bloc<VehicleImagesEvent, VehicleImagesState> {
     if(event is ImageFetchStarted) {
       try {
         yield ImageFetchLoading();
-        final results = await repository.carDataApiProvider.getVehicleImages(event.vehicleId);
+        final results = await repository.getVehicleImages(event.vehicleId);
         yield ImageFetchSuccess(results);
       } catch (error) {
         yield ImageFetchError('An error occurred fetching vehicle images: ${error.toString()}');

@@ -1,3 +1,4 @@
+import 'package:car_data_app/src/models/attribute_values.dart';
 import 'package:car_data_app/src/models/search_suggestion.dart';
 import 'package:car_data_app/src/models/vehicle.dart';
 import 'package:car_data_app/src/models/vehicle_image.dart';
@@ -21,6 +22,32 @@ class CarDataApi {
   final GraphQLClient _client = GraphQLClient(link: _link, cache: InMemoryCache());
 
   final int maxLimit = 500;
+
+  String attributeValuesQuery() {
+    return r'''
+    query GetAttributeValues {
+      attributeValues(attributes: [
+        "fuel_type_primary",
+        "fuel_type_secondary",
+        "fuel_type",
+        "make",
+        "year",
+        "type",
+        "cylinders",
+        "engine_descriptor"
+      ]) {
+        fuel_type_primary,
+        fuel_type_secondary,
+        fuel_type,
+        make,
+        year,
+        type,
+        cylinders,
+        engine_descriptor
+      }
+    }
+    ''';
+  }
 
   String searchSuggestionsQuery(String query) {
     return r'''
@@ -140,6 +167,15 @@ class CarDataApi {
     final List<dynamic> results = result.data['search'] as List<dynamic>;
     return results.map<SearchSuggestion>((json) => SearchSuggestion.fromJson(json)).toList();
 
+  }
+
+  Future<AttributeValues> getAttributeValues() async {
+    final QueryOptions options = QueryOptions(
+      documentNode: gql(attributeValuesQuery()),
+    );
+    QueryResult result = await _client.query(options);
+    final response = result.data['attributeValues'] as Map<dynamic, dynamic>;
+    return AttributeValues.fromJson(response);
   }
 
 }

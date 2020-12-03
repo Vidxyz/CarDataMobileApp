@@ -64,7 +64,7 @@ class SearchBarState extends State<SearchBar> {
               )
           ),
           suggestionsCallback: (pattern) {
-            if(shouldShow) return _repo.carDataApiProvider.getSuggestions(pattern);
+            if(shouldShow) return _repo.getSuggestions(pattern);
             else return List.empty();
           },
           itemBuilder: (context, suggestion) {

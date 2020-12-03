@@ -31,25 +31,22 @@ class VehicleSearchBloc extends Bloc<VehicleSearchEvent, VehicleSearchState> {
     final currentState = state;
     if (event is SearchQueryReset) {
       yield SearchStateEmpty();
-      return;
     }
     else if (event is SearchQueryChanged && !_hasReachedMax(currentState)) {
       final String searchTerm = event.text;
       if (searchTerm.isEmpty) {
         yield SearchStateEmpty();
-        return;
       } else {
         try {
           if (currentState is SearchStateEmpty) {
             yield SearchStateLoading();
-            final results = await repository.carDataApiProvider.getVehiclesBySearchQuery(searchTerm, pageSize, 0);
+            final results = await repository.getVehiclesBySearchQuery(searchTerm, pageSize, 0);
             yield results.length == pageSize ?
               SearchStateSuccess(vehicles: results, hasReachedMax: false, searchQuery: searchTerm) :
               SearchStateSuccess(vehicles: results, hasReachedMax: true, searchQuery: searchTerm);
-            return;
           }
           if (currentState is SearchStateSuccess) {
-            final results = await repository.carDataApiProvider.getVehiclesBySearchQuery(searchTerm, pageSize, currentState.vehicles.length);
+            final results = await repository.getVehiclesBySearchQuery(searchTerm, pageSize, currentState.vehicles.length);
             yield results.length != pageSize ?
               currentState.copyWith(hasReachedMax: true) :
               SearchStateSuccess(
@@ -57,7 +54,6 @@ class VehicleSearchBloc extends Bloc<VehicleSearchEvent, VehicleSearchState> {
                   hasReachedMax: false,
                   searchQuery: searchTerm
               );
-            return;
           }
         }
         catch (error) {
