@@ -1,13 +1,13 @@
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_bloc.dart';
-import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_event.dart';
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_state.dart';
 import 'package:car_data_app/src/blocs/attribute_values_bloc/attribute_values_bloc.dart';
 import 'package:car_data_app/src/blocs/attribute_values_bloc/attribute_values_event.dart';
 import 'package:car_data_app/src/blocs/attribute_values_bloc/attribute_values_state.dart';
+import 'package:car_data_app/src/views/advanced_search/attribute_values_grid.dart';
+import 'package:car_data_app/src/views/advanced_search/attribute_values_list.dart';
+import 'package:car_data_app/src/views/advanced_search/attribute_values_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quiver/iterables.dart';
-import 'dart:math';
 
 
 class AttributeSelectionFilters extends StatefulWidget {
@@ -47,16 +47,8 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
     "engine_descriptor": List<int>(),
   };
 
-  Map<String, RangeValues> selectedSliderAttributeValues = {
-    "year": RangeValues(1984, 2021),
-    "displacement": RangeValues(0, 8.4),
-    "cylinders": RangeValues(2, 16)
-  };
-
-  // todo - refactor so that each filter is only aware of itself, and the bloc handles collection of data - better efficiency in redrawing - still need different slides
   // todo - refactor so that individual widgets fetch their attribute values separately, instead of all at once
   // todo - add remaining attributes as well, (sliders as well as means to sort by
-
   @override
   void initState() {
     super.initState();
@@ -111,15 +103,31 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
                     else if (state is AttributeValuesSuccess) {
                       // only doing attribute values for primary fuel type right now
                       if(listAttributes.contains(attributeName))
-                        return attributeValuesListView(attributeName, state.attributeValues.attributeValues[attributeName]);
+                        return AttributeValuesList(
+                            attributeName: attributeName,
+                            attributeValues: state.attributeValues.attributeValues[attributeName]);
+
                       else if(gridAttributes.contains(attributeName))
-                        return attributeValuesGridView(attributeName, state.attributeValues.attributeValues[attributeName]);
+                        return AttributeValuesGrid(
+                            attributeName: attributeName,
+                            attributeValues: state.attributeValues.attributeValues[attributeName]);
+
                       else if(integerSliderAttributes.contains(attributeName))
-                        return attributeValuesSliderView(attributeName, state.attributeValues.attributeValues[attributeName], false);
+                        return AttributeValuesSlider(
+                            attributeName: attributeName,
+                            attributeValues: state.attributeValues.attributeValues[attributeName],
+                            isDoubleValue: false);
+
                       else if(doubleSliderAttributes.contains(attributeName))
-                        return attributeValuesSliderView(attributeName, state.attributeValues.attributeValues[attributeName], true);
-                      else
-                        return attributeValuesListView(attributeName, state.attributeValues.attributeValues[attributeName]);
+                        return AttributeValuesSlider(
+                            attributeName: attributeName,
+                            attributeValues: state.attributeValues.attributeValues[attributeName],
+                            isDoubleValue: true);
+
+                      else // This should ideally not be reached
+                        return AttributeValuesList(
+                            attributeName: attributeName,
+                            attributeValues: state.attributeValues.attributeValues[attributeName]);
                     }
                     else { // this should not be reached ideally
                       print(state.toString());
@@ -136,161 +144,5 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
         }
       }
     );
-  }
-
-  // And then, begin working on selected_filters_view
-  Widget attributeValuesSliderView(String attributeName, List<String> attributeValues, bool isDoubleValue) {
-    List<double> numericalValues = attributeValues
-        .where((element) => element != null)
-        .toList()
-        .map((e) => double.parse(e))
-        .toList();
-    var minimum = min(numericalValues);
-    var maximum = max(numericalValues);
-    final rangeValues = selectedSliderAttributeValues[attributeName];
-    return Container(
-        padding: EdgeInsets.only(bottom: 10),
-        child: Column(
-          children: [
-            Center(
-              child: Text(
-                  isDoubleValue ?
-                  "${rangeValues.start.toStringAsFixed(2)} - ${rangeValues.end.toStringAsFixed(2)}" :
-                  "${rangeValues.start.toInt()} - ${rangeValues.end.toInt()}",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold
-                ),
-              ),
-            ),
-            SliderTheme(
-              data: SliderThemeData(
-                showValueIndicator: ShowValueIndicator.always,
-              ),
-              child: RangeSlider(
-                  divisions: numericalValues.length,
-                  activeColor: Colors.blue[700],
-                  inactiveColor: Colors.blueAccent[300],
-                  min: minimum.toDouble(),
-                  max: maximum.toDouble(),
-                  values: rangeValues,
-                  labels: isDoubleValue ?
-                  RangeLabels(rangeValues.start.toStringAsFixed(2), rangeValues.end.toStringAsFixed(2)) :
-                  RangeLabels(rangeValues.start.toInt().toString(), rangeValues.end.toInt().toString()),
-                  onChanged: (values){
-                    setState(() {
-                      selectedSliderAttributeValues[attributeName] = values;
-                      // Must also update bloc here with continous values
-                      _advancedSearchBloc.add(AdvancedSearchFiltersChanged(
-                          selectedFilters: {attributeName: _getSelectedSliderAttributeValues(numericalValues, values, isDoubleValue)}));
-                    });
-                  }
-              ),
-            ),
-          ],
-        ),
-    );
-  }
-
-  Widget attributeValuesGridView(String attributeName, List<String> attributeValues) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: 200,
-      ),
-      child: Container(
-        padding: EdgeInsets.only(bottom: 10),
-        child: GridView.count(
-          childAspectRatio: 3,
-          crossAxisCount: 3,
-          shrinkWrap: true,
-          children: List.generate(attributeValues.length,
-                  (index) =>
-                      Container(
-                        margin: EdgeInsets.only(left:17),
-                        child: GestureDetector(
-                          onTap: () => setState(() {
-                            var selectedIndices = selectedAttributeNameValueIndices[attributeName];
-                            if(selectedIndices.contains(index)) selectedIndices.remove(index);
-                            else selectedIndices.add(index);
-
-                            selectedAttributeNameValueIndices[attributeName] = selectedIndices;
-                            _advancedSearchBloc.add(AdvancedSearchFiltersChanged(
-                                selectedFilters: {attributeName: _getSelectedAttributeValues(attributeValues, selectedIndices)}));
-                          }),
-                          child: Container(
-                            padding: EdgeInsets.only(top: 5),
-                            child: Text(
-                                attributeValues[index].toString(),
-                                style: TextStyle(
-                                    color: selectedAttributeNameValueIndices[attributeName].contains(index) ? Colors.blue : Colors.white,
-                                    fontSize: 15
-                                )
-                            ),
-                          ),
-                        ),
-                      )
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget attributeValuesListView(String attributeName, List<String> attributeValues) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: 200,
-      ),
-      child: Container(
-        padding: EdgeInsets.only(bottom: 10),
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: attributeValues.length,
-          itemBuilder: (_, index) {
-            return Container(
-              margin: EdgeInsets.only(left:17),
-              child: GestureDetector(
-                onTap: () => setState(() {
-                  var selectedIndices = selectedAttributeNameValueIndices[attributeName];
-                  if(selectedIndices.contains(index)) selectedIndices.remove(index);
-                  else selectedIndices.add(index);
-
-                  selectedAttributeNameValueIndices[attributeName] = selectedIndices;
-                  _advancedSearchBloc.add(AdvancedSearchFiltersChanged(
-                      selectedFilters: {attributeName: _getSelectedAttributeValues(attributeValues, selectedIndices)}));
-                }),
-                child: Container(
-                  padding: EdgeInsets.only(top: 5),
-                  child: Text(
-                      attributeValues[index].toString(),
-                      style: TextStyle(
-                          color: selectedAttributeNameValueIndices[attributeName].contains(index) ? Colors.blue : Colors.white,
-                          fontSize: 15
-                      )
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  List<String> _getSelectedAttributeValues(List<String> values, List<int> selectedIndices) {
-    var selectedTypes = List<String>();
-    for (var i = 0; i < selectedIndices.length; i++) {
-      selectedTypes.add(values[selectedIndices[i]]);
-    }
-    return selectedTypes;
-  }
-
-  List<String> _getSelectedSliderAttributeValues(List<double> values, RangeValues rangeValues, bool isDoubleValue) {
-    return values
-        .where((element) =>
-          element >= (isDoubleValue ? rangeValues.start : rangeValues.start.toInt())
-              && element <= (isDoubleValue ? rangeValues.end : rangeValues.end.toInt()))
-        .toList()
-        .map((e) => isDoubleValue ? e.toString() : e.toInt().toString())
-        .toList();
   }
 }
