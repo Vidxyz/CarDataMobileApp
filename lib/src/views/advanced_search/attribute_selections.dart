@@ -4,9 +4,11 @@ import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_stat
 import 'package:car_data_app/src/blocs/attribute_values_bloc/attribute_values_bloc.dart';
 import 'package:car_data_app/src/blocs/attribute_values_bloc/attribute_values_event.dart';
 import 'package:car_data_app/src/blocs/attribute_values_bloc/attribute_values_state.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quiver/iterables.dart';
+import 'dart:math';
+
 
 class AttributeSelectionFilters extends StatefulWidget {
 
@@ -22,11 +24,15 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
   @override
   bool wantKeepAlive = true;
 
-  static final List<String> displayNames = ["Primary Fuel",
-    "Secondary Fuel", "Fuel Grade", "Transmission", "Make", "Engine"];
+  static final List<String> listAttributes = ["make", "fuel_type_primary", "fuel_type_secondary", "fuel_type", "engine_descriptor", "type"];
+  static final List<String> sliderAttributes = ["year", "displacement"];
+  static final List<String> boxAttributes = ["cylinders"];
 
-  static final List<String> attributesToDisplayListsFor = ["fuel_type_primary",
-    "fuel_type_secondary", "fuel_type", "type", "make", "engine_descriptor"];
+  static final List<String> displayNames = ["Make", "Year", "Primary Fuel",
+    "Secondary Fuel", "Fuel Grade", "Engine", "Transmission", "Cylinders", "Displacement"];
+
+  static final List<String> attributesToDisplayListsFor = ["make", "year", "fuel_type_primary",
+    "fuel_type_secondary", "fuel_type", "engine_descriptor", "type",  "cylinders", "displacement"];
 
   AdvancedSearchBloc _advancedSearchBloc;
   AttributeValuesBloc _attributeValuesBloc;
@@ -37,7 +43,13 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
     "fuel_type": List<int>(),
     "type": List<int>(),
     "make": List<int>(),
-    "engine_descriptor": List<int>()
+    "engine_descriptor": List<int>(),
+    "cylinders": List<int>(),
+  };
+
+  Map<String, RangeValues> selectedSliderAttributeValues = {
+    "year": RangeValues(1984, 2021),
+    "displacement": RangeValues(0, 8.4)
   };
 
   @override
@@ -58,16 +70,14 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
             shrinkWrap: true,
             itemCount: attributesToDisplayListsFor.length,
             itemBuilder: (_, index) {
-              return Card(child:
-              _createAttributeValues(displayNames[index],
-                  attributesToDisplayListsFor[index]));
+              return Card(child: _displayAttributesNameValuesToUser(displayNames[index], attributesToDisplayListsFor[index]));
             },
           ),
         ),
     );
   }
 
-  Widget _createAttributeValues(String displayName, String attributeName) {
+  Widget _displayAttributesNameValuesToUser(String displayName, String attributeName) {
     return BlocBuilder<AdvancedSearchBloc, AdvancedSearchState>(
       builder: (BuildContext context, AdvancedSearchState state) {
         if (state is AdvancedSearchCriteriaChanged || state is AdvancedSearchEmpty) {
@@ -95,7 +105,12 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
                     }
                     else if (state is AttributeValuesSuccess) {
                       // only doing attribute values for primary fuel type right now
-                      return attributeValuesListView(attributeName, state.attributeValues.attributeValues[attributeName]);
+                      if(listAttributes.contains(attributeName))
+                        return attributeValuesListView(attributeName, state.attributeValues.attributeValues[attributeName]);
+                      else if(sliderAttributes.contains(attributeName))
+                        return attributeValuesSliderView(attributeName, state.attributeValues.attributeValues[attributeName]);
+                      else
+                        return attributeValuesListView(attributeName, state.attributeValues.attributeValues[attributeName]);
                     }
                     else { // this should not be reached ideally
                       print(state.toString());
@@ -111,6 +126,55 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
           return Container();
         }
       }
+    );
+  }
+
+  // todo - Need fix for discrete double values for displacement slider - must avoid crazy doubles by forcing defined step intervals
+  //
+  Widget attributeValuesSliderView(String attributeName, List<String> attributeValues) {
+    List<double> numericalValues = attributeValues
+        .where((element) => element != null)
+        .toList()
+        .map((e) => double.parse(e))
+        .toList();
+    var minimum = min(numericalValues);
+    var maximum = max(numericalValues);
+    final rangeValues = selectedSliderAttributeValues[attributeName];
+    return Container(
+        padding: EdgeInsets.only(bottom: 10),
+        child: Column(
+          children: [
+            Center(
+              child: Text(
+                  "${rangeValues.start.toInt()} - ${rangeValues.end.toInt()}",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+            ),
+            SliderTheme(
+              data: SliderThemeData(
+                showValueIndicator: ShowValueIndicator.always,
+              ),
+              child: RangeSlider(
+                  divisions: numericalValues.length,
+                  activeColor: Colors.blue[700],
+                  inactiveColor: Colors.blueAccent[300],
+                  min: minimum.toDouble(),
+                  max: maximum.toDouble(),
+                  values: rangeValues,
+                  labels: RangeLabels(rangeValues.start.toInt().toString(), rangeValues.end.toInt().toString()),
+                  onChanged: (values){
+                    setState(() {
+                      selectedSliderAttributeValues[attributeName] = values;
+                      // Must also update bloc here with continous values
+                    });
+                  }
+              ),
+            ),
+          ],
+        ),
     );
   }
 
@@ -156,7 +220,7 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
       ),
     );
   }
-  
+
   List<String> getSelectedAttributeValues(List<String> values, List<int> selectedIndices) {
     var selectedTypes = List<String>();
     for (var i = 0; i < selectedIndices.length; i++) {

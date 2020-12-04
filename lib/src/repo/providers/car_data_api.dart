@@ -35,6 +35,7 @@ class CarDataApi {
         "type",
         "cylinders",
         "engine_descriptor"
+        "displacement"
       ]) {
         fuel_type_primary,
         fuel_type_secondary,
@@ -43,7 +44,8 @@ class CarDataApi {
         year,
         type,
         cylinders,
-        engine_descriptor
+        engine_descriptor,
+        displacement
       }
     }
     ''';

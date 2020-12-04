@@ -10,9 +10,11 @@ class AttributeValues {
   List<String> _make;
   List<String> _year;
   List<String> _transmissionType;
+  List<String> _displacement;
 
   AttributeValues.fromJson(Map<String, dynamic> parsedJson) {
     _cylinders = List<String>.from(parsedJson['cylinders'] as List<dynamic>);
+    _displacement = List<String>.from(parsedJson['displacement'] as List<dynamic>);
     _engineDescriptor = List<String>.from(parsedJson['engine_descriptor'] as List<dynamic>);
     _fuelType = List<String>.from(parsedJson['fuel_type'] as List<dynamic>);
     _fuelTypePrimary = List<String>.from(parsedJson['fuel_type_primary'] as List<dynamic>);
@@ -28,8 +30,9 @@ class AttributeValues {
       "fuel_type_primary": _fuelTypePrimary,
       "fuel_type_secondary": _fuelTypeSecondary,
       "make": _make,
-      "model": _year,
-      "type": _transmissionType
+      "year": _year,
+      "type": _transmissionType,
+      "displacement": _displacement
     };
   }
 }
