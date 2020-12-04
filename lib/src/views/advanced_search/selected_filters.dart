@@ -32,7 +32,6 @@ class _SelectedFilters extends State<SelectedFilters> {
         decoration: BoxDecoration(border: Border.all(color: Colors.white)),
         child: BlocBuilder<AdvancedSearchBloc, AdvancedSearchState>(
           builder: (BuildContext context, AdvancedSearchState state) {
-            print("The state is $state");
             if (state is AdvancedSearchCriteriaChanged) {
               print(state.selectedFilters);
               return Container();

@@ -25,7 +25,8 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
   bool wantKeepAlive = true;
 
   static final List<String> listAttributes = ["make", "fuel_type_primary", "fuel_type_secondary", "fuel_type", "engine_descriptor", "type"];
-  static final List<String> sliderAttributes = ["year", "displacement"];
+  static final List<String> integerSliderAttributes = ["year"];
+  static final List<String> doubleSliderAttributes = ["displacement"];
   static final List<String> boxAttributes = ["cylinders"];
 
   static final List<String> displayNames = ["Make", "Year", "Primary Fuel",
@@ -107,8 +108,10 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
                       // only doing attribute values for primary fuel type right now
                       if(listAttributes.contains(attributeName))
                         return attributeValuesListView(attributeName, state.attributeValues.attributeValues[attributeName]);
-                      else if(sliderAttributes.contains(attributeName))
-                        return attributeValuesSliderView(attributeName, state.attributeValues.attributeValues[attributeName]);
+                      else if(integerSliderAttributes.contains(attributeName))
+                        return attributeValuesSliderView(attributeName, state.attributeValues.attributeValues[attributeName], false);
+                      else if(doubleSliderAttributes.contains(attributeName))
+                        return attributeValuesSliderView(attributeName, state.attributeValues.attributeValues[attributeName], true);
                       else
                         return attributeValuesListView(attributeName, state.attributeValues.attributeValues[attributeName]);
                     }
@@ -129,9 +132,10 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
     );
   }
 
-  // todo - Need fix for discrete double values for displacement slider - must avoid crazy doubles by forcing defined step intervals
-  //
-  Widget attributeValuesSliderView(String attributeName, List<String> attributeValues) {
+  // Need to then replace single list with a gridview list
+  // And then, begin working on selected_filters_view
+  // todo - refactor so that each filter is only aware of itself, and the bloc handles collection of data - better efficiency in redrawing - still need different slides
+  Widget attributeValuesSliderView(String attributeName, List<String> attributeValues, bool isDoubleValue) {
     List<double> numericalValues = attributeValues
         .where((element) => element != null)
         .toList()
@@ -146,6 +150,8 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
           children: [
             Center(
               child: Text(
+                  isDoubleValue ?
+                  "${rangeValues.start.toStringAsFixed(2)} - ${rangeValues.end.toStringAsFixed(2)}" :
                   "${rangeValues.start.toInt()} - ${rangeValues.end.toInt()}",
                 style: TextStyle(
                   fontSize: 18,
@@ -164,11 +170,15 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
                   min: minimum.toDouble(),
                   max: maximum.toDouble(),
                   values: rangeValues,
-                  labels: RangeLabels(rangeValues.start.toInt().toString(), rangeValues.end.toInt().toString()),
+                  labels: isDoubleValue ?
+                  RangeLabels(rangeValues.start.toStringAsFixed(2), rangeValues.end.toStringAsFixed(2)) :
+                  RangeLabels(rangeValues.start.toInt().toString(), rangeValues.end.toInt().toString()),
                   onChanged: (values){
                     setState(() {
                       selectedSliderAttributeValues[attributeName] = values;
                       // Must also update bloc here with continous values
+                      _advancedSearchBloc.add(AdvancedSearchFiltersChanged(
+                          selectedFilters: {attributeName: _getSelectedSliderAttributeValues(numericalValues, values, isDoubleValue)}));
                     });
                   }
               ),
@@ -194,14 +204,12 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
               child: GestureDetector(
                 onTap: () => setState(() {
                   var selectedIndices = selectedAttributeNameValueIndices[attributeName];
-                  if(selectedIndices.contains(index))
-                    selectedIndices.remove(index);
-                  else
-                    selectedIndices.add(index);
+                  if(selectedIndices.contains(index)) selectedIndices.remove(index);
+                  else selectedIndices.add(index);
 
                   selectedAttributeNameValueIndices[attributeName] = selectedIndices;
                   _advancedSearchBloc.add(AdvancedSearchFiltersChanged(
-                      selectedFilters: {attributeName: getSelectedAttributeValues(attributeValues, selectedIndices)}));
+                      selectedFilters: {attributeName: _getSelectedAttributeValues(attributeValues, selectedIndices)}));
                 }),
                 child: Container(
                   padding: EdgeInsets.only(top: 5),
@@ -221,11 +229,21 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
     );
   }
 
-  List<String> getSelectedAttributeValues(List<String> values, List<int> selectedIndices) {
+  List<String> _getSelectedAttributeValues(List<String> values, List<int> selectedIndices) {
     var selectedTypes = List<String>();
     for (var i = 0; i < selectedIndices.length; i++) {
       selectedTypes.add(values[selectedIndices[i]]);
     }
     return selectedTypes;
+  }
+
+  List<String> _getSelectedSliderAttributeValues(List<double> values, RangeValues rangeValues, bool isDoubleValue) {
+    return values
+        .where((element) =>
+          element >= (isDoubleValue ? rangeValues.start : rangeValues.start.toInt())
+              && element <= (isDoubleValue ? rangeValues.end : rangeValues.end.toInt()))
+        .toList()
+        .map((e) => isDoubleValue ? e.toString() : e.toInt().toString())
+        .toList();
   }
 }
