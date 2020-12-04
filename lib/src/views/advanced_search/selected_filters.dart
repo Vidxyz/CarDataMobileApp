@@ -1,4 +1,7 @@
+import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_bloc.dart';
+import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SelectedFilters extends StatefulWidget {
 
@@ -10,10 +13,12 @@ class SelectedFilters extends StatefulWidget {
 
 class _SelectedFilters extends State<SelectedFilters> {
 
+  AdvancedSearchBloc _advancedSearchBloc;
+
   @override
   void initState() {
     super.initState();
-
+    _advancedSearchBloc = BlocProvider.of<AdvancedSearchBloc>(context);
   }
 
   @override
@@ -25,7 +30,18 @@ class _SelectedFilters extends State<SelectedFilters> {
       ),
       child: Container(
         decoration: BoxDecoration(border: Border.all(color: Colors.white)),
-        child: Container(),
+        child: BlocBuilder<AdvancedSearchBloc, AdvancedSearchState>(
+          builder: (BuildContext context, AdvancedSearchState state) {
+            print("The state is $state");
+            if (state is AdvancedSearchCriteriaChanged) {
+              print(state.selectedFilters);
+              return Container();
+            }
+            else {
+              return Container();
+            }
+          }
+        ),
       ),
     );
   }

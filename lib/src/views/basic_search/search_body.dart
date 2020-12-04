@@ -72,7 +72,7 @@ class SearchBodyState extends State<SearchBody> {
       itemCount: hasReachedMax ? items.length : items.length + 1,
       itemBuilder: (BuildContext context, int index) {
         if (index >= items.length) {
-          return  Center(child: CircularProgressIndicator());
+          return Center(child: CircularProgressIndicator());
         }
         else {
           return SearchResultItem(vehicle: items[index]);
