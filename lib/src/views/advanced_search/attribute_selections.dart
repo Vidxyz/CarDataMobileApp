@@ -24,10 +24,10 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
   @override
   bool wantKeepAlive = true;
 
-  static final List<String> listAttributes = ["make", "fuel_type_primary", "fuel_type_secondary", "fuel_type", "engine_descriptor", "type"];
-  static final List<String> integerSliderAttributes = ["year"];
+  static final List<String> listAttributes = ["make", "fuel_type", "engine_descriptor", "type"];
+  static final List<String> gridAttributes = ["fuel_type_primary", "fuel_type_secondary"];
+  static final List<String> integerSliderAttributes = ["year", "cylinders"];
   static final List<String> doubleSliderAttributes = ["displacement"];
-  static final List<String> boxAttributes = ["cylinders"];
 
   static final List<String> displayNames = ["Make", "Year", "Primary Fuel",
     "Secondary Fuel", "Fuel Grade", "Engine", "Transmission", "Cylinders", "Displacement"];
@@ -45,13 +45,17 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
     "type": List<int>(),
     "make": List<int>(),
     "engine_descriptor": List<int>(),
-    "cylinders": List<int>(),
   };
 
   Map<String, RangeValues> selectedSliderAttributeValues = {
     "year": RangeValues(1984, 2021),
-    "displacement": RangeValues(0, 8.4)
+    "displacement": RangeValues(0, 8.4),
+    "cylinders": RangeValues(2, 16)
   };
+
+  // todo - refactor so that each filter is only aware of itself, and the bloc handles collection of data - better efficiency in redrawing - still need different slides
+  // todo - refactor so that individual widgets fetch their attribute values separately, instead of all at once
+  // todo - add remaining attributes as well, (sliders as well as means to sort by
 
   @override
   void initState() {
@@ -108,6 +112,8 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
                       // only doing attribute values for primary fuel type right now
                       if(listAttributes.contains(attributeName))
                         return attributeValuesListView(attributeName, state.attributeValues.attributeValues[attributeName]);
+                      else if(gridAttributes.contains(attributeName))
+                        return attributeValuesGridView(attributeName, state.attributeValues.attributeValues[attributeName]);
                       else if(integerSliderAttributes.contains(attributeName))
                         return attributeValuesSliderView(attributeName, state.attributeValues.attributeValues[attributeName], false);
                       else if(doubleSliderAttributes.contains(attributeName))
@@ -132,9 +138,7 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
     );
   }
 
-  // Need to then replace single list with a gridview list
   // And then, begin working on selected_filters_view
-  // todo - refactor so that each filter is only aware of itself, and the bloc handles collection of data - better efficiency in redrawing - still need different slides
   Widget attributeValuesSliderView(String attributeName, List<String> attributeValues, bool isDoubleValue) {
     List<double> numericalValues = attributeValues
         .where((element) => element != null)
@@ -185,6 +189,49 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
             ),
           ],
         ),
+    );
+  }
+
+  Widget attributeValuesGridView(String attributeName, List<String> attributeValues) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: 200,
+      ),
+      child: Container(
+        padding: EdgeInsets.only(bottom: 10),
+        child: GridView.count(
+          childAspectRatio: 3,
+          crossAxisCount: 3,
+          shrinkWrap: true,
+          children: List.generate(attributeValues.length,
+                  (index) =>
+                      Container(
+                        margin: EdgeInsets.only(left:17),
+                        child: GestureDetector(
+                          onTap: () => setState(() {
+                            var selectedIndices = selectedAttributeNameValueIndices[attributeName];
+                            if(selectedIndices.contains(index)) selectedIndices.remove(index);
+                            else selectedIndices.add(index);
+
+                            selectedAttributeNameValueIndices[attributeName] = selectedIndices;
+                            _advancedSearchBloc.add(AdvancedSearchFiltersChanged(
+                                selectedFilters: {attributeName: _getSelectedAttributeValues(attributeValues, selectedIndices)}));
+                          }),
+                          child: Container(
+                            padding: EdgeInsets.only(top: 5),
+                            child: Text(
+                                attributeValues[index].toString(),
+                                style: TextStyle(
+                                    color: selectedAttributeNameValueIndices[attributeName].contains(index) ? Colors.blue : Colors.white,
+                                    fontSize: 15
+                                )
+                            ),
+                          ),
+                        ),
+                      )
+          ),
+        ),
+      ),
     );
   }
 
