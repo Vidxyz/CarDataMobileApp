@@ -49,7 +49,9 @@ class AdvancedSearchBloc extends Bloc<AdvancedSearchEvent, AdvancedSearchState> 
     }
 
     if(event is AdvancedSearchButtonPressed) {
+      print("SearchButton is pressed with state $currentState");
       yield AdvancedSearchLoading();
+      yield currentState;
       try {
         // Make network call and return results
       } catch (error) {

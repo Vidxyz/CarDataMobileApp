@@ -49,15 +49,12 @@ class AdvancedSearchFiltersChanged extends AdvancedSearchEvent {
 }
 
 class AdvancedSearchButtonPressed extends AdvancedSearchEvent {
-  final Map<String, List<String>> selectedFilters;
 
-  const AdvancedSearchButtonPressed({
-    this.selectedFilters
-  });
+  const AdvancedSearchButtonPressed();
 
   @override
-  List<Object> get props => [selectedFilters];
+  List<Object> get props => [];
 
   @override
-  String toString() => 'AdvancedSearchReset { $selectedFilters }';
+  String toString() => 'AdvancedSearchReset {  }';
 }

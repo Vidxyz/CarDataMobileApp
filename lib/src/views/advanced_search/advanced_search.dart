@@ -60,7 +60,9 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
             child: Container(
               padding: EdgeInsets.all(1),
               child: RaisedButton.icon(
-                  onPressed: () => print("Filters to be applied"),
+                  onPressed: () {
+                    _advancedSearchBloc.add(AdvancedSearchButtonPressed());
+                  },
                   icon: Icon(Icons.search_sharp),
                   label: Text("Apply filters"),
                   color: Colors.teal
