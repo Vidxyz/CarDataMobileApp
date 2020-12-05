@@ -15,22 +15,30 @@ class AdvancedSearchReset extends AdvancedSearchEvent {
   String toString() => 'AdvancedSearchReset { }';
 }
 
+class AdvancedSearchFilterRemoved extends AdvancedSearchEvent {
+  final String attributeName;
+  final String attributeValue;
+
+
+  const AdvancedSearchFilterRemoved({
+    this.attributeName,
+    this.attributeValue
+  });
+
+  @override
+  List<Object> get props => [attributeName, attributeValue];
+
+  @override
+  String toString() => 'AdvancedSearchFilterRemoved { removedFilter for $attributeName with value $attributeValue }';
+
+}
+
 class AdvancedSearchFiltersChanged extends AdvancedSearchEvent {
   final Map<String, List<String>> selectedFilters;
 
   const AdvancedSearchFiltersChanged({
     this.selectedFilters
   });
-
-
-  AdvancedSearchFiltersChanged copyWith({
-    Map<String, List<String>> updatedFilters
-  }) {
-    return AdvancedSearchFiltersChanged(
-        selectedFilters: {...selectedFilters, ...updatedFilters}
-    );
-  }
-
 
   @override
   List<Object> get props => [selectedFilters];

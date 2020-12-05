@@ -23,7 +23,7 @@ class _AttributeValuesSliderState extends State<AttributeValuesSlider> {
 
   AdvancedSearchBloc _advancedSearchBloc;
 
-  Map<String, RangeValues> selectedSliderAttributeValues = {
+  Map<String, RangeValues> _selectedSliderAttributeValues = {
     "year": RangeValues(1984, 2021),
     "displacement": RangeValues(0, 8.4),
     "cylinders": RangeValues(2, 16)
@@ -37,18 +37,24 @@ class _AttributeValuesSliderState extends State<AttributeValuesSlider> {
 
   @override
   Widget build(BuildContext context) {
-
     final blocState = _advancedSearchBloc.state;
     if (blocState is AdvancedSearchCriteriaChanged) {
       final selectedAttributeValues = blocState.selectedFilters[widget.attributeName];
       if(selectedAttributeValues != null) {
-        selectedSliderAttributeValues[widget.attributeName] =
+        _selectedSliderAttributeValues[widget.attributeName] =
             RangeValues(double.parse(selectedAttributeValues.first), double.parse(selectedAttributeValues.last));
+      }
+      else {
+        _selectedSliderAttributeValues = {
+          "year": RangeValues(1984, 2021),
+          "displacement": RangeValues(0, 8.4),
+          "cylinders": RangeValues(2, 16)
+        };
       }
     }
     else {
       // This is the case in which you have to complete
-      selectedSliderAttributeValues = {
+      _selectedSliderAttributeValues =  {
         "year": RangeValues(1984, 2021),
         "displacement": RangeValues(0, 8.4),
         "cylinders": RangeValues(2, 16)
@@ -62,7 +68,7 @@ class _AttributeValuesSliderState extends State<AttributeValuesSlider> {
         .toList();
     var minimum = min(numericalValues);
     var maximum = max(numericalValues);
-    final rangeValues = selectedSliderAttributeValues[widget.attributeName];
+    final rangeValues = _selectedSliderAttributeValues[widget.attributeName];
     return Container(
       padding: EdgeInsets.only(bottom: 10),
       child: Column(
@@ -94,7 +100,7 @@ class _AttributeValuesSliderState extends State<AttributeValuesSlider> {
                 RangeLabels(rangeValues.start.toInt().toString(), rangeValues.end.toInt().toString()),
                 onChanged: (values){
                   setState(() {
-                    selectedSliderAttributeValues[widget.attributeName] = values;
+                    _selectedSliderAttributeValues[widget.attributeName] = values;
                     // Must also update bloc here with continous values
                     _advancedSearchBloc.add(AdvancedSearchFiltersChanged(
                         selectedFilters: {widget.attributeName:

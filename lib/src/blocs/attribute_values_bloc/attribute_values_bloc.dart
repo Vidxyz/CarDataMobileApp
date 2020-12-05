@@ -25,9 +25,7 @@ class AttributeValuesBloc extends Bloc<AttributeValueEvent, AttributeValuesState
 
   @override
   Stream<AttributeValuesState> mapEventToState(AttributeValueEvent event) async* {
-    print("In map event to state");
     if(event is AttributeValuesRequested) {
-      print("Event is values requested");
       try {
         // write code here
         yield AttributeValuesLoading();

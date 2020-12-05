@@ -30,14 +30,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
   VehicleDetailScreenState({this.vehicle});
 
   @override
-  void dispose() {
-    print("Vehicle Detail screen dispose method");
-    super.dispose();
-  }
-
-  @override
   void didChangeDependencies() {
-    print("Vehicle Detail screen didChangeDependencies method");
     vehicleImagesBloc = BlocProvider.of<VehicleImagesBloc>(context);
     vehicleImagesBloc.add(ImageFetchStarted(vehicleId: vehicle.id));
     super.didChangeDependencies();

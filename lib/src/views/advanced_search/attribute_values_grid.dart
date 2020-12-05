@@ -38,6 +38,9 @@ class _AttributeValuesGridState extends State<AttributeValuesGrid> {
       if(selectedAttributeValues != null) {
         _selectedIndices = selectedAttributeValues.map((e) => widget.attributeValues.indexOf(e)).toList();
       }
+      else {
+        _selectedIndices = [];
+      }
     }
     else {
       _selectedIndices = [];

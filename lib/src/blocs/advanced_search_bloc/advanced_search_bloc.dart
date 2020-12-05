@@ -31,6 +31,18 @@ class AdvancedSearchBloc extends Bloc<AdvancedSearchEvent, AdvancedSearchState> 
       yield AdvancedSearchEmpty();
     }
 
+    // Filters can only be removed when something has been set, thus state is AdvancedSearchFiltersChanged
+    if(event is AdvancedSearchFilterRemoved) {
+      if(currentState is AdvancedSearchCriteriaChanged) {
+        yield AdvancedSearchEmpty();
+        yield currentState.removeFilters(attributeName: event.attributeName, attributeValue: event.attributeValue);
+      }
+      else {
+        print("This should not be reached...");
+        yield currentState;
+      }// this should never be reached ideally
+    }
+
     if (event is AdvancedSearchFiltersChanged) {
       if(currentState is AdvancedSearchCriteriaChanged) yield currentState.copyWith(updatedFilters: event.selectedFilters);
       else yield AdvancedSearchCriteriaChanged(selectedFilters: event.selectedFilters);

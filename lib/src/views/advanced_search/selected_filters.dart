@@ -1,4 +1,5 @@
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_bloc.dart';
+import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_event.dart';
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +26,14 @@ class _SelectedFilters extends State<SelectedFilters> {
     "year": "Year"
   };
 
+  AdvancedSearchBloc _advancedSearchBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _advancedSearchBloc = BlocProvider.of<AdvancedSearchBloc>(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
@@ -37,7 +46,7 @@ class _SelectedFilters extends State<SelectedFilters> {
         child: BlocBuilder<AdvancedSearchBloc, AdvancedSearchState>(
           builder: (BuildContext context, AdvancedSearchState state) {
             if (state is AdvancedSearchCriteriaChanged) {
-              print(state.selectedFilters);
+              print("In build method for selected filters with state AdvancedSearchCriteriaChanged with ${state.selectedFilters}");
               return _selectedFilters(state.selectedFilters);
             }
             else {
@@ -50,6 +59,7 @@ class _SelectedFilters extends State<SelectedFilters> {
   }
 
   Widget _selectedFilters(Map<String, List<String>> filters) {
+    filters.removeWhere((key, value) => value.isEmpty);
     final keys = filters.keys.toList();
     return Padding(
       padding: EdgeInsets.all(10),
@@ -63,7 +73,7 @@ class _SelectedFilters extends State<SelectedFilters> {
   }
 
   // Make it a stateless widget? Also, figure out line wrap issue with years, and why that is the case
-  Widget displaySelectedAttributeValues(String attributeName, List<String> attributeValues) {
+  Widget displaySelectedAttributeValues(String displayAttributeName, List<String> attributeValues) {
     return Container(
       padding: EdgeInsets.only(bottom: 2.5),
       child: Wrap(
@@ -72,7 +82,7 @@ class _SelectedFilters extends State<SelectedFilters> {
           Container(
             margin: EdgeInsets.only(right: 5),
             child: Text(
-              attributeName,
+              displayAttributeName,
               style: TextStyle(
                 color: Colors.redAccent[200],
                 fontSize: 15,
@@ -82,13 +92,13 @@ class _SelectedFilters extends State<SelectedFilters> {
           ),
           // Gap()
         ]
-          + _displayAttributeValues(attributeValues),
+          + _displayAttributeValues(displayAttributeName, attributeValues),
       ),
     );
   }
 
-  List<Widget> _displayAttributeValues(List<String> attributeValues) {
-    return attributeValues.map((value) => Stack(
+  List<Widget> _displayAttributeValues(String displayAttributeName, List<String> attributeValues) {
+    return attributeValues.map((attributeValue) => Stack(
       children: [
         Container(
         padding: EdgeInsets.only(right: 15, left: 5),
@@ -101,7 +111,7 @@ class _SelectedFilters extends State<SelectedFilters> {
           borderRadius: BorderRadius.all(Radius.circular(10))
         ),
         child: Text(
-          value,
+          attributeValue,
           style: TextStyle(fontSize: 15, color: Colors.white),
           ),
         ),
@@ -110,7 +120,10 @@ class _SelectedFilters extends State<SelectedFilters> {
           top: 1,
           child: GestureDetector(
             onTap: (){
-              print("Clear is tapped");
+              _advancedSearchBloc.add(
+                  AdvancedSearchFilterRemoved(
+                      attributeName: attributeNamesToDisplayNames.keys.firstWhere((element) => attributeNamesToDisplayNames[element] == displayAttributeName),
+                      attributeValue: attributeValue));
             },
             child: Align(
               alignment: Alignment.topRight,
