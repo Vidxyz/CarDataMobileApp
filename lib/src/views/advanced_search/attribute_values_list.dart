@@ -38,7 +38,7 @@ class _AttributeValuesListState extends State<AttributeValuesList> {
       if(selectedAttributeValues != null){
         _selectedIndices = selectedAttributeValues.map((e) => widget.attributeValues.indexOf(e)).toList();
       }
-      // else _selectedIndices = [];
+      else _selectedIndices = [];
     }
     else _selectedIndices = [];
 

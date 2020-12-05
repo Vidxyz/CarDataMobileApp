@@ -53,7 +53,6 @@ class _AttributeValuesSliderState extends State<AttributeValuesSlider> {
       }
     }
     else {
-      // This is the case in which you have to complete
       _selectedSliderAttributeValues =  {
         "year": RangeValues(1984, 2021),
         "displacement": RangeValues(0, 8.4),
