@@ -13,13 +13,17 @@ class SelectedFilters extends StatefulWidget {
 
 class _SelectedFilters extends State<SelectedFilters> {
 
-  AdvancedSearchBloc _advancedSearchBloc;
-
-  @override
-  void initState() {
-    super.initState();
-    _advancedSearchBloc = BlocProvider.of<AdvancedSearchBloc>(context);
-  }
+  static final Map<String, String> attributeNamesToDisplayNames = {
+    "fuel_type_primary": "Primary Fuel",
+    "fuel_type_secondary": "Secondary Fuel",
+    "fuel_type": "Fuel Grade",
+    "engine_descriptor": "Engine",
+    "type": "Transmission",
+    "cylinders": "Cylinders",
+    "displacement": "Displacement",
+    "make": "Make",
+    "year": "Year"
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +38,7 @@ class _SelectedFilters extends State<SelectedFilters> {
           builder: (BuildContext context, AdvancedSearchState state) {
             if (state is AdvancedSearchCriteriaChanged) {
               print(state.selectedFilters);
-              return Container();
+              return _selectedFilters(state.selectedFilters);
             }
             else {
               return Container();
@@ -45,4 +49,24 @@ class _SelectedFilters extends State<SelectedFilters> {
     );
   }
 
+  Widget _selectedFilters(Map<String, List<String>> filters) {
+    final keys = filters.keys.toList();
+    return Padding(
+      padding: EdgeInsets.all(10),
+      child: ListView.builder(
+        itemCount: filters.length,
+        itemBuilder: (_, index) {
+          return displaySelectedAttributeValues(attributeNamesToDisplayNames[keys[index]], filters[keys[index]]);
+        }
+      ),
+    );
+  }
+
+  // Make it a stateless widget? Also, figure out line wrap issue with years, and why that is the case
+  Widget displaySelectedAttributeValues(String attributeName, List<String> attributeValues) {
+    return Text(
+      "$attributeName : ${attributeValues.join(",")}",
+      style: TextStyle(fontSize: 15, color: Colors.tealAccent),
+    );
+  }
 }
