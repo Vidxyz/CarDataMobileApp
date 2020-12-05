@@ -1,5 +1,6 @@
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_bloc.dart';
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_event.dart';
+import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quiver/iterables.dart';
@@ -36,6 +37,24 @@ class _AttributeValuesSliderState extends State<AttributeValuesSlider> {
 
   @override
   Widget build(BuildContext context) {
+
+    final blocState = _advancedSearchBloc.state;
+    if (blocState is AdvancedSearchCriteriaChanged) {
+      final selectedAttributeValues = blocState.selectedFilters[widget.attributeName];
+      if(selectedAttributeValues != null) {
+        selectedSliderAttributeValues[widget.attributeName] =
+            RangeValues(double.parse(selectedAttributeValues.first), double.parse(selectedAttributeValues.last));
+      }
+    }
+    else {
+      // This is the case in which you have to complete
+      selectedSliderAttributeValues = {
+        "year": RangeValues(1984, 2021),
+        "displacement": RangeValues(0, 8.4),
+        "cylinders": RangeValues(2, 16)
+      };
+    }
+
     List<double> numericalValues = widget.attributeValues
         .where((element) => element != null)
         .toList()

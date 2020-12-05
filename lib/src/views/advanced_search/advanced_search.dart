@@ -1,17 +1,32 @@
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_bloc.dart';
-import 'package:car_data_app/src/repo/repo.dart';
+import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_event.dart';
 import 'package:car_data_app/src/views/advanced_search/attribute_selections.dart';
 import 'package:car_data_app/src/views/advanced_search/selected_filters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AdvancedSearch extends StatelessWidget {
+class AdvancedSearch extends StatefulWidget {
+
+  @override
+  State createState() {
+    return _AdvancedSearchState();
+  }
+}
+
+class _AdvancedSearchState extends State<AdvancedSearch> {
+
+  AdvancedSearchBloc _advancedSearchBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _advancedSearchBloc = BlocProvider.of<AdvancedSearchBloc>(context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AdvancedSearchBloc(repository: Repo()),
-      child: Container(
+    print("Advanced Search build method called");
+    return Container(
         padding: EdgeInsets.all(10),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -21,7 +36,6 @@ class AdvancedSearch extends StatelessWidget {
             AttributeSelectionFilters()
           ],
         ),
-      ),
     );
   }
 
@@ -32,7 +46,10 @@ class AdvancedSearch extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.all(1),
               child: RaisedButton.icon(
-                  onPressed: () => print("Filters to be cleared"),
+                  onPressed: () {
+                    _advancedSearchBloc.add(AdvancedSearchReset());
+                    setState(() {});
+                  },
                   icon: Icon(Icons.clear_all),
                   label: Text("Clear filters"),
                   color: Colors.redAccent

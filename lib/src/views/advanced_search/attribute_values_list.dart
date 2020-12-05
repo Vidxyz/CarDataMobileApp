@@ -1,5 +1,6 @@
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_bloc.dart';
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_event.dart';
+import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,9 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AttributeValuesList extends StatefulWidget {
   final String attributeName;
   final List<String> attributeValues;
-  final bool isDoubleValue;
 
-  AttributeValuesList({Key key, this.attributeName, this.attributeValues, this.isDoubleValue}):
+  AttributeValuesList({Key key, this.attributeName, this.attributeValues}):
         super(key: key);
 
   @override
@@ -22,7 +22,7 @@ class _AttributeValuesListState extends State<AttributeValuesList> {
 
   AdvancedSearchBloc _advancedSearchBloc;
 
-  List<int> selectedIndices = [];
+  List<int> _selectedIndices = [];
 
   @override
   void initState() {
@@ -32,6 +32,15 @@ class _AttributeValuesListState extends State<AttributeValuesList> {
 
   @override
   Widget build(BuildContext context) {
+    final blocState = _advancedSearchBloc.state;
+    if (blocState is AdvancedSearchCriteriaChanged) {
+      final selectedAttributeValues = blocState.selectedFilters[widget.attributeName];
+      if(selectedAttributeValues != null){
+        _selectedIndices = selectedAttributeValues.map((e) => widget.attributeValues.indexOf(e)).toList();
+      }
+    }
+    else _selectedIndices = [];
+
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxHeight: 200,
@@ -46,18 +55,18 @@ class _AttributeValuesListState extends State<AttributeValuesList> {
               margin: EdgeInsets.only(left:17),
               child: GestureDetector(
                 onTap: () => setState(() {
-                  if(selectedIndices.contains(index)) selectedIndices.remove(index);
-                  else selectedIndices.add(index);
+                  if(_selectedIndices.contains(index)) _selectedIndices.remove(index);
+                  else _selectedIndices.add(index);
 
                   _advancedSearchBloc.add(AdvancedSearchFiltersChanged(
-                      selectedFilters: {widget.attributeName: _getSelectedAttributeValues(widget.attributeValues, selectedIndices)}));
+                      selectedFilters: {widget.attributeName: _getSelectedAttributeValues(widget.attributeValues, _selectedIndices)}));
                 }),
                 child: Container(
                   padding: EdgeInsets.only(top: 5),
                   child: Text(
                       widget.attributeValues[index].toString(),
                       style: TextStyle(
-                          color: selectedIndices.contains(index) ? Colors.blue : Colors.white,
+                          color: _selectedIndices.contains(index) ? Colors.blue : Colors.white,
                           fontSize: 15
                       )
                   ),

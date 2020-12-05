@@ -35,7 +35,6 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
   static final List<String> attributesToDisplayListsFor = ["make", "year", "fuel_type_primary",
     "fuel_type_secondary", "fuel_type", "engine_descriptor", "type",  "cylinders", "displacement"];
 
-  AdvancedSearchBloc _advancedSearchBloc;
   AttributeValuesBloc _attributeValuesBloc;
 
   Map<String, List<int>> selectedAttributeNameValueIndices = {
@@ -53,13 +52,13 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
   void initState() {
     super.initState();
     print("AttributeSelectionFiltersState init state method");
-    _advancedSearchBloc = BlocProvider.of<AdvancedSearchBloc>(context);
     _attributeValuesBloc = BlocProvider.of<AttributeValuesBloc>(context);
     _attributeValuesBloc.add(AttributeValuesRequested());
   }
 
   @override
   Widget build(BuildContext context) {
+    print("Attribute selections build method called");
     return Expanded(
         child: Container(
           padding: EdgeInsets.only(top: 10),

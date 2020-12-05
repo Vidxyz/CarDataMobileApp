@@ -1,3 +1,4 @@
+import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_bloc.dart';
 import 'package:car_data_app/src/blocs/attribute_values_bloc/attribute_values_bloc.dart';
 import 'package:car_data_app/src/blocs/vehicle_search_bloc/vehicle_search_bloc.dart';
 import 'package:car_data_app/src/repo/repo.dart';
@@ -28,8 +29,15 @@ class TabView extends StatelessWidget{
               create: (context) => VehicleSearchBloc(repository: Repo()),
               child: BasicSearch(),
             ),
-            BlocProvider(
-                create: (context) => AttributeValuesBloc(repository: Repo()),
+            MultiBlocProvider(
+                providers: [
+                  BlocProvider<AttributeValuesBloc>(
+                    create: (context) => AttributeValuesBloc(repository: Repo()),
+                  ),
+                  BlocProvider<AdvancedSearchBloc>(
+                    create: (context) => AdvancedSearchBloc(repository: Repo()),
+                  ),
+                ],
                 child: AdvancedSearch(),
             )
           ],
