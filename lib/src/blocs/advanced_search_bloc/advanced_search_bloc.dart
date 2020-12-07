@@ -52,8 +52,28 @@ class AdvancedSearchBloc extends Bloc<AdvancedSearchEvent, AdvancedSearchState> 
       print("SearchButton is pressed with state $currentState");
       yield AdvancedSearchLoading();
       final results = await repository.getVehiclesBySelectedAttributes(currentState.selectedFilters, pageSize, 0);
-      print(results);
-      yield AdvancedSearchSuccess(vehicles: results);
+      // print(results);
+      yield AdvancedSearchSuccess(
+          vehicles: results,
+          selectedFilters: currentState.selectedFilters,
+          hasReachedMax: results.length == pageSize ? false : true
+      );
+      try {
+        // Make network call and return results
+      } catch (error) {
+        yield AdvancedSearchError("An error occurred fetching vehicle data: ${error.toString()}");
+      }
+    }
+
+    if(event is AdvancedSearchButtonPressed && currentState is AdvancedSearchSuccess) {
+      print("Lazyloading is called pressed with state $currentState");
+      final results = await repository.getVehiclesBySelectedAttributes(currentState.selectedFilters, pageSize, currentState.vehicles.length);
+      // print(results);
+      yield AdvancedSearchSuccess(
+          vehicles: currentState.vehicles + results,
+          selectedFilters: currentState.selectedFilters,
+          hasReachedMax: results.length == pageSize ? false : true
+      );
       try {
         // Make network call and return results
       } catch (error) {

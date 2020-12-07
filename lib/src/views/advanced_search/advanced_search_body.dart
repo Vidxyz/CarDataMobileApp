@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_bloc.dart';
+import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_event.dart';
+import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_state.dart';
 import 'package:car_data_app/src/models/vehicle.dart';
 import 'package:car_data_app/src/views/basic_search/basic_search_result_item.dart';
 import 'package:flutter/material.dart';
@@ -6,9 +10,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AdvancedSearchBody extends StatefulWidget {
 
-  List<Vehicle> vehicles;
+  final List<Vehicle> vehicles;
+  final bool hasReachedMax;
 
-  AdvancedSearchBody({Key key, this.vehicles}):super(key: key);
+  AdvancedSearchBody({
+    Key key,
+    this.vehicles,
+    this.hasReachedMax
+  }):super(key: key);
 
   @override
   State createState() {
@@ -21,15 +30,27 @@ class AdvancedSearchBodyState extends State<AdvancedSearchBody> {
 
   AdvancedSearchBloc _advancedSearchBloc;
   final _scrollController = ScrollController();
+  Timer _debounce;
+
 
 
   void _onScroll() {
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.position.pixels;
-    final currentBlocState = _advancedSearchBloc.state;
-    // if (maxScroll - currentScroll <= _scrollThreshold && currentBlocState is AdvancedSearchSuccess) {
-    //   _vehicleSearchBloc.add(SearchQueryChanged(text: currentBlocState.vehicles));
-    // }
+
+
+    if (_debounce?.isActive ?? false) _debounce.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      // do something with _searchQuery.text
+      final maxScroll = _scrollController.position.maxScrollExtent;
+      final currentScroll = _scrollController.position.pixels;
+      final currentBlocState = _advancedSearchBloc.state;
+
+      if (maxScroll - currentScroll <= _scrollThreshold && currentBlocState is AdvancedSearchSuccess) {
+        // need to debounce this event
+        print("**** ABOUT TO LAZY LOAD RIGHT NOW *******");
+        _advancedSearchBloc.add(AdvancedSearchButtonPressed(selectedFilters: currentBlocState.selectedFilters));
+      }
+    });
+
   }
 
   @override
@@ -41,7 +62,7 @@ class AdvancedSearchBodyState extends State<AdvancedSearchBody> {
 
   @override
   Widget build(BuildContext context) {
-    return _searchResults(widget.vehicles, true);
+    return _searchResults(widget.vehicles, widget.hasReachedMax);
   }
 
   Widget _searchResults(List<Vehicle> items, bool hasReachedMax) {
@@ -62,6 +83,7 @@ class AdvancedSearchBodyState extends State<AdvancedSearchBody> {
 
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
   }

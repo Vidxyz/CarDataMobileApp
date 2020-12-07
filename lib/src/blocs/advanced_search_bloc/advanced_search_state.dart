@@ -49,17 +49,21 @@ class AdvancedSearchCriteriaChanged extends AdvancedSearchState {
 class AdvancedSearchLoading extends AdvancedSearchState {}
 
 class AdvancedSearchSuccess extends AdvancedSearchState {
+  final Map<String, List<String>> selectedFilters;
   final List<Vehicle> vehicles;
+  final bool hasReachedMax;
 
   const AdvancedSearchSuccess({
-    this.vehicles
+    this.selectedFilters,
+    this.vehicles,
+    this.hasReachedMax
   });
 
   @override
-  List<Object> get props => [vehicles];
+  List<Object> get props => [selectedFilters, vehicles, hasReachedMax];
 
   @override
-  String toString() => 'AdvancedSearchSuccess { attributeValues for $vehicles }';
+  String toString() => 'AdvancedSearchSuccess { hasReachedMax: $hasReachedMax attributeValues : $selectedFilters \n vehicles: ${vehicles.length} }';
 }
 
 class AdvancedSearchError extends AdvancedSearchState {

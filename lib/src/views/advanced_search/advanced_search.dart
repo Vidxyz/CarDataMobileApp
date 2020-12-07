@@ -1,5 +1,6 @@
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_bloc.dart';
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_event.dart';
+import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_state.dart';
 import 'package:car_data_app/src/views/advanced_search/attribute_selections.dart';
 import 'package:car_data_app/src/views/advanced_search/selected_filters.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +62,14 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
               padding: EdgeInsets.all(1),
               child: RaisedButton.icon(
                   onPressed: () {
-                    _advancedSearchBloc.add(AdvancedSearchButtonPressed());
+                    final currentState =_advancedSearchBloc.state;
+                    if(currentState is AdvancedSearchCriteriaChanged){
+                      _advancedSearchBloc.add(AdvancedSearchButtonPressed(
+                          selectedFilters: currentState.selectedFilters));
+                    }
+                    else {
+                      print("Doing nothing because no filters set");
+                    }
                   },
                   icon: Icon(Icons.search_sharp),
                   label: Text("Apply filters"),

@@ -87,7 +87,9 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
         else if (state is AdvancedSearchSuccess){
           return Expanded(
               child: AdvancedSearchBody(
-                  vehicles: state.vehicles)
+                vehicles: state.vehicles,
+                hasReachedMax: state.hasReachedMax,
+              )
           );
         }
         else {
