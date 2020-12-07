@@ -5,10 +5,10 @@ import 'package:car_data_app/src/views/vehicle_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SearchResultItem extends StatelessWidget {
+class BasicSearchResultItem extends StatelessWidget {
   final Vehicle vehicle;
 
-  const SearchResultItem({Key key, @required this.vehicle}) : super(key: key);
+  const BasicSearchResultItem({Key key, @required this.vehicle}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

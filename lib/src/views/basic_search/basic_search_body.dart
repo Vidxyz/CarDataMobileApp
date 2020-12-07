@@ -2,19 +2,19 @@ import 'package:car_data_app/src/blocs/vehicle_search_bloc/vehicle_search_bloc.d
 import 'package:car_data_app/src/blocs/vehicle_search_bloc/vehicle_search_event.dart';
 import 'package:car_data_app/src/blocs/vehicle_search_bloc/vehicle_search_state.dart';
 import 'package:car_data_app/src/models/vehicle.dart';
-import 'package:car_data_app/src/views/basic_search/search_result_item.dart';
+import 'package:car_data_app/src/views/basic_search/basic_search_result_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SearchBody extends StatefulWidget {
+class BasicSearchBody extends StatefulWidget {
 
   @override
   State createState() {
-    return SearchBodyState();
+    return BasicSearchBodyState();
   }
 }
 
-class SearchBodyState extends State<SearchBody> {
+class BasicSearchBodyState extends State<BasicSearchBody> {
   static final double _scrollThreshold = 200.0;
 
   VehicleSearchBloc _vehicleSearchBloc;
@@ -75,7 +75,7 @@ class SearchBodyState extends State<SearchBody> {
           return Center(child: CircularProgressIndicator());
         }
         else {
-          return SearchResultItem(vehicle: items[index]);
+          return BasicSearchResultItem(vehicle: items[index]);
         }
       },
     );

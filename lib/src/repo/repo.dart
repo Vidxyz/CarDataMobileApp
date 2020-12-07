@@ -17,4 +17,7 @@ class Repo {
 
   Future<AttributeValues> getAttributeValues() => _carDataApiProvider.getAttributeValues();
 
+  Future<List<Vehicle>> getVehiclesBySelectedAttributes(Map<String, List<String>> selectedAttributes, int limit, int offset) =>
+      _carDataApiProvider.getVehiclesBySelectedAttributes(selectedAttributes, limit, offset);
+
 }

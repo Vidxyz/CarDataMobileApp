@@ -1,5 +1,5 @@
-import 'package:car_data_app/src/views/basic_search/search_bar.dart';
-import 'package:car_data_app/src/views/basic_search/search_body.dart';
+import 'package:car_data_app/src/views/basic_search/basic_search_bar.dart';
+import 'package:car_data_app/src/views/basic_search/basic_search_body.dart';
 import 'package:flutter/material.dart';
 
 
@@ -16,8 +16,8 @@ class BasicSearch extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        SearchBar(),
-        SearchBody()
+        BasicSearchBar(),
+        BasicSearchBody()
       ],
     );
   }

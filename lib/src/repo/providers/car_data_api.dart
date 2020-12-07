@@ -23,6 +23,98 @@ class CarDataApi {
 
   final int maxLimit = 500;
 
+  String vehicleSearchByAttributesQuery() {
+    return r'''
+    query SearchVehiclesByAttributes(
+      $fuel_type_primary: [String],
+      $fuel_type_secondary: [String],
+      $fuel_type: [String],
+      $make: [String],
+      $type: [String],
+      $engine_descriptor: [String],
+      $year: [int],
+      $cylinders: [float],
+      $displacement: [float],
+      $limit: int!, 
+      $offset: int!) {
+      
+      attributeSearch(
+      make: $make, 
+      fuel_type: $fuel_type,
+      fuel_type_primary: $fuel_type_primary,
+      fuel_type_secondary: $fuel_type_secondary,
+      type: $type,
+      engine_descriptor: $engine_descriptor,
+      displacement: $displacement,
+      cylinders: $cylinders,
+      year: $year, 
+      limit: $limit,
+      offset: $offset
+      ) {
+        id
+        make
+        model 
+        year
+        primaryFuel
+        alternateFuel
+        fuel_type
+        manufacturer_code
+        record_id
+        alternate_fuel_type
+        vehicle_class
+        dimensions {
+          hatchback_luggage_volume
+          hatchback_passenger_volume
+          two_door_luggage_volume
+          four_door_luggage_volume
+          two_door_passenger_volume
+          four_door_passenger_volume
+        }
+        transmission {
+          transmission_descriptor
+           type
+        }
+        engine {
+          cylinders
+          displacement
+          engine_id
+          engine_descriptor
+          ev_motor
+          is_supercharged
+          is_turbocharged
+          drive_type
+          fuel_economy {
+            barrels_per_year_primary
+            barrels_per_year_secondary
+            city_mpg_primary
+            city_mpg_secondary
+            highway_mpg_primary
+            highway_mpg_secondary
+            combined_mpg_primary
+            combined_mpg_secondary
+            annual_fuel_cost_primary
+            annual_fuel_cost_secondary
+            combined_power_consumption
+            fuel_economy_score
+            epa_range_secondary
+            epa_city_range_secondary
+            epa_highway_range_secondary
+            is_guzzler
+            time_to_charge_120v
+            time_to_charge_240v
+          }
+          fuel_emission {
+            tailpipe_co2_primary
+            tailpipe_co2_secondary
+            greenhouseGasScorePrimary
+            greenhouseGasScoreSecondary
+          }
+        }
+      }
+    }
+    ''';
+  }
+
   String attributeValuesQuery() {
     return r'''
     query GetAttributeValues {
@@ -51,7 +143,7 @@ class CarDataApi {
     ''';
   }
 
-  String searchSuggestionsQuery(String query) {
+  String searchSuggestionsQuery() {
     return r'''
     query GetSuggestions($queryString: String!) {
       search(query: $queryString, limit: 5) {
@@ -63,7 +155,7 @@ class CarDataApi {
   ''';
   }
 
-  String vehicleSearchQuery(String query, int limit, int offset) { return r'''
+  String vehicleSearchQuery() { return r'''
   query SearchVehicles($queryString: String!, $limit: int!, $offset: int!){
     search(query: $queryString, limit: $limit, offset: $offset) {
       id
@@ -132,7 +224,7 @@ class CarDataApi {
 
   Future<List<Vehicle>> getVehiclesBySearchQuery(String query, int limit, int offset) async {
     final QueryOptions options = QueryOptions(
-      documentNode: gql(vehicleSearchQuery(query, limit, offset)),
+      documentNode: gql(vehicleSearchQuery()),
       variables: <String, dynamic> {
         'queryString': query,
         'limit': limit,
@@ -143,7 +235,6 @@ class CarDataApi {
     QueryResult result = await _client.query(options);
     final List<dynamic> results = result.data['search'] as List<dynamic>;
     return results.map<Vehicle>((json) => Vehicle.fromJson(json)).toList();
-
   }
 
 
@@ -160,7 +251,7 @@ class CarDataApi {
 
   Future<List<SearchSuggestion>> getSuggestions(String query) async {
     final QueryOptions options = QueryOptions(
-      documentNode: gql(searchSuggestionsQuery(query)),
+      documentNode: gql(searchSuggestionsQuery()),
       variables: <String, dynamic> {
         'queryString': query
       },
@@ -178,6 +269,31 @@ class CarDataApi {
     QueryResult result = await _client.query(options);
     final response = result.data['attributeValues'] as Map<dynamic, dynamic>;
     return AttributeValues.fromJson(response);
+  }
+
+  // This needs to modify certain attributes into double/int values based on their key
+  Future<List<Vehicle>> getVehiclesBySelectedAttributes(Map<String, List<String>> selectedAttributes,
+      int limit, int offset) async {
+    final QueryOptions options = QueryOptions(
+      documentNode: gql(vehicleSearchByAttributesQuery()),
+      variables: <String, dynamic> {
+        'make': selectedAttributes['make'] ?? [],
+        'fuel_type': selectedAttributes['fuel_type'] ?? [],
+        'fuel_type_primary': selectedAttributes['fuel_type_primary'] ?? [],
+        'fuel_type_secondary': selectedAttributes['fuel_type_secondary'] ?? [],
+        'type': selectedAttributes['type'] ?? [],
+        'engine_descriptor': selectedAttributes['engine_descriptor'] ?? [],
+        'displacement': selectedAttributes['displacement']?.map((e) => double.parse(e))?.toList() ?? [],
+        'cylinders': selectedAttributes['cylinders']?.map((e) => double.parse(e))?.toList() ?? [],
+        'year': selectedAttributes['year']?.map((e) => int.parse(e))?.toList() ?? [],
+        'limit': limit,
+        'offset': offset
+      },
+
+    );
+    QueryResult result = await _client.query(options);
+    final List<dynamic> results = result.data['attributeSearch'] as List<dynamic>;
+    return results.map<Vehicle>((json) => Vehicle.fromJson(json)).toList();
   }
 
 }

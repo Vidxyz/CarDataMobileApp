@@ -9,6 +9,7 @@ import 'package:meta/meta.dart';
 import 'dart:async';
 
 class AdvancedSearchBloc extends Bloc<AdvancedSearchEvent, AdvancedSearchState> {
+  static final int pageSize = 15;
   final Repo repository;
 
   AdvancedSearchBloc({@required this.repository}): super(AdvancedSearchEmpty());
@@ -19,7 +20,6 @@ class AdvancedSearchBloc extends Bloc<AdvancedSearchEvent, AdvancedSearchState> 
       Stream<Transition<AdvancedSearchEvent, AdvancedSearchState>> Function(AdvancedSearchEvent event, ) transitionFn,
       ) {
     return events
-        // .debounceTime(const Duration(milliseconds: 300))
         .switchMap(transitionFn);
   }
 
@@ -48,10 +48,12 @@ class AdvancedSearchBloc extends Bloc<AdvancedSearchEvent, AdvancedSearchState> 
       else yield AdvancedSearchCriteriaChanged(selectedFilters: event.selectedFilters);
     }
 
-    if(event is AdvancedSearchButtonPressed) {
+    if(event is AdvancedSearchButtonPressed && currentState is AdvancedSearchCriteriaChanged) {
       print("SearchButton is pressed with state $currentState");
       yield AdvancedSearchLoading();
-      yield currentState;
+      final results = await repository.getVehiclesBySelectedAttributes(currentState.selectedFilters, pageSize, 0);
+      print(results);
+      yield AdvancedSearchSuccess(vehicles: results);
       try {
         // Make network call and return results
       } catch (error) {

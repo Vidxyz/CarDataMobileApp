@@ -3,6 +3,7 @@ import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_stat
 import 'package:car_data_app/src/blocs/attribute_values_bloc/attribute_values_bloc.dart';
 import 'package:car_data_app/src/blocs/attribute_values_bloc/attribute_values_event.dart';
 import 'package:car_data_app/src/blocs/attribute_values_bloc/attribute_values_state.dart';
+import 'package:car_data_app/src/views/advanced_search/advanced_search_body.dart';
 import 'package:car_data_app/src/views/advanced_search/attribute_values_grid.dart';
 import 'package:car_data_app/src/views/advanced_search/attribute_values_list.dart';
 import 'package:car_data_app/src/views/advanced_search/attribute_values_slider.dart';
@@ -59,89 +60,103 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
   @override
   Widget build(BuildContext context) {
     print("Attribute selections build method called");
-    return Expanded(
-        child: Container(
-          padding: EdgeInsets.only(top: 10),
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: attributesToDisplayListsFor.length,
-            itemBuilder: (_, index) {
-              return Card(child: _displayAttributesNameValuesToUser(displayNames[index], attributesToDisplayListsFor[index]));
-            },
-          ),
-        ),
+    return BlocBuilder<AdvancedSearchBloc, AdvancedSearchState>(
+      builder: (BuildContext context, AdvancedSearchState state) {
+        if (state is AdvancedSearchCriteriaChanged || state is AdvancedSearchEmpty){
+          return Expanded(
+            child: Container(
+              padding: EdgeInsets.only(top: 10),
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: attributesToDisplayListsFor.length,
+                itemBuilder: (_, index) {
+                  return Card(child: _displayAttributesNameValuesToUser(displayNames[index], attributesToDisplayListsFor[index]));
+                },
+              ),
+            ),
+          );
+        }
+        else if (state is AdvancedSearchLoading) {
+          return Expanded(
+            child: Center(
+                // padding: EdgeInsets.fromLTRB(100, 250, 100, 250),
+                child: CircularProgressIndicator()
+            ),
+          );
+        }
+        else if (state is AdvancedSearchSuccess){
+          return Expanded(
+              child: AdvancedSearchBody(
+                  vehicles: state.vehicles)
+          );
+        }
+        else {
+          print("This should NOT be reached....");
+          return Container();
+        }
+      }
     );
   }
 
   Widget _displayAttributesNameValuesToUser(String displayName, String attributeName) {
-    return BlocBuilder<AdvancedSearchBloc, AdvancedSearchState>(
-      builder: (BuildContext context, AdvancedSearchState state) {
-        if (state is AdvancedSearchCriteriaChanged || state is AdvancedSearchEmpty) {
-          return ExpansionTile(
-              title: Text(
-                displayName,
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  fontSize: 18.0,
-                ),
-              ),
-              children: <Widget> [
-                BlocBuilder<AttributeValuesBloc, AttributeValuesState>(
-                  builder: (BuildContext context, AttributeValuesState state) {
-                    if(state is AttributeValuesLoading) {
-                      return ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxHeight: 100,
-                        ),
-                        child: Container(
-                          padding: EdgeInsets.all(30),
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    }
-                    else if (state is AttributeValuesSuccess) {
-                      // only doing attribute values for primary fuel type right now
-                      if(listAttributes.contains(attributeName))
-                        return AttributeValuesList(
-                            attributeName: attributeName,
-                            attributeValues: state.attributeValues.attributeValues[attributeName]);
+    return ExpansionTile(
+        title: Text(
+          displayName,
+          textAlign: TextAlign.start,
+          style: TextStyle(
+            fontSize: 18.0,
+          ),
+        ),
+        children: <Widget> [
+          BlocBuilder<AttributeValuesBloc, AttributeValuesState>(
+            builder: (BuildContext context, AttributeValuesState state) {
+              if(state is AttributeValuesLoading) {
+                return ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: 100,
+                  ),
+                  child: Container(
+                    padding: EdgeInsets.all(30),
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+              else if (state is AttributeValuesSuccess) {
+                // only doing attribute values for primary fuel type right now
+                if(listAttributes.contains(attributeName))
+                  return AttributeValuesList(
+                      attributeName: attributeName,
+                      attributeValues: state.attributeValues.attributeValues[attributeName]);
 
-                      else if(gridAttributes.contains(attributeName))
-                        return AttributeValuesGrid(
-                            attributeName: attributeName,
-                            attributeValues: state.attributeValues.attributeValues[attributeName]);
+                else if(gridAttributes.contains(attributeName))
+                  return AttributeValuesGrid(
+                      attributeName: attributeName,
+                      attributeValues: state.attributeValues.attributeValues[attributeName]);
 
-                      else if(integerSliderAttributes.contains(attributeName))
-                        return AttributeValuesSlider(
-                            attributeName: attributeName,
-                            attributeValues: state.attributeValues.attributeValues[attributeName],
-                            isDoubleValue: false);
+                else if(integerSliderAttributes.contains(attributeName))
+                  return AttributeValuesSlider(
+                      attributeName: attributeName,
+                      attributeValues: state.attributeValues.attributeValues[attributeName],
+                      isDoubleValue: false);
 
-                      else if(doubleSliderAttributes.contains(attributeName))
-                        return AttributeValuesSlider(
-                            attributeName: attributeName,
-                            attributeValues: state.attributeValues.attributeValues[attributeName],
-                            isDoubleValue: true);
+                else if(doubleSliderAttributes.contains(attributeName))
+                  return AttributeValuesSlider(
+                      attributeName: attributeName,
+                      attributeValues: state.attributeValues.attributeValues[attributeName],
+                      isDoubleValue: true);
 
-                      else // This should ideally not be reached
-                        return AttributeValuesList(
-                            attributeName: attributeName,
-                            attributeValues: state.attributeValues.attributeValues[attributeName]);
-                    }
-                    else { // this should not be reached ideally
-                      print("This shouldn't be reached...");
-                      return Container();
-                    }
-                  },
-                )
-              ]
-          );
-        }
-        else {
-          print("Attribute Selection - in else case with state ${state.toString()}");
-          return Container();
-        }
-      }
+                else // This should ideally not be reached
+                  return AttributeValuesList(
+                      attributeName: attributeName,
+                      attributeValues: state.attributeValues.attributeValues[attributeName]);
+              }
+              else { // this should not be reached ideally
+                print("This shouldn't be reached...");
+                return Container();
+              }
+            },
+          )
+        ]
     );
   }
 }

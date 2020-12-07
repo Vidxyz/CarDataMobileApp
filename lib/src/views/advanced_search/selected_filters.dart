@@ -28,6 +28,8 @@ class _SelectedFilters extends State<SelectedFilters> {
 
   AdvancedSearchBloc _advancedSearchBloc;
 
+  Map<String, List<String>> selectedFilters = {};
+
   @override
   void initState() {
     super.initState();
@@ -45,12 +47,15 @@ class _SelectedFilters extends State<SelectedFilters> {
         decoration: BoxDecoration(border: Border.all(color: Colors.white)),
         child: BlocBuilder<AdvancedSearchBloc, AdvancedSearchState>(
           builder: (BuildContext context, AdvancedSearchState state) {
-            if (state is AdvancedSearchCriteriaChanged) {
-              print("In build method for selected filters with state AdvancedSearchCriteriaChanged with ${state.selectedFilters}");
+            if (state is AdvancedSearchEmpty) {
+              return Container();
+            }
+            else if (state is AdvancedSearchCriteriaChanged) {
+              selectedFilters = state.selectedFilters;
               return _selectedFilters(state.selectedFilters);
             }
             else {
-              return Container();
+              return _selectedFilters(selectedFilters);
             }
           }
         ),

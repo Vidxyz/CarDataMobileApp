@@ -6,15 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
-class SearchBar extends StatefulWidget {
+class BasicSearchBar extends StatefulWidget {
 
   @override
   State createState() {
-    return SearchBarState();
+    return BasicSearchBarState();
   }
 }
 
-class SearchBarState extends State<SearchBar> {
+class BasicSearchBarState extends State<BasicSearchBar> {
 
   VehicleSearchBloc _vehicleSearchBloc;
 
