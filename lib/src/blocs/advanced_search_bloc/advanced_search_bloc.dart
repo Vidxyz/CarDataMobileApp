@@ -38,6 +38,7 @@ class AdvancedSearchBloc extends Bloc<AdvancedSearchEvent, AdvancedSearchState> 
         yield currentState.removeFilters(attributeName: event.attributeName, attributeValue: event.attributeValue);
       }
       else {
+        // todo - this workflow is reached when 'x' button is tapped on a filter
         print("This should not be reached...");
         yield currentState;
       }// this should never be reached ideally
