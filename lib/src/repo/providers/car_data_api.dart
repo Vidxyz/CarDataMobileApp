@@ -33,6 +33,11 @@ class CarDataApi {
     "Greenhouse Gas Score": "greenhouse_gas_score_primary",
   };
 
+  static final yesNoToBooleanMap = {
+    "Yes": true,
+    "No": false,
+  };
+
   String vehicleSearchByAttributesQuery() {
     return r'''
     query SearchVehiclesByAttributes(
@@ -45,6 +50,9 @@ class CarDataApi {
       $year: [int],
       $cylinders: [float],
       $displacement: [float],
+      $is_supercharged: [boolean],
+      $is_turbocharged: [boolean],
+      $is_guzzler: [boolean],
       $limit: int!, 
       $offset: int!,
       $sort_by: String!,
@@ -60,6 +68,9 @@ class CarDataApi {
       displacement: $displacement,
       cylinders: $cylinders,
       year: $year, 
+      is_supercharged: $is_supercharged, 
+      is_turbocharged: $is_turbocharged, 
+      is_guzzler: $is_guzzler, 
       limit: $limit,
       offset: $offset,
       sort_by: $sort_by,
@@ -300,9 +311,13 @@ class CarDataApi {
         'displacement': selectedAttributes['displacement']?.map((e) => double.parse(e))?.toList() ?? [],
         'cylinders': selectedAttributes['cylinders']?.map((e) => double.parse(e))?.toList() ?? [],
         'year': selectedAttributes['year']?.map((e) => int.parse(e))?.toList() ?? [],
+        'is_supercharged': selectedAttributes['is_supercharged']?.map((e) => yesNoToBooleanMap[e])?.toList() ?? [],
+        'is_turbocharged': selectedAttributes['is_turbocharged']?.map((e) => yesNoToBooleanMap[e])?.toList() ?? [],
+        'is_guzzler': selectedAttributes['is_guzzler']?.map((e) => yesNoToBooleanMap[e])?.toList() ?? [],
         'limit': limit,
         'offset': offset,
-        'sort_by': selectedAttributes['sort_by'].isEmpty ? "" : sortCriteriaToRawMap[selectedAttributes['sort_by'].first],
+        'sort_by': selectedAttributes['sort_by'] == null ? "" :
+        (selectedAttributes['sort_by'].isEmpty ? "" : sortCriteriaToRawMap[selectedAttributes['sort_by'].first]),
         'order': 'desc', // need to work on this
       },
 

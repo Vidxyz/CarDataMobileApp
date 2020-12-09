@@ -5,11 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SortCriteria extends StatefulWidget {
+class AttributeValuesGridWithOneSelection extends StatefulWidget {
   final String attributeName;
   final List<String> displayAttributeValues;
 
-  SortCriteria({
+  AttributeValuesGridWithOneSelection({
     Key key,
     this.attributeName,
     this.displayAttributeValues
@@ -18,11 +18,11 @@ class SortCriteria extends StatefulWidget {
 
   @override
   State createState() {
-    return _SortCriteriaState();
+    return _AttributeValuesGridWithOneSelectionState();
   }
 }
 
-class _SortCriteriaState extends State<SortCriteria> {
+class _AttributeValuesGridWithOneSelectionState extends State<AttributeValuesGridWithOneSelection> {
 
   AdvancedSearchBloc _advancedSearchBloc;
   int _selectedIndex = -1;
@@ -38,7 +38,6 @@ class _SortCriteriaState extends State<SortCriteria> {
     final blocState = _advancedSearchBloc.state;
     if (blocState is AdvancedSearchCriteriaChanged) {
       final selectedAttributeValues = blocState.selectedFilters[widget.attributeName];
-      print("SELECTED ATTR VALUES $selectedAttributeValues");
       if(selectedAttributeValues != null) {
         var retrievedState = selectedAttributeValues.map((e) => widget.displayAttributeValues.indexOf(e)).toList();
         if (retrievedState.isEmpty) _selectedIndex = -1;
@@ -74,12 +73,19 @@ class _SortCriteriaState extends State<SortCriteria> {
                     padding: EdgeInsets.only(left:17, right: 17),
                     child: GestureDetector(
                       onTap: () => setState(() {
-                        if(index == _selectedIndex) _selectedIndex = -1;
-                        else _selectedIndex = index;
-
-                        _advancedSearchBloc.add(AdvancedSearchFiltersChanged(
-                            selectedFilters: {
-                              widget.attributeName: [widget.displayAttributeValues[index]]}));
+                        if(index == _selectedIndex) {
+                          _selectedIndex = -1;
+                          _advancedSearchBloc.add(AdvancedSearchFilterRemoved(
+                              attributeName: widget.attributeName,
+                              attributeValue: widget.displayAttributeValues[index]
+                          ));
+                        }
+                        else {
+                          _selectedIndex = index;
+                          _advancedSearchBloc.add(AdvancedSearchFiltersChanged(
+                              selectedFilters: {
+                                widget.attributeName: [widget.displayAttributeValues[index]]}));
+                        }
                       }),
                       child: Container(
                           padding: EdgeInsets.only(top: 5),

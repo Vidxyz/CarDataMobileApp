@@ -7,7 +7,7 @@ import 'package:car_data_app/src/views/advanced_search/advanced_search_body.dart
 import 'package:car_data_app/src/views/advanced_search/attribute_values_grid.dart';
 import 'package:car_data_app/src/views/advanced_search/attribute_values_list.dart';
 import 'package:car_data_app/src/views/advanced_search/attribute_values_slider.dart';
-import 'package:car_data_app/src/views/advanced_search/sort_criteria.dart';
+import 'package:car_data_app/src/views/advanced_search/attribute_values_grid_with_one_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -35,10 +35,16 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
   static final String sortBy = "sort_by";
 
   static final List<String> displayNames = ["Make", "Year", "Primary Fuel",
-    "Secondary Fuel", "Fuel Grade", "Engine", "Transmission", "Cylinders", "Displacement"];
+    "Secondary Fuel", "Fuel Grade", "Engine", "Transmission", "Cylinders",
+    "Displacement"];
 
   static final List<String> attributesToDisplayListsFor = ["make", "year", "fuel_type_primary",
-    "fuel_type_secondary", "fuel_type", "engine_descriptor", "type",  "cylinders", "displacement"];
+    "fuel_type_secondary", "fuel_type", "engine_descriptor", "type",  "cylinders",
+    "displacement"];
+
+  static final List<String> yesNoDisplayAttributes = ["Supercharged", "Turbocharged", "Guzzler"];
+  static final List<String> yesNoRawAttributes = ["is_supercharged", "is_turbocharged", "is_guzzler"];
+  static final List<String> yesNoOptions = ["Yes", "No"];
 
   AttributeValuesBloc _attributeValuesBloc;
 
@@ -63,10 +69,17 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
               padding: EdgeInsets.only(top: 10),
               child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: attributesToDisplayListsFor.length + 1, // +1 for sort criteria
+                itemCount: attributesToDisplayListsFor.length + yesNoDisplayAttributes.length + 1, // +1 for sort criteria
                 itemBuilder: (_, index) {
                   if (index < attributesToDisplayListsFor.length)
                     return Card(child: _displayAttributesNameValuesToUser(displayNames[index], attributesToDisplayListsFor[index]));
+                  else if (index >= attributesToDisplayListsFor.length && index < attributesToDisplayListsFor.length + yesNoDisplayAttributes.length)
+                    return Card(
+                        child: _displayBooleanCriteria(
+                            yesNoDisplayAttributes[index - attributesToDisplayListsFor.length],
+                            yesNoRawAttributes[index - attributesToDisplayListsFor.length]
+                        )
+                    );
                   else
                     return Card(child: _displaySortingCriteria());
                 },
@@ -98,6 +111,24 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
     );
   }
 
+  Widget _displayBooleanCriteria(String displayName, String filterKey) {
+    return ExpansionTile(
+        title: Text(
+          displayName,
+          textAlign: TextAlign.start,
+          style: TextStyle(
+            fontSize: 18.0,
+          ),
+        ),
+        children: <Widget> [
+          AttributeValuesGridWithOneSelection(
+            attributeName: filterKey,
+            displayAttributeValues: yesNoOptions,
+          )
+        ]
+    );
+  }
+
   Widget _displaySortingCriteria() {
     return ExpansionTile(
         title: Text(
@@ -108,7 +139,7 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
           ),
         ),
         children: <Widget> [
-            SortCriteria(
+            AttributeValuesGridWithOneSelection(
               attributeName: sortBy,
               displayAttributeValues: sortByAttributesDisplay,
             )

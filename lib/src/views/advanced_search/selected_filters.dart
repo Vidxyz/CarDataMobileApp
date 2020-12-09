@@ -24,7 +24,10 @@ class _SelectedFilters extends State<SelectedFilters> {
     "displacement": "Displacement",
     "make": "Make",
     "year": "Year",
-    "sort_by": "Sort"
+    "sort_by": "Sort",
+    "is_supercharged": "Supercharged",
+    "is_turbocharged": "Turbocharged",
+    "is_guzzler": "Guzzler",
   };
 
   AdvancedSearchBloc _advancedSearchBloc;
