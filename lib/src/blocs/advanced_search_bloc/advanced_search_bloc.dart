@@ -25,7 +25,7 @@ class AdvancedSearchBloc extends Bloc<AdvancedSearchEvent, AdvancedSearchState> 
 
   @override
   Stream<AdvancedSearchState> mapEventToState(AdvancedSearchEvent event) async* {
-    print("In map event to state AdvancedSearchBloc");
+    print("AdvancedSearchBloc with event: $event");
     final currentState = state;
     if (event is AdvancedSearchReset) {
       yield AdvancedSearchEmpty();

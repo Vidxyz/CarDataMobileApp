@@ -23,6 +23,16 @@ class CarDataApi {
 
   final int maxLimit = 500;
 
+  static final sortCriteriaToRawMap = {
+    "City Mpg": "city_mpg_primary",
+    "Highway Mpg": "highway_mpg_primary",
+    "Combined Mpg": "combined_mpg_primary",
+    "Annual Fuel Cost": "annual_fuel_cost_primary",
+    "Fuel Economy": "fuel_economy_score",
+    "CO2 Emissions": "tailpipe_co2_primary",
+    "Greenhouse Gas Score": "greenhouse_gas_score_primary",
+  };
+
   String vehicleSearchByAttributesQuery() {
     return r'''
     query SearchVehiclesByAttributes(
@@ -36,7 +46,9 @@ class CarDataApi {
       $cylinders: [float],
       $displacement: [float],
       $limit: int!, 
-      $offset: int!) {
+      $offset: int!,
+      $sort_by: String!,
+      $order: String!) {
       
       attributeSearch(
       make: $make, 
@@ -49,7 +61,9 @@ class CarDataApi {
       cylinders: $cylinders,
       year: $year, 
       limit: $limit,
-      offset: $offset
+      offset: $offset,
+      sort_by: $sort_by,
+      order: $order
       ) {
         id
         make
@@ -287,7 +301,9 @@ class CarDataApi {
         'cylinders': selectedAttributes['cylinders']?.map((e) => double.parse(e))?.toList() ?? [],
         'year': selectedAttributes['year']?.map((e) => int.parse(e))?.toList() ?? [],
         'limit': limit,
-        'offset': offset
+        'offset': offset,
+        'sort_by': selectedAttributes['sort_by'].isEmpty ? "" : sortCriteriaToRawMap[selectedAttributes['sort_by'].first],
+        'order': 'desc', // need to work on this
       },
 
     );

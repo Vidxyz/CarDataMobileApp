@@ -21,7 +21,6 @@ class AttributeValuesList extends StatefulWidget {
 class _AttributeValuesListState extends State<AttributeValuesList> {
 
   AdvancedSearchBloc _advancedSearchBloc;
-
   List<int> _selectedIndices = [];
 
   @override

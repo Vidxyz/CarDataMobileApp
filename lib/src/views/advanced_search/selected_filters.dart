@@ -23,11 +23,11 @@ class _SelectedFilters extends State<SelectedFilters> {
     "cylinders": "Cylinders",
     "displacement": "Displacement",
     "make": "Make",
-    "year": "Year"
+    "year": "Year",
+    "sort_by": "Sort"
   };
 
   AdvancedSearchBloc _advancedSearchBloc;
-
   Map<String, List<String>> selectedFilters = {};
 
   @override

@@ -7,6 +7,7 @@ import 'package:car_data_app/src/views/advanced_search/advanced_search_body.dart
 import 'package:car_data_app/src/views/advanced_search/attribute_values_grid.dart';
 import 'package:car_data_app/src/views/advanced_search/attribute_values_list.dart';
 import 'package:car_data_app/src/views/advanced_search/attribute_values_slider.dart';
+import 'package:car_data_app/src/views/advanced_search/sort_criteria.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -29,6 +30,9 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
   static final List<String> gridAttributes = ["fuel_type_primary", "fuel_type_secondary"];
   static final List<String> integerSliderAttributes = ["year", "cylinders"];
   static final List<String> doubleSliderAttributes = ["displacement"];
+  static final List<String> sortByAttributesDisplay = ["City Mpg", "Highway Mpg", "Combined Mpg",
+    "Annual Fuel Cost", "Fuel Economy", "CO2 Emissions", "Greenhouse Gas Score"];
+  static final String sortBy = "sort_by";
 
   static final List<String> displayNames = ["Make", "Year", "Primary Fuel",
     "Secondary Fuel", "Fuel Grade", "Engine", "Transmission", "Cylinders", "Displacement"];
@@ -37,15 +41,6 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
     "fuel_type_secondary", "fuel_type", "engine_descriptor", "type",  "cylinders", "displacement"];
 
   AttributeValuesBloc _attributeValuesBloc;
-
-  Map<String, List<int>> selectedAttributeNameValueIndices = {
-    "fuel_type_primary": List<int>(),
-    "fuel_type_secondary": List<int>(),
-    "fuel_type": List<int>(),
-    "type": List<int>(),
-    "make": List<int>(),
-    "engine_descriptor": List<int>(),
-  };
 
   // todo - refactor so that individual widgets fetch their attribute values separately, instead of all at once
   // todo - add remaining attributes as well, (sliders as well as means to sort by
@@ -68,9 +63,12 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
               padding: EdgeInsets.only(top: 10),
               child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: attributesToDisplayListsFor.length,
+                itemCount: attributesToDisplayListsFor.length + 1, // +1 for sort criteria
                 itemBuilder: (_, index) {
-                  return Card(child: _displayAttributesNameValuesToUser(displayNames[index], attributesToDisplayListsFor[index]));
+                  if (index < attributesToDisplayListsFor.length)
+                    return Card(child: _displayAttributesNameValuesToUser(displayNames[index], attributesToDisplayListsFor[index]));
+                  else
+                    return Card(child: _displaySortingCriteria());
                 },
               ),
             ),
@@ -97,6 +95,24 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
           return Container();
         }
       }
+    );
+  }
+
+  Widget _displaySortingCriteria() {
+    return ExpansionTile(
+        title: Text(
+          "Sort By",
+          textAlign: TextAlign.start,
+          style: TextStyle(
+            fontSize: 18.0,
+          ),
+        ),
+        children: <Widget> [
+            SortCriteria(
+              attributeName: sortBy,
+              displayAttributeValues: sortByAttributesDisplay,
+            )
+        ]
     );
   }
 

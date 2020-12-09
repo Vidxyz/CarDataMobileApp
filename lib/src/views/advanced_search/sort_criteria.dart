@@ -5,23 +5,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AttributeValuesGrid extends StatefulWidget {
+class SortCriteria extends StatefulWidget {
   final String attributeName;
-  final List<String> attributeValues;
+  final List<String> displayAttributeValues;
 
-  AttributeValuesGrid({Key key, this.attributeName, this.attributeValues}):
+  SortCriteria({
+    Key key,
+    this.attributeName,
+    this.displayAttributeValues
+  }):
         super(key: key);
 
   @override
   State createState() {
-    return _AttributeValuesGridState();
+    return _SortCriteriaState();
   }
 }
 
-class _AttributeValuesGridState extends State<AttributeValuesGrid> {
+class _SortCriteriaState extends State<SortCriteria> {
 
   AdvancedSearchBloc _advancedSearchBloc;
-  List<int> _selectedIndices = [];
+  int _selectedIndex = -1;
 
   @override
   void initState() {
@@ -34,15 +38,18 @@ class _AttributeValuesGridState extends State<AttributeValuesGrid> {
     final blocState = _advancedSearchBloc.state;
     if (blocState is AdvancedSearchCriteriaChanged) {
       final selectedAttributeValues = blocState.selectedFilters[widget.attributeName];
+      print("SELECTED ATTR VALUES $selectedAttributeValues");
       if(selectedAttributeValues != null) {
-        _selectedIndices = selectedAttributeValues.map((e) => widget.attributeValues.indexOf(e)).toList();
+        var retrievedState = selectedAttributeValues.map((e) => widget.displayAttributeValues.indexOf(e)).toList();
+        if (retrievedState.isEmpty) _selectedIndex = -1;
+        else _selectedIndex = retrievedState.first;
       }
       else {
-        _selectedIndices = [];
+        _selectedIndex = -1;
       }
     }
     else {
-      _selectedIndices = [];
+      _selectedIndex = -1;
     }
     return ConstrainedBox(
       constraints: BoxConstraints(
@@ -51,28 +58,35 @@ class _AttributeValuesGridState extends State<AttributeValuesGrid> {
       child: Container(
         padding: EdgeInsets.only(bottom: 10),
         child: GridView.count(
-          childAspectRatio: 3,
-          crossAxisCount: 3,
+          childAspectRatio: 4,
+          crossAxisCount: 2,
           shrinkWrap: true,
           children:
-          List.generate(widget.attributeValues.length,
+          List.generate(widget.displayAttributeValues.length,
                   (index) =>
                   Container(
-                    margin: EdgeInsets.only(left:17),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: index == _selectedIndex ? Colors.tealAccent : Colors.transparent,
+                          width: 2.5
+                      ),
+                    ),
+                    padding: EdgeInsets.only(left:17, right: 17),
                     child: GestureDetector(
                       onTap: () => setState(() {
-                        if(_selectedIndices.contains(index)) _selectedIndices.remove(index);
-                        else _selectedIndices.add(index);
+                        if(index == _selectedIndex) _selectedIndex = -1;
+                        else _selectedIndex = index;
 
                         _advancedSearchBloc.add(AdvancedSearchFiltersChanged(
-                            selectedFilters: {widget.attributeName: _getSelectedAttributeValues(widget.attributeValues, _selectedIndices)}));
+                            selectedFilters: {
+                              widget.attributeName: [widget.displayAttributeValues[index]]}));
                       }),
                       child: Container(
-                        padding: EdgeInsets.only(top: 5),
-                        child: Text(
-                            widget.attributeValues[index].toString(),
+                          padding: EdgeInsets.only(top: 5),
+                          child: Text(
+                            widget.displayAttributeValues[index].toString(),
                             style: TextStyle(
-                                color: _selectedIndices.contains(index) ? Colors.blue : Colors.white,
+                                color: index == _selectedIndex ? Colors.blue : Colors.white,
                                 fontSize: 15
                             )
                         ),
@@ -83,13 +97,5 @@ class _AttributeValuesGridState extends State<AttributeValuesGrid> {
         ),
       ),
     );
-  }
-
-  List<String> _getSelectedAttributeValues(List<String> values, List<int> selectedIndices) {
-    var selectedTypes = List<String>();
-    for (var i = 0; i < selectedIndices.length; i++) {
-      selectedTypes.add(values[selectedIndices[i]]);
-    }
-    return selectedTypes;
   }
 }
