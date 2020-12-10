@@ -41,8 +41,6 @@ class AdvancedSearchBodyState extends State<AdvancedSearchBody> {
       final currentBlocState = _advancedSearchBloc.state;
 
       if (maxScroll - currentScroll <= _scrollThreshold && currentBlocState is AdvancedSearchSuccess) {
-        // need to debounce this event
-        print("**** ABOUT TO LAZY LOAD RIGHT NOW *******");
         _advancedSearchBloc.add(AdvancedSearchButtonPressed(selectedFilters: currentBlocState.selectedFilters));
       }
     });

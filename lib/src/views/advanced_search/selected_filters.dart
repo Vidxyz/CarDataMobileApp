@@ -74,11 +74,14 @@ class _SelectedFilters extends State<SelectedFilters> {
         child: BlocBuilder<AdvancedSearchBloc, AdvancedSearchState>(
           builder: (BuildContext context, AdvancedSearchState state) {
             if (state is AdvancedSearchEmpty) {
-              return Container();
+              return Center(child: Text("Add a filter to search by"),);
             }
             else if (state is AdvancedSearchCriteriaChanged) {
               selectedFilters = state.selectedFilters;
-              return _selectedFilters(state.selectedFilters);
+              if(selectedFilters.entries.where((element) => element.value.isNotEmpty).isEmpty)
+                return Center(child: Text("Add a filter to search by"),);
+              else
+                return _selectedFilters(state.selectedFilters);
             }
             else {
               return _selectedFilters(selectedFilters);
