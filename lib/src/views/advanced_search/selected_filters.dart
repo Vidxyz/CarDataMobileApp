@@ -15,6 +15,9 @@ class SelectedFilters extends StatefulWidget {
 
 class _SelectedFilters extends State<SelectedFilters> {
 
+  static final double minHeight = 50;
+  static final double maxHeight = 200;
+
   static final List<String> intRangeAttributes = [
     "city_mpg_primary",
     "combined_mpg_primary",
@@ -66,20 +69,20 @@ class _SelectedFilters extends State<SelectedFilters> {
   Widget build(BuildContext context) {
     return ConstrainedBox(
       constraints: BoxConstraints(
-          minHeight: 50,
-          maxHeight: 200.0
+          minHeight: minHeight,
+          maxHeight: maxHeight
       ),
       child: Container(
         decoration: BoxDecoration(border: Border.all(color: Colors.white)),
         child: BlocBuilder<AdvancedSearchBloc, AdvancedSearchState>(
           builder: (BuildContext context, AdvancedSearchState state) {
             if (state is AdvancedSearchEmpty) {
-              return Center(child: Text("Add a filter to search by"),);
+              return _addFiltersView();
             }
             else if (state is AdvancedSearchCriteriaChanged) {
               selectedFilters = state.selectedFilters;
               if(selectedFilters.entries.where((element) => element.value.isNotEmpty).isEmpty)
-                return Center(child: Text("Add a filter to search by"),);
+                return _addFiltersView();
               else
                 return _selectedFilters(state.selectedFilters);
             }
@@ -92,6 +95,28 @@ class _SelectedFilters extends State<SelectedFilters> {
     );
   }
 
+  Widget _addFiltersView() {
+    return Container(
+      height: minHeight,
+      child: ListView(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        children: [
+          Container(
+            margin: EdgeInsets.only(top: 15, bottom: 15),
+            child: Center(
+              child:
+                Text(
+                  "Add a filter to search by",
+                  style: TextStyle(fontSize: 15),
+                ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   Widget _selectedFilters(Map<String, List<String>> filters) {
     filters.removeWhere((key, value) => value.isEmpty);
     final keys = filters.keys.toList();
@@ -99,6 +124,7 @@ class _SelectedFilters extends State<SelectedFilters> {
       padding: EdgeInsets.all(10),
       child: ListView.builder(
         itemCount: filters.length,
+        shrinkWrap: true,
         itemBuilder: (_, index) {
           return displaySelectedAttributeValues(
               attributeNamesToDisplayNames[keys[index]],
