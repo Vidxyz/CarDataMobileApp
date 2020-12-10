@@ -263,6 +263,7 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
               ),
             ],
           ),
+            Divider(),
             AttributeValuesGridWithOneSelection(
               attributeName: sortBy,
               displayAttributeValues: sortByAttributesDisplay,
