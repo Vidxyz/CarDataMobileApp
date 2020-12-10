@@ -59,6 +59,18 @@ class AdvancedSearchSuccess extends AdvancedSearchState {
     this.hasReachedMax
   });
 
+  AdvancedSearchCriteriaChanged removeFilters({
+    String attributeName,
+    String attributeValue
+  }) {
+    var attributeValuesHavingRemovedChosenOne = selectedFilters[attributeName];
+    attributeValuesHavingRemovedChosenOne.remove(attributeValue);
+    selectedFilters[attributeName] = attributeValuesHavingRemovedChosenOne;
+    return AdvancedSearchCriteriaChanged(
+        selectedFilters: selectedFilters
+    );
+  }
+
   @override
   List<Object> get props => [selectedFilters, vehicles, hasReachedMax];
 

@@ -61,7 +61,7 @@ class _AttributeValuesSliderState extends State<AttributeValuesSlider> {
           "combined_mpg_primary": RangeValues(7, 141),
           "highway_mpg_primary": RangeValues(9, 132),
           "fuel_economy_score": RangeValues(1, 10),
-          "tailpipe_co2_primary": RangeValues(0, 1269.58),
+          "tailpipe_co2_primary": RangeValues(0, 1269.5),
           "gh_gas_score_primary": RangeValues(1, 10),
         };
       }

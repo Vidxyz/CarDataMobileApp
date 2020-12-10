@@ -36,11 +36,14 @@ class AdvancedSearchBloc extends Bloc<AdvancedSearchEvent, AdvancedSearchState> 
         yield AdvancedSearchEmpty();
         yield currentState.removeFilters(attributeName: event.attributeName, attributeValue: event.attributeValue);
       }
-      else {
-        // todo - this workflow is reached when 'x' button is tapped on a filter
+      else if (currentState is AdvancedSearchSuccess) {
+        yield AdvancedSearchEmpty();
+        yield currentState.removeFilters(attributeName: event.attributeName, attributeValue: event.attributeValue);
+      }
+      else { // this should never be reached ideally
         print("This should not be reached...");
         yield currentState;
-      }// this should never be reached ideally
+      }
     }
 
     if (event is AdvancedSearchFiltersChanged) {
@@ -49,7 +52,6 @@ class AdvancedSearchBloc extends Bloc<AdvancedSearchEvent, AdvancedSearchState> 
     }
 
     if(event is AdvancedSearchButtonPressed && currentState is AdvancedSearchCriteriaChanged) {
-      print("SearchButton is pressed with state $currentState");
       yield AdvancedSearchLoading();
       final results = await repository.getVehiclesBySelectedAttributes(currentState.selectedFilters, pageSize, 0);
       // print(results);
