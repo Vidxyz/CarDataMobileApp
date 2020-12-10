@@ -32,7 +32,7 @@ class _AttributeValuesSliderState extends State<AttributeValuesSlider> {
     "combined_mpg_primary": RangeValues(7, 141),
     "highway_mpg_primary": RangeValues(9, 132),
     "fuel_economy_score": RangeValues(1, 10),
-    "tailpipe_co2_primary": RangeValues(0, 1269.58),
+    "tailpipe_co2_primary": RangeValues(0, 1269.5),
     "gh_gas_score_primary": RangeValues(1, 10),
   };
 
@@ -47,7 +47,7 @@ class _AttributeValuesSliderState extends State<AttributeValuesSlider> {
     final blocState = _advancedSearchBloc.state;
     if (blocState is AdvancedSearchCriteriaChanged) {
       final selectedAttributeValues = blocState.selectedFilters[widget.attributeName];
-      if(selectedAttributeValues != null) {
+      if(selectedAttributeValues != null && selectedAttributeValues.isNotEmpty) {
         _selectedSliderAttributeValues[widget.attributeName] =
             RangeValues(double.parse(selectedAttributeValues.first), double.parse(selectedAttributeValues.last));
       }
@@ -121,7 +121,6 @@ class _AttributeValuesSliderState extends State<AttributeValuesSlider> {
                 onChanged: (values){
                   setState(() {
                     _selectedSliderAttributeValues[widget.attributeName] = values;
-                    // Must also update bloc here with continous values
                     _advancedSearchBloc.add(AdvancedSearchFiltersChanged(
                         selectedFilters: {widget.attributeName:
                         _getSelectedSliderAttributeValues(numericalValues, values, widget.isDoubleValue)}));

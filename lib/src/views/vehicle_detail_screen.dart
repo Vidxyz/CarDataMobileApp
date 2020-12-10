@@ -43,8 +43,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
         top: true,
         bottom: false,
         child: NestedScrollView(
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
+            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
               return <Widget>[
                 SliverAppBar(
                   expandedHeight: 220.0,
