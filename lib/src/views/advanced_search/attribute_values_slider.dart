@@ -26,7 +26,14 @@ class _AttributeValuesSliderState extends State<AttributeValuesSlider> {
   Map<String, RangeValues> _selectedSliderAttributeValues = {
     "year": RangeValues(1984, 2021),
     "displacement": RangeValues(0, 8.4),
-    "cylinders": RangeValues(2, 16)
+    "cylinders": RangeValues(2, 16),
+    "annual_fuel_cost_primary": RangeValues(450, 6000),
+    "city_mpg_primary": RangeValues(6, 150),
+    "combined_mpg_primary": RangeValues(7, 141),
+    "highway_mpg_primary": RangeValues(9, 132),
+    "fuel_economy_score": RangeValues(1, 10),
+    "tailpipe_co2_primary": RangeValues(0, 1269.58),
+    "gh_gas_score_primary": RangeValues(1, 10),
   };
 
   @override
@@ -48,7 +55,14 @@ class _AttributeValuesSliderState extends State<AttributeValuesSlider> {
         _selectedSliderAttributeValues = {
           "year": RangeValues(1984, 2021),
           "displacement": RangeValues(0, 8.4),
-          "cylinders": RangeValues(2, 16)
+          "cylinders": RangeValues(2, 16),
+          "annual_fuel_cost_primary": RangeValues(450, 6000),
+          "city_mpg_primary": RangeValues(6, 150),
+          "combined_mpg_primary": RangeValues(7, 141),
+          "highway_mpg_primary": RangeValues(9, 132),
+          "fuel_economy_score": RangeValues(1, 10),
+          "tailpipe_co2_primary": RangeValues(0, 1269.58),
+          "gh_gas_score_primary": RangeValues(1, 10),
         };
       }
     }
@@ -56,7 +70,14 @@ class _AttributeValuesSliderState extends State<AttributeValuesSlider> {
       _selectedSliderAttributeValues =  {
         "year": RangeValues(1984, 2021),
         "displacement": RangeValues(0, 8.4),
-        "cylinders": RangeValues(2, 16)
+        "cylinders": RangeValues(2, 16),
+        "annual_fuel_cost_primary": RangeValues(450, 6000),
+        "city_mpg_primary": RangeValues(6, 150),
+        "combined_mpg_primary": RangeValues(7, 141),
+        "highway_mpg_primary": RangeValues(9, 132),
+        "fuel_economy_score": RangeValues(1, 10),
+        "tailpipe_co2_primary": RangeValues(0, 1269.5),
+        "gh_gas_score_primary": RangeValues(1, 10),
       };
     }
 
@@ -89,8 +110,8 @@ class _AttributeValuesSliderState extends State<AttributeValuesSlider> {
             ),
             child: RangeSlider(
                 divisions: numericalValues.length,
-                activeColor: Colors.blue[700],
-                inactiveColor: Colors.blueAccent[300],
+                activeColor: Colors.teal[700],
+                inactiveColor: Colors.tealAccent[300],
                 min: minimum.toDouble(),
                 max: maximum.toDouble(),
                 values: rangeValues,

@@ -72,7 +72,7 @@ class _AttributeValuesGridState extends State<AttributeValuesGrid> {
                         child: Text(
                             widget.attributeValues[index].toString(),
                             style: TextStyle(
-                                color: _selectedIndices.contains(index) ? Colors.blue : Colors.white,
+                                color: _selectedIndices.contains(index) ? Colors.tealAccent : Colors.white,
                                 fontSize: 15
                             )
                         ),

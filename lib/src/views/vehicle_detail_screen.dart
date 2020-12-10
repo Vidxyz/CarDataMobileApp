@@ -429,11 +429,11 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
       )];
   }
 
-  // null safe contructuror of oter types too
   List<Widget> generateStaticSpecifications(Vehicle vehicle) {
     final staticSpecs = [
       vehicle.primaryFuel,
       vehicle.secondaryFuel,
+      vehicle.fuelType,
       vehicle.alternateFuelType,
       vehicle.transmission.type,
       vehicle.engine.cylinders,
@@ -449,10 +449,10 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
       vehicle.engine.driveTrain,
     ];
 
-    final headings = ["Fuel", "Alternate Fuel", "Alternate Fuel Type", "Transmission", "Cylinders", "Displacement (L)",
+    final headings = ["Fuel", "Alternate Fuel", "Fuel Type", "Alternate Fuel Type", "Transmission", "Cylinders", "Displacement (L)",
       "Engine Type",  "EV Motor", "MpG Combined", "MpG City", "MpG Highway", "MpG Alternate Combined", "MpG Alternate City",
       "MpG Alternate Highway", "Drive Train"];
-    final defaults = ["Gasoline", null, null, "-", "-", "-", "-", null, "-", "-", "-", null, null, null, "-"];
+    final defaults = [null, null, null, null, "-", "-", "-", "-", null, "-", "-", "-", null, null, null, "-"];
 
     return zip([staticSpecs, headings, defaults]).map((e) {
       if(e[2] != null || (e[0] != null && e[0] != 0)) { // If spec isn't null, or if a default is provided

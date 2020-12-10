@@ -3,6 +3,9 @@ import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_stat
 import 'package:car_data_app/src/blocs/attribute_values_bloc/attribute_values_bloc.dart';
 import 'package:car_data_app/src/blocs/attribute_values_bloc/attribute_values_event.dart';
 import 'package:car_data_app/src/blocs/attribute_values_bloc/attribute_values_state.dart';
+import 'package:car_data_app/src/blocs/more_attribute_values_bloc/more_attribute_values_bloc.dart';
+import 'package:car_data_app/src/blocs/more_attribute_values_bloc/more_attribute_values_event.dart';
+import 'package:car_data_app/src/blocs/more_attribute_values_bloc/more_attribute_values_state.dart';
 import 'package:car_data_app/src/views/advanced_search/advanced_search_body.dart';
 import 'package:car_data_app/src/views/advanced_search/attribute_values_grid.dart';
 import 'package:car_data_app/src/views/advanced_search/attribute_values_list.dart';
@@ -31,22 +34,31 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
   static final List<String> integerSliderAttributes = ["year", "cylinders"];
   static final List<String> doubleSliderAttributes = ["displacement"];
   static final List<String> sortByAttributesDisplay = ["City Mpg", "Highway Mpg", "Combined Mpg",
-    "Annual Fuel Cost", "Fuel Economy", "CO2 Emissions", "Greenhouse Gas Score"];
+    "Annual Fuel Cost", "Fuel Economy", "CO2 Emissions", "Greenhouse Score"];
   static final String sortBy = "sort_by";
 
   static final List<String> displayNames = ["Make", "Year", "Primary Fuel",
     "Secondary Fuel", "Fuel Grade", "Engine", "Transmission", "Cylinders",
     "Displacement"];
-
   static final List<String> attributesToDisplayListsFor = ["make", "year", "fuel_type_primary",
     "fuel_type_secondary", "fuel_type", "engine_descriptor", "type",  "cylinders",
     "displacement"];
+
+
+  static final List<String> moreDisplayNames = ["City Mpg", "Highway Mpg", "Combined Mpg",
+    "Annual Fuel Cost (\$)", "Fuel Economy Score", "CO2 Emissions", "Greenhouse Gas Score"];
+  static final List<String> moreAttributesToDisplayListsFor = ["city_mpg_primary", "highway_mpg_primary",
+    "combined_mpg_primary", "annual_fuel_cost_primary", "fuel_economy_score", "tailpipe_co2_primary",
+    "gh_gas_score_primary"];
 
   static final List<String> yesNoDisplayAttributes = ["Supercharged", "Turbocharged", "Guzzler"];
   static final List<String> yesNoRawAttributes = ["is_supercharged", "is_turbocharged", "is_guzzler"];
   static final List<String> yesNoOptions = ["Yes", "No"];
 
+
+
   AttributeValuesBloc _attributeValuesBloc;
+  MoreAttributeValuesBloc _moreAttributeValuesBloc;
 
   // todo - refactor so that individual widgets fetch their attribute values separately, instead of all at once
   // todo - add remaining attributes as well, (sliders as well as means to sort by
@@ -55,12 +67,13 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
     super.initState();
     print("AttributeSelectionFiltersState init state method");
     _attributeValuesBloc = BlocProvider.of<AttributeValuesBloc>(context);
+    _moreAttributeValuesBloc = BlocProvider.of<MoreAttributeValuesBloc>(context);
     _attributeValuesBloc.add(AttributeValuesRequested());
+    _moreAttributeValuesBloc.add(MoreAttributeValuesRequested());
   }
 
   @override
   Widget build(BuildContext context) {
-    print("Attribute selections build method called");
     return BlocBuilder<AdvancedSearchBloc, AdvancedSearchState>(
       builder: (BuildContext context, AdvancedSearchState state) {
         if (state is AdvancedSearchCriteriaChanged || state is AdvancedSearchEmpty){
@@ -69,7 +82,7 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
               padding: EdgeInsets.only(top: 10),
               child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: attributesToDisplayListsFor.length + yesNoDisplayAttributes.length + 1, // +1 for sort criteria
+                itemCount: attributesToDisplayListsFor.length + yesNoDisplayAttributes.length + 2, // +2 for sort criteria and more attributes
                 itemBuilder: (_, index) {
                   if (index < attributesToDisplayListsFor.length)
                     return Card(child: _displayAttributesNameValuesToUser(displayNames[index], attributesToDisplayListsFor[index]));
@@ -80,8 +93,10 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
                             yesNoRawAttributes[index - attributesToDisplayListsFor.length]
                         )
                     );
-                  else
+                  else if (index == attributesToDisplayListsFor.length + yesNoDisplayAttributes.length)
                     return Card(child: _displaySortingCriteria());
+                  else
+                    return Card(child: _displayMoreCriteria());
                 },
               ),
             ),
@@ -124,6 +139,74 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
           AttributeValuesGridWithOneSelection(
             attributeName: filterKey,
             displayAttributeValues: yesNoOptions,
+          )
+        ]
+    );
+  }
+
+  Widget _displayMoreCriteria() {
+    return ExpansionTile(
+        title: Text(
+          "More Attributes",
+          textAlign: TextAlign.start,
+          style: TextStyle(
+              fontSize: 22.0,
+              fontWeight: FontWeight.bold
+          ),
+        ),
+        children: <Widget> [
+          BlocBuilder<MoreAttributeValuesBloc, MoreAttributeValuesState>(
+            builder: (BuildContext context, MoreAttributeValuesState state) {
+              if(state is MoreAttributeValuesLoading) {
+                return ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: 100,
+                  ),
+                  child: Container(
+                    padding: EdgeInsets.all(30),
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+              else if (state is MoreAttributeValuesSuccess) {
+                return Flex(
+                    direction: Axis.vertical,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.only(top: 10),
+                        child: ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: moreAttributesToDisplayListsFor.length,
+                          itemBuilder: (_, index) {
+                          final attributeName = moreAttributesToDisplayListsFor[index];
+                            return ExpansionTile(
+                                title: Text(
+                                moreDisplayNames[index],
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                ),
+                              ),
+                              children: [
+                                AttributeValuesSlider(
+                                  attributeName: attributeName,
+                                  attributeValues: state.attributeValues.attributeValues[attributeName],
+                                  isDoubleValue: attributeName == "tailpipe_co2_primary"
+                                )
+                              ]
+                            );
+                          },
+                        ),
+                      )
+                    ]
+                );
+              }
+              else { // this should not be reached ideally
+                print("This shouldn't be reached...");
+                return Container();
+              }
+            }
           )
         ]
     );

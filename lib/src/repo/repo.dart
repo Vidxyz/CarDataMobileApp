@@ -1,4 +1,5 @@
 import 'package:car_data_app/src/models/attribute_values.dart';
+import 'package:car_data_app/src/models/more_attribute_values.dart';
 import 'package:car_data_app/src/models/vehicle.dart';
 import 'package:car_data_app/src/models/vehicle_image.dart';
 import 'package:car_data_app/src/models/search_suggestion.dart';
@@ -16,6 +17,8 @@ class Repo {
   Future<List<SearchSuggestion>> getSuggestions(String query) => _carDataApiProvider.getSuggestions(query);
 
   Future<AttributeValues> getAttributeValues() => _carDataApiProvider.getAttributeValues();
+
+  Future<MoreAttributeValues> getMoreAttributeValues() => _carDataApiProvider.getMoreAttributeValues();
 
   Future<List<Vehicle>> getVehiclesBySelectedAttributes(Map<String, List<String>> selectedAttributes, int limit, int offset) =>
       _carDataApiProvider.getVehiclesBySelectedAttributes(selectedAttributes, limit, offset);

@@ -55,7 +55,6 @@ class _AttributeValuesGridWithOneSelectionState extends State<AttributeValuesGri
         maxHeight: 200,
       ),
       child: Container(
-        padding: EdgeInsets.only(bottom: 10),
         child: GridView.count(
           childAspectRatio: 4,
           crossAxisCount: 2,
@@ -87,12 +86,11 @@ class _AttributeValuesGridWithOneSelectionState extends State<AttributeValuesGri
                                 widget.attributeName: [widget.displayAttributeValues[index]]}));
                         }
                       }),
-                      child: Container(
-                          padding: EdgeInsets.only(top: 5),
+                      child: Center(
                           child: Text(
                             widget.displayAttributeValues[index].toString(),
                             style: TextStyle(
-                                color: index == _selectedIndex ? Colors.blue : Colors.white,
+                                color: index == _selectedIndex ? Colors.tealAccent : Colors.white,
                                 fontSize: 15
                             )
                         ),

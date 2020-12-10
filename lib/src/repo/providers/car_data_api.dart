@@ -1,4 +1,5 @@
 import 'package:car_data_app/src/models/attribute_values.dart';
+import 'package:car_data_app/src/models/more_attribute_values.dart';
 import 'package:car_data_app/src/models/search_suggestion.dart';
 import 'package:car_data_app/src/models/vehicle.dart';
 import 'package:car_data_app/src/models/vehicle_image.dart';
@@ -30,7 +31,7 @@ class CarDataApi {
     "Annual Fuel Cost": "annual_fuel_cost_primary",
     "Fuel Economy": "fuel_economy_score",
     "CO2 Emissions": "tailpipe_co2_primary",
-    "Greenhouse Gas Score": "greenhouse_gas_score_primary",
+    "Greenhouse Score": "gh_gas_score_primary",
   };
 
   static final yesNoToBooleanMap = {
@@ -53,6 +54,13 @@ class CarDataApi {
       $is_supercharged: [boolean],
       $is_turbocharged: [boolean],
       $is_guzzler: [boolean],
+      $city_mpg_primary: [int],
+      $highway_mpg_primary: [int],
+      $combined_mpg_primary: [int],
+      $annual_fuel_cost_primary: [int],
+      $fuel_economy_score: [int],
+      $tailpipe_co2_primary: [float],
+      $gh_gas_score_primary: [int],
       $limit: int!, 
       $offset: int!,
       $sort_by: String!,
@@ -71,6 +79,13 @@ class CarDataApi {
       is_supercharged: $is_supercharged, 
       is_turbocharged: $is_turbocharged, 
       is_guzzler: $is_guzzler, 
+      city_mpg_primary: $city_mpg_primary,
+      highway_mpg_primary: $highway_mpg_primary,
+      combined_mpg_primary: $combined_mpg_primary,
+      annual_fuel_cost_primary: $annual_fuel_cost_primary,
+      fuel_economy_score: $fuel_economy_score,
+      tailpipe_co2_primary: $tailpipe_co2_primary,
+      gh_gas_score_primary: $gh_gas_score_primary,
       limit: $limit,
       offset: $offset,
       sort_by: $sort_by,
@@ -131,8 +146,8 @@ class CarDataApi {
           fuel_emission {
             tailpipe_co2_primary
             tailpipe_co2_secondary
-            greenhouseGasScorePrimary
-            greenhouseGasScoreSecondary
+            greenhouse_gas_score_primary
+            greenhouse_gas_score_secondary
           }
         }
       }
@@ -163,6 +178,30 @@ class CarDataApi {
         cylinders,
         engine_descriptor,
         displacement
+      }
+    }
+    ''';
+  }
+
+  String moreAttributeValuesQuery() {
+    return r'''
+    query GetMoreAttributeValues {
+      attributeValues(attributes: [
+        "city_mpg_primary",
+        "highway_mpg_primary",
+        "combined_mpg_primary",
+        "annual_fuel_cost_primary",
+        "fuel_economy_score",
+        "tailpipe_co2_primary",
+        "gh_gas_score_primary"
+      ]) {
+          city_mpg_primary,
+          highway_mpg_primary,
+          combined_mpg_primary,
+          annual_fuel_cost_primary,
+          fuel_economy_score,
+          tailpipe_co2_primary,
+          gh_gas_score_primary
       }
     }
     ''';
@@ -296,6 +335,15 @@ class CarDataApi {
     return AttributeValues.fromJson(response);
   }
 
+  Future<MoreAttributeValues> getMoreAttributeValues() async {
+    final QueryOptions options = QueryOptions(
+      documentNode: gql(moreAttributeValuesQuery()),
+    );
+    QueryResult result = await _client.query(options);
+    final response = result.data['attributeValues'] as Map<dynamic, dynamic>;
+    return MoreAttributeValues.fromJson(response);
+  }
+
   // This needs to modify certain attributes into double/int values based on their key
   Future<List<Vehicle>> getVehiclesBySelectedAttributes(Map<String, List<String>> selectedAttributes,
       int limit, int offset) async {
@@ -314,6 +362,13 @@ class CarDataApi {
         'is_supercharged': selectedAttributes['is_supercharged']?.map((e) => yesNoToBooleanMap[e])?.toList() ?? [],
         'is_turbocharged': selectedAttributes['is_turbocharged']?.map((e) => yesNoToBooleanMap[e])?.toList() ?? [],
         'is_guzzler': selectedAttributes['is_guzzler']?.map((e) => yesNoToBooleanMap[e])?.toList() ?? [],
+        'city_mpg_primary': selectedAttributes['city_mpg_primary']?.map((e) => int.parse(e))?.toList() ?? [],
+        'highway_mpg_primary': selectedAttributes['highway_mpg_primary']?.map((e) => int.parse(e))?.toList() ?? [],
+        'combined_mpg_primary': selectedAttributes['combined_mpg_primary']?.map((e) => int.parse(e))?.toList() ?? [],
+        'annual_fuel_cost_primary': selectedAttributes['annual_fuel_cost_primary']?.map((e) => int.parse(e))?.toList() ?? [],
+        'fuel_economy_score': selectedAttributes['fuel_economy_score']?.map((e) => int.parse(e))?.toList() ?? [],
+        'gh_gas_score_primary': selectedAttributes['gh_gas_score_primary']?.map((e) => int.parse(e))?.toList() ?? [],
+        'tailpipe_co2_primary': selectedAttributes['tailpipe_co2_primary']?.map((e) => double.parse(e))?.toList() ?? [],
         'limit': limit,
         'offset': offset,
         'sort_by': selectedAttributes['sort_by'] == null ? "" :

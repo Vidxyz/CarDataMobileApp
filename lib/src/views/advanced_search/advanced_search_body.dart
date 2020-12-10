@@ -32,11 +32,7 @@ class AdvancedSearchBodyState extends State<AdvancedSearchBody> {
   final _scrollController = ScrollController();
   Timer _debounce;
 
-
-
   void _onScroll() {
-
-
     if (_debounce?.isActive ?? false) _debounce.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () {
       // do something with _searchQuery.text

@@ -28,6 +28,13 @@ class _SelectedFilters extends State<SelectedFilters> {
     "is_supercharged": "Supercharged",
     "is_turbocharged": "Turbocharged",
     "is_guzzler": "Guzzler",
+    "annual_fuel_cost_primary": "Annual Fuel Cost",
+    "city_mpg_primary": "City Mpg",
+    "combined_mpg_primary": "Combined Mpg",
+    "highway_mpg_primary": "Highway Mpg",
+    "fuel_economy_score": "Fuel Economy Score",
+    "tailpipe_co2_primary": "CO2 Emissions",
+    "gh_gas_score_primary": "Greenhouse Gas Score",
   };
 
   AdvancedSearchBloc _advancedSearchBloc;
