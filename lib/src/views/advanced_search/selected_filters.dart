@@ -82,7 +82,9 @@ class _SelectedFilters extends State<SelectedFilters> {
             }
             else if (state is AdvancedSearchCriteriaChanged) {
               selectedFilters = state.selectedFilters;
-              if(selectedFilters.entries.where((element) => element.value.isNotEmpty).isEmpty)
+              if(selectedFilters.entries.where((element) =>
+                  element.value.isNotEmpty
+                      && element.key != sortOrderKey).isEmpty)
                 return _addFiltersView();
               else
                 return _selectedFilters(selectedFilters);

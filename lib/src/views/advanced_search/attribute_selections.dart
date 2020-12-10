@@ -56,8 +56,6 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
   static final List<String> yesNoRawAttributes = ["is_supercharged", "is_turbocharged", "is_guzzler"];
   static final List<String> yesNoOptions = ["Yes", "No"];
 
-
-
   AttributeValuesBloc _attributeValuesBloc;
   MoreAttributeValuesBloc _moreAttributeValuesBloc;
   AdvancedSearchBloc _advancedSearchBloc;
