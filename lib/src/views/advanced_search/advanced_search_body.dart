@@ -56,7 +56,10 @@ class AdvancedSearchBodyState extends State<AdvancedSearchBody> {
 
   @override
   Widget build(BuildContext context) {
-    return _searchResults(widget.vehicles, widget.hasReachedMax);
+    if (widget.vehicles.isNotEmpty)
+      return _searchResults(widget.vehicles, widget.hasReachedMax);
+    else
+      return Center(child: Text('No Results'));
   }
 
   Widget _searchResults(List<Vehicle> items, bool hasReachedMax) {
