@@ -34,6 +34,12 @@ class CarDataApi {
     "Greenhouse Score": "gh_gas_score_primary",
   };
 
+  static final sortOrderToRawMap = {
+    "Descending": "desc",
+    "Ascending": "asc",
+  };
+
+
   static final yesNoToBooleanMap = {
     "Yes": true,
     "No": false,
@@ -373,7 +379,8 @@ class CarDataApi {
         'offset': offset,
         'sort_by': selectedAttributes['sort_by'] == null ? "" :
         (selectedAttributes['sort_by'].isEmpty ? "" : sortCriteriaToRawMap[selectedAttributes['sort_by'].first]),
-        'order': 'desc', // need to work on this
+        'order': selectedAttributes['sort_order'] == null ? "desc" :
+        (selectedAttributes['sort_order'].isEmpty ? "desc" : sortOrderToRawMap[selectedAttributes['sort_order'].first]),
       },
 
     );

@@ -17,6 +17,7 @@ class _SelectedFilters extends State<SelectedFilters> {
 
   static final double minHeight = 50;
   static final double maxHeight = 200;
+  static final String sortOrderKey = "sort_order";
 
   static final List<String> intRangeAttributes = [
     "city_mpg_primary",
@@ -84,7 +85,7 @@ class _SelectedFilters extends State<SelectedFilters> {
               if(selectedFilters.entries.where((element) => element.value.isNotEmpty).isEmpty)
                 return _addFiltersView();
               else
-                return _selectedFilters(state.selectedFilters);
+                return _selectedFilters(selectedFilters);
             }
             else {
               return _selectedFilters(selectedFilters);
@@ -118,18 +119,20 @@ class _SelectedFilters extends State<SelectedFilters> {
   }
 
   Widget _selectedFilters(Map<String, List<String>> filters) {
-    filters.removeWhere((key, value) => value.isEmpty);
-    final keys = filters.keys.toList();
+    final f = Map<String, List<String>>.from(filters);
+    // filter out the KVP for sort order as we dont want to show this separately
+    f.removeWhere((key, value) => value.isEmpty || key == sortOrderKey);
+    final keys = f.keys.toList();
     return Padding(
       padding: EdgeInsets.all(10),
       child: ListView.builder(
-        itemCount: filters.length,
+        itemCount: f.length,
         shrinkWrap: true,
         itemBuilder: (_, index) {
           return displaySelectedAttributeValues(
               attributeNamesToDisplayNames[keys[index]],
               keys[index],
-              filters[keys[index]]
+              f[keys[index]]
           );
         }
       ),
@@ -261,45 +264,91 @@ class _SelectedFilters extends State<SelectedFilters> {
 
 
   List<Widget> _displayAttributeValues(String displayAttributeName, List<String> attributeValues) {
-    return attributeValues.map((attributeValue) => Stack(
-      children: [
-        Container(
-        padding: EdgeInsets.only(right: 15, left: 5),
-        decoration: BoxDecoration(
-          color: Colors.teal[700],
-          border: Border.all(
-            color: Colors.teal[700],
-            width: 1
-          ),
-          borderRadius: BorderRadius.all(Radius.circular(10))
-        ),
-        child: Text(
-          attributeValue,
-          style: TextStyle(fontSize: 15, color: Colors.white),
-          ),
-        ),
-        Positioned(
-          right: 5.0,
-          top: 1,
-          child: GestureDetector(
-            onTap: (){
-              _advancedSearchBloc.add(
-                  AdvancedSearchFilterRemoved(
-                      attributeName: attributeNamesToDisplayNames.keys.firstWhere((element) => attributeNamesToDisplayNames[element] == displayAttributeName),
-                      attributeValue: attributeValue));
-            },
-            child: Align(
-              alignment: Alignment.topRight,
-              child: CircleAvatar(
-                radius: 5.0,
-                backgroundColor: Colors.red,
-                child: Icon(Icons.close, color: Colors.white, size: 10,),
+    if(displayAttributeName == "Sort") {
+      final sortOrder = selectedFilters[sortOrderKey] == null ? "Descending" :
+      (selectedFilters[sortOrderKey].isEmpty ? "Descending" : selectedFilters[sortOrderKey].first);
+      return attributeValues.map((attributeValue) => Stack(
+          children: [
+            Container(
+              padding: EdgeInsets.only(right: 15, left: 5),
+              decoration: BoxDecoration(
+                  color: Colors.teal[700],
+                  border: Border.all(
+                      color: Colors.teal[700],
+                      width: 1
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(10))
+              ),
+              child: Text(
+                "$attributeValue - $sortOrder",
+                style: TextStyle(fontSize: 15, color: Colors.white),
+              ),
+            ),
+            Positioned(
+              right: 5.0,
+              top: 1,
+              child: GestureDetector(
+                onTap: (){
+                  _advancedSearchBloc.add(
+                      AdvancedSearchFilterRemoved(
+                          attributeName: attributeNamesToDisplayNames.keys.firstWhere((element) => attributeNamesToDisplayNames[element] == displayAttributeName),
+                          attributeValue: attributeValue));
+                },
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: CircleAvatar(
+                    radius: 5.0,
+                    backgroundColor: Colors.red,
+                    child: Icon(Icons.close, color: Colors.white, size: 10,),
+                  ),
                 ),
               ),
             ),
-          ),
-        ]
+          ]
       )
-    ).toList();
+      ).toList();
+    }
+    else {
+      return attributeValues.map((attributeValue) => Stack(
+          children: [
+            Container(
+              padding: EdgeInsets.only(right: 15, left: 5),
+              decoration: BoxDecoration(
+                  color: Colors.teal[700],
+                  border: Border.all(
+                      color: Colors.teal[700],
+                      width: 1
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(10))
+              ),
+              child: Text(
+                attributeValue,
+                style: TextStyle(fontSize: 15, color: Colors.white),
+              ),
+            ),
+            Positioned(
+              right: 5.0,
+              top: 1,
+              child: GestureDetector(
+                onTap: (){
+                  _advancedSearchBloc.add(
+                      AdvancedSearchFilterRemoved(
+                          attributeName: attributeNamesToDisplayNames.keys.firstWhere((element) => attributeNamesToDisplayNames[element] == displayAttributeName),
+                          attributeValue: attributeValue));
+                },
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: CircleAvatar(
+                    radius: 5.0,
+                    backgroundColor: Colors.red,
+                    child: Icon(Icons.close, color: Colors.white, size: 10,),
+                  ),
+                ),
+              ),
+            ),
+          ]
+      )
+      ).toList();
+    }
   }
 }

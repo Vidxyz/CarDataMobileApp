@@ -1,4 +1,5 @@
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_bloc.dart';
+import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_event.dart';
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_state.dart';
 import 'package:car_data_app/src/blocs/attribute_values_bloc/attribute_values_bloc.dart';
 import 'package:car_data_app/src/blocs/attribute_values_bloc/attribute_values_event.dart';
@@ -59,15 +60,19 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
 
   AttributeValuesBloc _attributeValuesBloc;
   MoreAttributeValuesBloc _moreAttributeValuesBloc;
+  AdvancedSearchBloc _advancedSearchBloc;
 
-  // todo - refactor so that individual widgets fetch their attribute values separately, instead of all at once
-  // todo - add remaining attributes as well, (sliders as well as means to sort by
+  String sortOrder = "Descending";
+  String sortOrderKey = "sort_order";
+
   @override
   void initState() {
     super.initState();
     print("AttributeSelectionFiltersState init state method");
     _attributeValuesBloc = BlocProvider.of<AttributeValuesBloc>(context);
     _moreAttributeValuesBloc = BlocProvider.of<MoreAttributeValuesBloc>(context);
+    _advancedSearchBloc = BlocProvider.of<AdvancedSearchBloc>(context);
+
     _attributeValuesBloc.add(AttributeValuesRequested());
     _moreAttributeValuesBloc.add(MoreAttributeValuesRequested());
   }
@@ -222,6 +227,44 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
           ),
         ),
         children: <Widget> [
+          Row(
+            children: [
+              Expanded(child:
+                RadioListTile<String>(
+                  title: Text("Ascending"),
+                  value: "Ascending",
+                  groupValue: sortOrder,
+                  onChanged: (String value) {
+                    setState(() {
+                      sortOrder = value;
+                      _advancedSearchBloc.add(
+                          AdvancedSearchFiltersChanged(
+                            selectedFilters: {sortOrderKey: [sortOrder]}
+                          )
+                      );
+                    });
+                  },
+                ),
+              ),
+              Expanded(child:
+                RadioListTile<String>(
+                  title: Text("Descending"),
+                  value: "Descending",
+                  groupValue: sortOrder,
+                  onChanged: (String value) {
+                    setState(() {
+                      sortOrder = value;
+                      _advancedSearchBloc.add(
+                          AdvancedSearchFiltersChanged(
+                            selectedFilters: {sortOrderKey: [sortOrder]}
+                          )
+                      );
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
             AttributeValuesGridWithOneSelection(
               attributeName: sortBy,
               displayAttributeValues: sortByAttributesDisplay,
