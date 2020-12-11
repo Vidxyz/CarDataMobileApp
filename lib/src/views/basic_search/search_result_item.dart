@@ -40,8 +40,8 @@ class SearchResultItem extends StatelessWidget {
   Widget _showSortMetric() {
     return Column(
       children: [
-        Expanded(child: Text(sortMetric, style: TextStyle(fontSize: 13),),),
-        Expanded(child: Text(sortMetricValue, style: TextStyle(fontSize: 13)),)
+        Expanded(child: Text(sortMetric, style: TextStyle(fontSize: 13))),
+        Expanded(child: Text(sortMetricValue, style: TextStyle(fontSize: 13)))
       ],
     );
   }

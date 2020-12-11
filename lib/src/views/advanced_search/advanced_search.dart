@@ -16,6 +16,7 @@ class AdvancedSearch extends StatefulWidget {
 
 class _AdvancedSearchState extends State<AdvancedSearch> {
 
+  static final String sortOrderKey = "sort_order";
   AdvancedSearchBloc _advancedSearchBloc;
 
   @override
@@ -64,8 +65,17 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                   onPressed: () {
                     final currentState =_advancedSearchBloc.state;
                     if(currentState is AdvancedSearchCriteriaChanged){
-                      _advancedSearchBloc.add(AdvancedSearchButtonPressed(
-                          selectedFilters: currentState.selectedFilters));
+                      final f = Map<String, List<String>>.from(currentState.selectedFilters);
+                      // Remove sort order key (asc, desc) and search only if at least one attribute selected
+                      f.removeWhere((key, value) => key == sortOrderKey);
+                      if(f.isNotEmpty) {
+                        _advancedSearchBloc.add(AdvancedSearchButtonPressed(
+                            selectedFilters: currentState.selectedFilters)
+                        );
+                      }
+                      else {
+                        print("Doing nothing because only sort order is set");
+                      }
                     }
                     else {
                       print("Doing nothing because no filters set");
