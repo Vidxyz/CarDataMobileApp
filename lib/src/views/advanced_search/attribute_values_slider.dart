@@ -123,7 +123,12 @@ class _AttributeValuesSliderState extends State<AttributeValuesSlider> {
                     _selectedSliderAttributeValues[widget.attributeName] = values;
                     _advancedSearchBloc.add(AdvancedSearchFiltersChanged(
                         selectedFilters: {widget.attributeName:
-                        _getSelectedSliderAttributeValues(numericalValues, values, widget.isDoubleValue)}));
+                        _getSelectedSliderAttributeValues(
+                            numericalValues,
+                            values,
+                            widget.isDoubleValue,
+                            widget.attributeName == "tailpipe_co2_primary" ? 0 : 1
+                        )}));
                   });
                 }
             ),
@@ -133,11 +138,15 @@ class _AttributeValuesSliderState extends State<AttributeValuesSlider> {
     );
   }
 
-  List<String> _getSelectedSliderAttributeValues(List<double> values, RangeValues rangeValues, bool isDoubleValue) {
+  List<String> _getSelectedSliderAttributeValues(
+      List<double> values,
+      RangeValues rangeValues,
+      bool isDoubleValue,
+      int decimalLimit) {
     return values
         .where((element) =>
-    element >= (isDoubleValue ? rangeValues.start : rangeValues.start.toInt())
-        && element <= (isDoubleValue ? rangeValues.end : rangeValues.end.toInt()))
+    element >= (isDoubleValue ? double.parse(rangeValues.start.toStringAsFixed(decimalLimit)) : rangeValues.start.toInt())
+        && element <= (isDoubleValue ? double.parse(rangeValues.end.toStringAsFixed(decimalLimit)) : rangeValues.end.toInt()))
         .toList()
         .map((e) => isDoubleValue ? e.toString() : e.toInt().toString())
         .toList();

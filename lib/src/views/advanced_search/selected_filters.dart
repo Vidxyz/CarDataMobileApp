@@ -200,7 +200,7 @@ class _SelectedFilters extends State<SelectedFilters> {
                 onTap: (){
                   _advancedSearchBloc.add(
                       AdvancedSearchFilterRemoved(
-                          attributeName: attributeNamesToDisplayNames.keys.firstWhere((element) => attributeNamesToDisplayNames[element] == displayAttributeName),
+                          attributeName: attributeName,
                           attributeValue: attributeValue));
                 },
                 child: Align(
@@ -245,8 +245,13 @@ class _SelectedFilters extends State<SelectedFilters> {
               top: 1,
               child: GestureDetector(
                 onTap: (){
-                  _advancedSearchBloc.add(AdvancedSearchFiltersChanged(
-                      selectedFilters: {attributeName: []}));
+                  attributeValues.forEach((attributeValue) {
+                      _advancedSearchBloc.add(
+                        AdvancedSearchFilterRemoved(
+                          attributeName: attributeName,
+                          attributeValue: attributeValue));
+                     }
+                    );
                 },
                 child: Align(
                   alignment: Alignment.topRight,
