@@ -5,15 +5,22 @@ import 'package:car_data_app/src/views/vehicle_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class BasicSearchResultItem extends StatelessWidget {
+class SearchResultItem extends StatelessWidget {
   final Vehicle vehicle;
+  final String sortMetric;
+  final String sortMetricValue;
 
-  const BasicSearchResultItem({Key key, @required this.vehicle}) : super(key: key);
+  const SearchResultItem({Key key,
+    @required this.vehicle,
+    this.sortMetric,
+    this.sortMetricValue
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(vehicle.make + " " + vehicle.model, style: TextStyle(fontWeight: FontWeight.w500)),
+      trailing: sortMetric == null ? Text("") : _showSortMetric(),
       subtitle: Text(vehicle.year.toString()),
       leading: Icon(Icons.directions_car, color: Colors.teal),
       onTap: () {
@@ -27,6 +34,15 @@ class BasicSearchResultItem extends StatelessWidget {
             )
         );
       },
+    );
+  }
+
+  Widget _showSortMetric() {
+    return Column(
+      children: [
+        Expanded(child: Text(sortMetric, style: TextStyle(fontSize: 13),),),
+        Expanded(child: Text(sortMetricValue, style: TextStyle(fontSize: 13)),)
+      ],
     );
   }
 }

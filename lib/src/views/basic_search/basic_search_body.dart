@@ -75,7 +75,7 @@ class BasicSearchBodyState extends State<BasicSearchBody> {
           return Center(child: CircularProgressIndicator());
         }
         else {
-          return BasicSearchResultItem(vehicle: items[index]);
+          return SearchResultItem(vehicle: items[index]);
         }
       },
     );

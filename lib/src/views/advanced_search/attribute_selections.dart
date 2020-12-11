@@ -114,12 +114,22 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
           );
         }
         else if (state is AdvancedSearchSuccess){
-          return Expanded(
-              child: AdvancedSearchBody(
-                vehicles: state.vehicles,
-                hasReachedMax: state.hasReachedMax,
-              )
-          );
+          if (state.selectedFilters['sort_by'] == null || state.selectedFilters['sort_by'].isEmpty)
+            return Expanded(
+                child: AdvancedSearchBody(
+                  vehicles: state.vehicles,
+                  hasReachedMax: state.hasReachedMax,
+                )
+            );
+          else {
+            return Expanded(
+                child: AdvancedSearchBody(
+                  vehicles: state.vehicles,
+                  hasReachedMax: state.hasReachedMax,
+                  sortMetric: state.selectedFilters['sort_by'].first,
+                )
+            );
+          }
         }
         else {
           print("This should NOT be reached....");

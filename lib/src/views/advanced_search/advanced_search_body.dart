@@ -12,11 +12,13 @@ class AdvancedSearchBody extends StatefulWidget {
 
   final List<Vehicle> vehicles;
   final bool hasReachedMax;
+  final String sortMetric;
 
   AdvancedSearchBody({
     Key key,
     this.vehicles,
-    this.hasReachedMax
+    this.hasReachedMax,
+    this.sortMetric,
   }):super(key: key);
 
   @override
@@ -62,17 +64,21 @@ class AdvancedSearchBodyState extends State<AdvancedSearchBody> {
       return Center(child: Text('No Results'));
   }
 
-  Widget _searchResults(List<Vehicle> items, bool hasReachedMax) {
+  Widget _searchResults(List<Vehicle> vehicles, bool hasReachedMax) {
     return ListView.builder(
       shrinkWrap: true,
       controller: _scrollController,
-      itemCount: hasReachedMax ? items.length : items.length + 1,
+      itemCount: hasReachedMax ? vehicles.length : vehicles.length + 1,
       itemBuilder: (BuildContext context, int index) {
-        if (index >= items.length) {
+        if (index >= vehicles.length) {
           return Center(child: CircularProgressIndicator());
         }
         else {
-          return BasicSearchResultItem(vehicle: items[index]);
+          return SearchResultItem(
+            vehicle: vehicles[index],
+            sortMetric: widget.sortMetric,
+            sortMetricValue: sortMetricToValueMap(vehicles[index], widget.sortMetric),
+          );
         }
       },
     );
@@ -83,5 +89,18 @@ class AdvancedSearchBodyState extends State<AdvancedSearchBody> {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
+  }
+
+  String sortMetricToValueMap(Vehicle vehicle, String sortMetric) {
+    switch (sortMetric) {
+      case "City Mpg": return vehicle.engine.fuelEconomy.cityMpgPrimary.toString();
+      case "Highway Mpg": return vehicle.engine.fuelEconomy.highwayMpgPrimary.toString();
+      case "Combined Mpg": return vehicle.engine.fuelEconomy.combinedMpgPrimary.toString();
+      case "Annual Fuel Cost": return vehicle.engine.fuelEconomy.annualFuelCostPrimary.toString();
+      case "Fuel Economy": return vehicle.engine.fuelEconomy.fuelEconomyScore.toString();
+      case "CO2 Emissions": return vehicle.engine.fuelEmission.tailpipeCo2Primary.toString();
+      case "Greenhouse Score": return vehicle.engine.fuelEmission.greenhouseScorePrimary.toString();
+      default: return "";
+    }
   }
 }
