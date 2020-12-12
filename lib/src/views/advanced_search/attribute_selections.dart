@@ -310,7 +310,8 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
                 if(listAttributes.contains(attributeName))
                   return AttributeValuesList(
                       attributeName: attributeName,
-                      attributeValues: state.attributeValues.attributeValues[attributeName]);
+                      attributeValues: state.attributeValues.attributeValues[attributeName],
+                      shouldShowSearchBar: attributeName != "fuel_type");
 
                 else if(gridAttributes.contains(attributeName))
                   return AttributeValuesGrid(
@@ -332,7 +333,8 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
                 else // This should ideally not be reached
                   return AttributeValuesList(
                       attributeName: attributeName,
-                      attributeValues: state.attributeValues.attributeValues[attributeName]);
+                      attributeValues: state.attributeValues.attributeValues[attributeName],
+                      shouldShowSearchBar: attributeName != "fuel_type");
               }
               else { // this should not be reached ideally
                 print("This shouldn't be reached...");

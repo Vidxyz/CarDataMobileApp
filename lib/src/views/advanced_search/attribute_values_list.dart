@@ -8,8 +8,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AttributeValuesList extends StatefulWidget {
   final String attributeName;
   final List<String> attributeValues;
+  final bool shouldShowSearchBar;
 
-  AttributeValuesList({Key key, this.attributeName, this.attributeValues}):
+  AttributeValuesList({
+    Key key,
+    this.attributeName,
+    this.attributeValues,
+    this.shouldShowSearchBar
+  }):
         super(key: key);
 
   @override
@@ -21,7 +27,11 @@ class AttributeValuesList extends StatefulWidget {
 class _AttributeValuesListState extends State<AttributeValuesList> {
 
   AdvancedSearchBloc _advancedSearchBloc;
-  List<int> _selectedIndices = [];
+  List<String> _selectedItems = [];
+  List<String> filteredAttributeValues = [];
+
+  String searchQuery = "";
+  TextEditingController controller = new TextEditingController();
 
   @override
   void initState() {
@@ -30,16 +40,24 @@ class _AttributeValuesListState extends State<AttributeValuesList> {
   }
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final blocState = _advancedSearchBloc.state;
+    final attributeValuesToShow = widget.attributeValues.where((element) =>
+        element.toLowerCase().contains(searchQuery.toLowerCase())).toList();
     if (blocState is AdvancedSearchCriteriaChanged) {
       final selectedAttributeValues = blocState.selectedFilters[widget.attributeName];
       if(selectedAttributeValues != null){
-        _selectedIndices = selectedAttributeValues.map((e) => widget.attributeValues.indexOf(e)).toList();
+        _selectedItems = List<String>.from(selectedAttributeValues);
       }
-      else _selectedIndices = [];
+      else _selectedItems = [];
     }
-    else _selectedIndices = [];
+    else _selectedItems = [];
 
     return ConstrainedBox(
       constraints: BoxConstraints(
@@ -47,43 +65,74 @@ class _AttributeValuesListState extends State<AttributeValuesList> {
       ),
       child: Container(
         padding: EdgeInsets.only(bottom: 10),
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: widget.attributeValues.length,
-          itemBuilder: (_, index) {
-            return Container(
-              margin: EdgeInsets.only(left:17),
-              child: GestureDetector(
-                onTap: () => setState(() {
-                  if(_selectedIndices.contains(index)) _selectedIndices.remove(index);
-                  else _selectedIndices.add(index);
+        child: Column(
+          children: _addSearchBarIfNeeded(widget.shouldShowSearchBar) + [
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: attributeValuesToShow.length,
+                itemBuilder: (_, index) {
+                  return Container(
+                    margin: EdgeInsets.only(left:17),
+                    child: GestureDetector(
+                      onTap: () => setState(() {
+                        if(_selectedItems.contains(attributeValuesToShow[index]))
+                          _selectedItems.remove(attributeValuesToShow[index]);
+                        else
+                          _selectedItems.add(attributeValuesToShow[index]);
 
-                  _advancedSearchBloc.add(AdvancedSearchFiltersChanged(
-                      selectedFilters: {widget.attributeName: _getSelectedAttributeValues(widget.attributeValues, _selectedIndices)}));
-                }),
-                child: Container(
-                  padding: EdgeInsets.only(top: 5),
-                  child: Text(
-                      widget.attributeValues[index].toString(),
-                      style: TextStyle(
-                          color: _selectedIndices.contains(index) ? Colors.tealAccent : Colors.white,
-                          fontSize: 15
-                      )
-                  ),
-                ),
+                        _advancedSearchBloc.add(AdvancedSearchFiltersChanged(
+                            selectedFilters: {widget.attributeName: _selectedItems}));
+                      }),
+                      child: Container(
+                        padding: EdgeInsets.only(top: 5),
+                        child: Text(
+                            attributeValuesToShow[index].toString(),
+                            style: TextStyle(
+                                color: _selectedItems.contains(attributeValuesToShow[index]) ? Colors.tealAccent : Colors.white,
+                                fontSize: 15
+                            )
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
-            );
-          },
+            ),
+          ],
         ),
       ),
     );
   }
 
-  List<String> _getSelectedAttributeValues(List<String> values, List<int> selectedIndices) {
-    var selectedTypes = List<String>();
-    for (var i = 0; i < selectedIndices.length; i++) {
-      selectedTypes.add(values[selectedIndices[i]]);
-    }
-    return selectedTypes;
+  List<Widget> _addSearchBarIfNeeded(bool shouldShowSearchBar) {
+    if(!shouldShowSearchBar) return [];
+    else return [
+      Container(
+        // color: Theme.of(context).primaryColor,
+        child: ListTile(
+          dense: true,
+          // leading: new Icon(Icons.search),
+          title: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+                hintText: 'Filter by typing...',
+                border: InputBorder.none
+            ),
+            onChanged: (String text) {
+              setState(() {
+                searchQuery = text;
+              });
+            },
+          ),
+          trailing: IconButton(
+            icon: Icon(Icons.cancel_outlined),
+            onPressed: () {
+              controller.clear();
+            },
+          ),
+        ),
+      ),
+    ];
   }
 }

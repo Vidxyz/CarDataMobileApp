@@ -31,6 +31,12 @@ class BasicSearchBarState extends State<BasicSearchBar> {
   }
 
   @override
+  void dispose() {
+    _searchTextController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.all(10.0),
