@@ -59,6 +59,7 @@ class _SelectedFilters extends State<SelectedFilters> {
 
   AdvancedSearchBloc _advancedSearchBloc;
   Map<String, List<String>> selectedFilters = {};
+  bool isExpanded = false;
 
   @override
   void initState() {
@@ -68,31 +69,36 @@ class _SelectedFilters extends State<SelectedFilters> {
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-          minHeight: minHeight,
-          maxHeight: maxHeight
-      ),
-      child: Container(
-        decoration: BoxDecoration(border: Border.all(color: Colors.white)),
-        child: BlocBuilder<AdvancedSearchBloc, AdvancedSearchState>(
-          builder: (BuildContext context, AdvancedSearchState state) {
-            if (state is AdvancedSearchEmpty) {
-              return _addFiltersView();
-            }
-            else if (state is AdvancedSearchCriteriaChanged) {
-              selectedFilters = state.selectedFilters;
-              if(selectedFilters.entries.where((element) =>
-                  element.value.isNotEmpty
-                      && element.key != sortOrderKey).isEmpty)
+    return InkWell(
+      onTap: () {
+        setState(() {
+          isExpanded = !isExpanded;
+        });
+      },
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        height: isExpanded ? maxHeight * 2 : maxHeight,
+        child: Container(
+          decoration: BoxDecoration(border: Border.all(color: Colors.white)),
+          child: BlocBuilder<AdvancedSearchBloc, AdvancedSearchState>(
+            builder: (BuildContext context, AdvancedSearchState state) {
+              if (state is AdvancedSearchEmpty) {
                 return _addFiltersView();
-              else
+              }
+              else if (state is AdvancedSearchCriteriaChanged) {
+                selectedFilters = state.selectedFilters;
+                if(selectedFilters.entries.where((element) =>
+                    element.value.isNotEmpty
+                        && element.key != sortOrderKey).isEmpty)
+                  return _addFiltersView();
+                else
+                  return _selectedFilters(selectedFilters);
+              }
+              else {
                 return _selectedFilters(selectedFilters);
+              }
             }
-            else {
-              return _selectedFilters(selectedFilters);
-            }
-          }
+          ),
         ),
       ),
     );
