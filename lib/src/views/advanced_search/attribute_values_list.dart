@@ -129,6 +129,9 @@ class _AttributeValuesListState extends State<AttributeValuesList> {
             icon: Icon(Icons.cancel_outlined),
             onPressed: () {
               controller.clear();
+              setState(() {
+                searchQuery = "";
+              });
             },
           ),
         ),
