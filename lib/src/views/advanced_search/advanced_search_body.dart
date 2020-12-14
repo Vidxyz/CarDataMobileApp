@@ -37,13 +37,15 @@ class AdvancedSearchBodyState extends State<AdvancedSearchBody> {
   void _onScroll() {
     if (_debounce?.isActive ?? false) _debounce.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () {
-      // do something with _searchQuery.text
-      final maxScroll = _scrollController.position.maxScrollExtent;
-      final currentScroll = _scrollController.position.pixels;
-      final currentBlocState = _advancedSearchBloc.state;
+      if(_scrollController.hasClients) {
+        // do something with _searchQuery.text
+        final maxScroll = _scrollController.position.maxScrollExtent;
+        final currentScroll = _scrollController.position.pixels;
+        final currentBlocState = _advancedSearchBloc.state;
 
-      if (maxScroll - currentScroll <= _scrollThreshold && currentBlocState is AdvancedSearchSuccess) {
-        _advancedSearchBloc.add(AdvancedSearchButtonPressed(selectedFilters: currentBlocState.selectedFilters));
+        if (maxScroll - currentScroll <= _scrollThreshold && currentBlocState is AdvancedSearchSuccess) {
+          _advancedSearchBloc.add(AdvancedSearchButtonPressed(selectedFilters: currentBlocState.selectedFilters));
+        }
       }
     });
 
