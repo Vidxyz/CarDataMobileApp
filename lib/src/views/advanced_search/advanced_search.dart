@@ -53,7 +53,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                     setState(() {});
                   },
                   icon: Icon(Icons.clear_all),
-                  label: Text("Clear filters"),
+                  label: Text("Clear Filters"),
                   color: Colors.redAccent
               ),
             )
@@ -61,32 +61,41 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
         Expanded(
             child: Container(
               padding: EdgeInsets.all(1),
-              child: RaisedButton.icon(
-                  onPressed: () {
-                    final currentState =_advancedSearchBloc.state;
-                    if(currentState is AdvancedSearchCriteriaChanged){
-                      final f = Map<String, List<String>>.from(currentState.selectedFilters);
-                      // Remove sort order key (asc, desc) and search only if at least one attribute selected
-                      f.removeWhere((key, value) => key == sortOrderKey);
-                      if(f.isNotEmpty) {
-                        _advancedSearchBloc.add(AdvancedSearchButtonPressed(
+              child: BlocBuilder<AdvancedSearchBloc, AdvancedSearchState>(
+                  builder: (BuildContext context, AdvancedSearchState state) {
+                    return RaisedButton.icon(
+                      onPressed: () {
+                        final currentState =_advancedSearchBloc.state;
+                        if(currentState is AdvancedSearchCriteriaChanged){
+                          final f = Map<String, List<String>>.from(currentState.selectedFilters);
+                          // Remove sort order key (asc, desc) and search only if at least one attribute selected
+                          f.removeWhere((key, value) => key == sortOrderKey);
+                          if(f.isNotEmpty) {
+                            _advancedSearchBloc.add(AdvancedSearchButtonPressed(
                             selectedFilters: currentState.selectedFilters)
-                        );
-                      }
-                      else {
-                        print("Doing nothing because only sort order is set");
-                      }
-                    }
-                    else {
-                      print("Doing nothing because no filters set");
-                    }
-                  },
-                  icon: Icon(Icons.search_sharp),
-                  label: Text("Apply filters"),
-                  color: Colors.teal
+                            );
+                          }
+                          else {
+                            print("Doing nothing because only sort order is set");
+                          }
+                        }
+                        else if (currentState is AdvancedSearchSuccess) {
+                          print("Re-adding same filters to go back to edit filters view");
+                          _advancedSearchBloc.add(
+                          AdvancedSearchFiltersChanged(selectedFilters: currentState.selectedFilters));
+                        }
+                        else {
+                          print("Doing nothing because no filters set");
+                        }
+                      },
+                      icon: state is AdvancedSearchSuccess ? Icon(Icons.edit_outlined) : Icon(Icons.search_sharp),
+                      label: state is AdvancedSearchSuccess ? Text("Edit Filters") : Text("Apply Filters"),
+                      color: Colors.teal
+                    );
+                  }
+                  ),
               ),
             )
-        ),
       ],
     );
 }
