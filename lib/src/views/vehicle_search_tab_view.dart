@@ -8,7 +8,7 @@ import 'package:car_data_app/src/views/basic_search/basic_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class TabView extends StatelessWidget{
+class VehicleSearchTabView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +16,8 @@ class TabView extends StatelessWidget{
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Find Vehicles"),
-          bottom: TabBar(
+          toolbarHeight: 75,
+          title: TabBar(
             tabs: [
               Tab(icon: Icon(Icons.search), text: "Basic Search"),
               Tab(icon: Icon(Icons.saved_search), text: "Advanced Search"),
