@@ -1,3 +1,4 @@
+import 'package:car_data_app/src/views/favourites_screen.dart';
 import 'package:car_data_app/src/views/vehicle_search_tab_view.dart';
 import 'package:flutter/material.dart';
 
@@ -100,7 +101,7 @@ class GlobalAppDrawerState extends State<GlobalAppDrawer> {
   Widget _generateBody(String selectedMenuItem) {
     switch(selectedMenuItem) {
       case "Vehicle Search": return VehicleSearchTabView();
-      case "Favourite Vehicles": return Text("Favourite Vehicles");
+      case "Favourite Vehicles": return FavouritesScreen();
       case "Saved Filters": return Text("Saved Filters");
       case "I'm Feeling Lucky": return Text("I'm Feeling Lucky");
       case "Credits": return Text("Credits");
