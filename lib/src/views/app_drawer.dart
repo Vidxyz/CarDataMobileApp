@@ -13,6 +13,9 @@ class GlobalAppDrawerState extends State<GlobalAppDrawer> {
 
   static final String vehicleSearch = 'Vehicle Search';
   static final String favouriteVehicles = 'Favourite Vehicles';
+  static final String savedFilters = 'Saved Filters';
+  static final String imFeelingLucky = 'I\'m Feeling Lucky';
+  static final String credits = 'Credits';
 
   String selectedMenuItem = "Vehicle Search";
 
@@ -54,6 +57,39 @@ class GlobalAppDrawerState extends State<GlobalAppDrawer> {
                   }
                 },
               ),
+              ListTile(
+                title: Text(savedFilters),
+                onTap: () {
+                  Navigator.pop(context);
+                  if(selectedMenuItem != savedFilters) {
+                    setState(() {
+                      selectedMenuItem = savedFilters;
+                    });
+                  }
+                },
+              ),
+              ListTile(
+                title: Text(imFeelingLucky),
+                onTap: () {
+                  Navigator.pop(context);
+                  if(selectedMenuItem != imFeelingLucky) {
+                    setState(() {
+                      selectedMenuItem = imFeelingLucky;
+                    });
+                  }
+                },
+              ),
+              ListTile(
+                title: Text(credits),
+                onTap: () {
+                  Navigator.pop(context);
+                  if(selectedMenuItem != credits) {
+                    setState(() {
+                      selectedMenuItem = credits;
+                    });
+                  }
+                },
+              )
             ],
           ),
         ),
@@ -64,6 +100,10 @@ class GlobalAppDrawerState extends State<GlobalAppDrawer> {
   Widget _generateBody(String selectedMenuItem) {
     switch(selectedMenuItem) {
       case "Vehicle Search": return VehicleSearchTabView();
+      case "Favourite Vehicles": return Text("Favourite Vehicles");
+      case "Saved Filters": return Text("Saved Filters");
+      case "I'm Feeling Lucky": return Text("I'm Feeling Lucky");
+      case "Credits": return Text("Credits");
       default: return Text("Not Found");
     }
   }
@@ -71,6 +111,10 @@ class GlobalAppDrawerState extends State<GlobalAppDrawer> {
   String _getAppBarText(String selectedMenuItem) {
     switch(selectedMenuItem) {
       case "Vehicle Search": return "Find Vehicles";
+      case "Favourite Vehicles": return "Favourite Vehicles";
+      case "Saved Filters": return "Saved Filters";
+      case "I'm Feeling Lucky": return "I'm Feeling Lucky";
+      case "Credits": return "Credits";
       default: return "Not Found";
     }
   }

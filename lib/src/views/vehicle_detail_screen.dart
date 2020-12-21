@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quiver/iterables.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class VehicleDetailScreen extends StatefulWidget {
   final Vehicle vehicle;
@@ -22,7 +23,7 @@ class VehicleDetailScreen extends StatefulWidget {
 }
 
 class VehicleDetailScreenState extends State<VehicleDetailScreen> {
-  
+  static final String FAVOURITES = "vehicle_favourites";
   final Vehicle vehicle;
   
   VehicleImagesBloc vehicleImagesBloc;
@@ -120,10 +121,13 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
                   ),
                   Container(margin: EdgeInsets.only(left: 10.0, right: 10.0)),
                   Spacer(),
-                  Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                    size: 35.0,
+                  IconButton(
+                    icon: Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                      size: 35.0,
+                    ),
+                    onPressed: _toggleFavourites,
                   ),
                 ],
               ),
@@ -164,6 +168,31 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
       ),
     ],
   );
+
+  void _toggleFavourites() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var favouriteVehicleIds = prefs.getStringList(FAVOURITES);
+    if (favouriteVehicleIds == null) {
+      favouriteVehicleIds =  [vehicle.id];
+      _showSnackBar("Added to Favourites!");
+    }
+    else if (favouriteVehicleIds.contains(vehicle.id)) {
+      favouriteVehicleIds.remove(vehicle.id);
+      _showSnackBar("Removed from Favourites");
+    }
+    else {
+      favouriteVehicleIds.add(vehicle.id);
+      _showSnackBar("Added to Favourites!");
+    }
+    await prefs.setStringList(FAVOURITES, favouriteVehicleIds);
+  }
+
+  void _showSnackBar(String text) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(text, style: TextStyle(color: Colors.white),),
+      backgroundColor: Theme.of(context).backgroundColor,
+    ));
+  }
 
   List<Widget> generateBooleanSpecifications(Vehicle vehicle) {
       final specs = [
@@ -230,11 +259,21 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
       vehicle.engine.fuelEconomy.timeToCharge240v,
     ];
 
-    final headings = ["Yearly Barrels", "Yearly Barrels Secondary",
-      "Annual Fuel Cost (\$)", "Secondary Fuel Cost", "Fuel Economy Score",
-    "Power Consumption", "EPA City Range", "EPA Highway Range", "EPA Range", "Charging time (120V)", "Charging Time (240V)"];
+    final headings = [
+      "Yearly Barrels",
+      "Yearly Barrels Secondary",
+      "Annual Fuel Cost (\$)",
+      "Secondary Fuel Cost",
+      "Fuel Economy Score",
+      "Power Consumption",
+      "EPA City Range",
+      "EPA Highway Range",
+      "EPA Range",
+      "Charging time (120V)",
+      "Charging Time (240V)"
+    ];
 
-    final defaults = [null, null, null, null, null, null, null, null, null, null, null];
+    final defaults = headings.map((e) => null).toList();
 
     return zip([fuelEconomies, headings, defaults]).map((e) {
       if(e[2] != null || (e[0] != null && e[0] != 0)) { // If spec isn't null, or if a default is provided
@@ -448,10 +487,43 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
       vehicle.engine.driveTrain,
     ];
 
-    final headings = ["Fuel", "Alternate Fuel", "Fuel Type", "Alternate Fuel Type", "Transmission", "Cylinders", "Displacement (L)",
-      "Engine Type",  "EV Motor", "MpG Combined", "MpG City", "MpG Highway", "MpG Alternate Combined", "MpG Alternate City",
-      "MpG Alternate Highway", "Drive Train"];
-    final defaults = [null, null, null, null, "-", "-", "-", "-", null, "-", "-", "-", null, null, null, "-"];
+    final headings = [
+      "Fuel",
+      "Alternate Fuel",
+      "Fuel Type",
+      "Alternate Fuel Type",
+      "Transmission",
+      "Cylinders",
+      "Displacement (L)",
+      "Engine Type",
+      "EV Motor",
+      "MpG Combined",
+      "MpG City",
+      "MpG Highway",
+      "MpG Alternate Combined",
+      "MpG Alternate City",
+      "MpG Alternate Highway",
+      "Drive Train"
+    ];
+
+    final defaults = [
+      null,
+      null,
+      null,
+      null,
+      "-",
+      "-",
+      "-",
+      "-",
+      null,
+      "-",
+      "-",
+      "-",
+      null,
+      null,
+      null,
+      "-"
+    ];
 
     return zip([staticSpecs, headings, defaults]).map((e) {
       if(e[2] != null || (e[0] != null && e[0] != 0)) { // If spec isn't null, or if a default is provided
