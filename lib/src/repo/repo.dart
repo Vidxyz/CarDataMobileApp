@@ -12,6 +12,9 @@ class Repo {
   Future<List<Vehicle>> getVehiclesBySearchQuery(String query, int limit, int offset) =>
       _carDataApiProvider.getVehiclesBySearchQuery(query, limit, offset);
 
+  Future<List<Vehicle>> getVehiclesByIds(List<String> vehicleIds, int limit, int offset) =>
+      _carDataApiProvider.getVehiclesByIds(vehicleIds, limit, offset);
+
   Future<List<VehicleImage>> getVehicleImages(String vehicleId) => _carDataApiProvider.getVehicleImages(vehicleId);
 
   Future<List<SearchSuggestion>> getSuggestions(String query) => _carDataApiProvider.getSuggestions(query);

@@ -22,11 +22,13 @@ class BasicSearchBodyState extends State<BasicSearchBody> {
 
 
   void _onScroll() {
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.position.pixels;
-    final currentBlocState = _vehicleSearchBloc.state;
-    if (maxScroll - currentScroll <= _scrollThreshold && currentBlocState is SearchStateSuccess) {
-      _vehicleSearchBloc.add(SearchQueryChanged(text: currentBlocState.searchQuery));
+    if(_scrollController.hasClients) {
+      final maxScroll = _scrollController.position.maxScrollExtent;
+      final currentScroll = _scrollController.position.pixels;
+      final currentBlocState = _vehicleSearchBloc.state;
+      if (maxScroll - currentScroll <= _scrollThreshold && currentBlocState is SearchStateSuccess) {
+        _vehicleSearchBloc.add(SearchQueryChanged(text: currentBlocState.searchQuery));
+      }
     }
   }
 

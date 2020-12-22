@@ -9,6 +9,7 @@ import 'package:meta/meta.dart';
 import 'dart:async';
 
 class FavouriteVehiclesBloc extends Bloc<FavouriteVehiclesEvent, FavouriteVehiclesState> {
+  static final int pageSize = 15;
   final Repo repository;
 
   FavouriteVehiclesBloc({@required this.repository}): super(FavouriteVehiclesInitial());
@@ -19,17 +20,40 @@ class FavouriteVehiclesBloc extends Bloc<FavouriteVehiclesEvent, FavouriteVehicl
       Stream<Transition<FavouriteVehiclesEvent, FavouriteVehiclesState>> Function(FavouriteVehiclesEvent event, ) transitionFn,
       ) {
     return events
-        .debounceTime(const Duration(milliseconds: 300))
         .switchMap(transitionFn);
   }
 
   @override
   Stream<FavouriteVehiclesState> mapEventToState(FavouriteVehiclesEvent event) async* {
-    if(event is FavouriteVehiclesRequested) {
-      try {
-        // write code here
-      } catch (error) {
+    final currentState = state;
+    if(event is FavouriteVehiclesReset) {
+      yield FavouriteVehiclesInitial();
+    }
 
+    if(event is FavouriteVehiclesRequested && currentState is FavouriteVehiclesInitial) {
+      try {
+        yield FavouriteVehiclesLoading();
+        final results = await repository.getVehiclesByIds(event.favouriteVehicleIds, pageSize, 0);
+        yield FavouriteVehiclesSuccess(
+            favouriteVehicles: results,
+            hasReachedMax: results.length == pageSize ? false : true
+        );
+      } catch (error) {
+        yield FavouriteVehiclesError("An error occurred fetching vehicle data: ${error.toString()}");
+      }
+    }
+
+    if(event is FavouriteVehiclesRequested && currentState is FavouriteVehiclesSuccess) {
+      try {
+        final results = await repository.getVehiclesByIds(
+            event.favouriteVehicleIds, pageSize, currentState.favouriteVehicles.length);
+        yield FavouriteVehiclesSuccess(
+            favouriteVehicles: currentState.favouriteVehicles + results,
+            hasReachedMax: results.length == pageSize ? false : true
+        );
+      }
+      catch (error) {
+        yield FavouriteVehiclesError("An error occurred fetching vehicle data: ${error.toString()}");
       }
     }
   }

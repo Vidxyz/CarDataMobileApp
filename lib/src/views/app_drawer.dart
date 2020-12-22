@@ -1,6 +1,9 @@
-import 'package:car_data_app/src/views/favourites_screen.dart';
+import 'package:car_data_app/src/blocs/favourite_vehicles_bloc/favourite_vehicles_bloc.dart';
+import 'package:car_data_app/src/repo/repo.dart';
+import 'package:car_data_app/src/views/favourites_screen/favourites_screen.dart';
 import 'package:car_data_app/src/views/vehicle_search_tab_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GlobalAppDrawer extends StatefulWidget {
 
@@ -101,7 +104,11 @@ class GlobalAppDrawerState extends State<GlobalAppDrawer> {
   Widget _generateBody(String selectedMenuItem) {
     switch(selectedMenuItem) {
       case "Vehicle Search": return VehicleSearchTabView();
-      case "Favourite Vehicles": return FavouritesScreen();
+      case "Favourite Vehicles":
+        return BlocProvider(
+          create: (context) => FavouriteVehiclesBloc(repository: Repo()),
+          child: FavouritesScreen(),
+        );
       case "Saved Filters": return Text("Saved Filters");
       case "I'm Feeling Lucky": return Text("I'm Feeling Lucky");
       case "Credits": return Text("Credits");
