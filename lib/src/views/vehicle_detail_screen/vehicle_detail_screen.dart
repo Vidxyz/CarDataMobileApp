@@ -189,7 +189,11 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
 
   void _showSnackBar(String text) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(text, style: TextStyle(color: Colors.white),),
+      duration: Duration(milliseconds: 1000),
+      content: Text(
+        text,
+        style: TextStyle(color: Colors.white)
+      ),
       backgroundColor: Theme.of(context).backgroundColor,
     ));
   }

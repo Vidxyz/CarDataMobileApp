@@ -91,8 +91,14 @@ class FavouritesScreenState extends State<FavouritesScreen> {
             );
           }
           else if (state is FavouriteVehiclesSuccess) {
-            if(state.favouriteVehicles.isNotEmpty)
-              return Expanded(child: _searchResults(state.favouriteVehicles, state.hasReachedMax));
+            if(state.favouriteVehicles.isNotEmpty) {
+              final vehiclesToShow = state.favouriteVehicles
+                  .where((e) => (e.make + " " + e.model + " " + e.year.toString())
+                      .toLowerCase()
+                      .contains(searchQuery.toLowerCase()))
+                  .toList();
+              return Expanded(child: _searchResults(vehiclesToShow, state.hasReachedMax));
+            }
             else
               return Expanded(child: Center(child: Text('No Results')));
           }
@@ -114,11 +120,12 @@ class FavouritesScreenState extends State<FavouritesScreen> {
         else {
           final item = items[index];
           return Dismissible(
-            key: Key(item.id),
+            key: UniqueKey(),
             onDismissed: (direction) {
               _removeFromFavourites(item.id);
               ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
+                    duration: Duration(milliseconds: 1000),
                     content: Text(
                         "Removed ${item.make} ${item.model} ${item.year} from favourites",
                         style: TextStyle(color: Colors.white)
@@ -126,7 +133,7 @@ class FavouritesScreenState extends State<FavouritesScreen> {
                 backgroundColor: Theme.of(context).backgroundColor,
               ));
             },
-            background: Container(color: Colors.teal,),
+            background: Container(color: Colors.redAccent,),
             child: _searchResultItem(item),
           );
         }
