@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_bloc.dart';
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_event.dart';
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_state.dart';
+import 'package:car_data_app/src/models/saved_filter.dart';
 import 'package:car_data_app/src/utils/Utils.dart';
 import 'package:car_data_app/src/views/advanced_search/attribute_selections.dart';
 import 'package:car_data_app/src/views/advanced_search/selected_filters.dart';
@@ -21,7 +22,6 @@ class AdvancedSearch extends StatefulWidget {
 
 class _AdvancedSearchState extends State<AdvancedSearch> {
 
-  static final String SAVED_FILTERS_KEY = "SAVED_FILTERS";
   static final String sortOrderKey = "sort_order";
   AdvancedSearchBloc _advancedSearchBloc;
 
@@ -205,15 +205,15 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var uuid = Uuid();
     var filterId = uuid.v4();
-    var dataToStore = '{"id": "$filterId", "name": "$filterName", "selections": ${json.encode(filters)} }';
+    var savedFilter = SavedFilter.from(filterId, filterName, filters);
 
-    List<String> savedFiltersFromPrefs = prefs.getStringList(SAVED_FILTERS_KEY);
+    List<String> savedFiltersFromPrefs = prefs.getStringList(Utils.SAVED_FILTERS_KEY);
     if(savedFiltersFromPrefs == null)
-      savedFiltersFromPrefs = [dataToStore];
+      savedFiltersFromPrefs = [json.encode(savedFilter.toJson())];
     else
-      savedFiltersFromPrefs.add(json.encode(filters));
+      savedFiltersFromPrefs.add(json.encode(savedFilter.toJson()));
 
-    await prefs.setStringList(SAVED_FILTERS_KEY, savedFiltersFromPrefs);
+    await prefs.setStringList(Utils.SAVED_FILTERS_KEY, savedFiltersFromPrefs);
     Utils.showSnackBar("Filter saved successfully!", context);
   }
 
@@ -223,6 +223,4 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
         .map((e) => e.isEmpty)
         .toList()
         .fold(true, (previousValue, element) => previousValue && element);
-
-
 }

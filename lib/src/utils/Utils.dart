@@ -17,4 +17,6 @@ class Utils {
       backgroundColor: Theme.of(context).backgroundColor,
     ));
   }
+
+  static final String SAVED_FILTERS_KEY = "SAVED_FILTERS";
 }

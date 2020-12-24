@@ -10,10 +10,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VehicleSearchTabView extends StatelessWidget {
 
+  static final int MAX_TABS = 2;
+
+  // parameterize this and make it stateful widget, pass parameter down to advanced search
+  // use it to populate the selections screen if being brought here from saved filters menu
+  // add app bar icon here to go back to that same menu
+  // OR USE A BLOC INSTEAD - thats the way to go
+  // TabController _tabController = TabController(initialIndex: 0, length: MAX_TABS, vsync: this);
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: MAX_TABS,
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 75,

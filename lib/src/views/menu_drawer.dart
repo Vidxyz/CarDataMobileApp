@@ -1,6 +1,7 @@
 import 'package:car_data_app/src/blocs/favourite_vehicles_bloc/favourite_vehicles_bloc.dart';
 import 'package:car_data_app/src/repo/repo.dart';
 import 'package:car_data_app/src/views/menu_items/favourites_screen.dart';
+import 'package:car_data_app/src/views/menu_items/saved_filters.dart';
 import 'package:car_data_app/src/views/vehicle_search_tab_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -109,7 +110,7 @@ class GlobalMenuDrawerState extends State<GlobalMenuDrawer> {
           create: (context) => FavouriteVehiclesBloc(repository: Repo()),
           child: FavouritesScreen(),
         );
-      case "Saved Filters": return Text("Saved Filters");
+      case "Saved Filters": return SavedFiltersScreen();
       case "I'm Feeling Lucky": return Text("I'm Feeling Lucky");
       case "Credits": return Text("Credits");
       default: return Text("Not Found");
