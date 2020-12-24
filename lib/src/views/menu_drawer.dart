@@ -1,19 +1,19 @@
 import 'package:car_data_app/src/blocs/favourite_vehicles_bloc/favourite_vehicles_bloc.dart';
 import 'package:car_data_app/src/repo/repo.dart';
-import 'package:car_data_app/src/views/favourites_screen/favourites_screen.dart';
+import 'package:car_data_app/src/views/menu_items/favourites_screen.dart';
 import 'package:car_data_app/src/views/vehicle_search_tab_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class GlobalAppDrawer extends StatefulWidget {
+class GlobalMenuDrawer extends StatefulWidget {
 
   @override
   State createState() {
-    return GlobalAppDrawerState();
+    return GlobalMenuDrawerState();
   }
 }
 
-class GlobalAppDrawerState extends State<GlobalAppDrawer> {
+class GlobalMenuDrawerState extends State<GlobalMenuDrawer> {
 
   static final String vehicleSearch = 'Vehicle Search';
   static final String favouriteVehicles = 'Favourite Vehicles';

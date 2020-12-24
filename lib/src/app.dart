@@ -1,4 +1,4 @@
-import 'package:car_data_app/src/views/app_drawer.dart';
+import 'package:car_data_app/src/views/menu_drawer.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatelessWidget {
@@ -7,7 +7,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.dark(),
-      home: GlobalAppDrawer()
+      home: GlobalMenuDrawer()
     );
   }
 }
