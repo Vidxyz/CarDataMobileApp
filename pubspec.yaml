@@ -36,6 +36,7 @@ dependencies:
   flutter_bloc: ^6.1.1
   equatable: ^1.2.5
   shared_preferences: ^0.5.12+4
+  uuid: 2.2.2
 
 
 dev_dependencies:

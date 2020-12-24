@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_bloc.dart';
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_event.dart';
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_state.dart';
+import 'package:car_data_app/src/utils/Utils.dart';
 import 'package:car_data_app/src/views/advanced_search/attribute_selections.dart';
 import 'package:car_data_app/src/views/advanced_search/selected_filters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class AdvancedSearch extends StatefulWidget {
 
@@ -16,6 +21,7 @@ class AdvancedSearch extends StatefulWidget {
 
 class _AdvancedSearchState extends State<AdvancedSearch> {
 
+  static final String SAVED_FILTERS_KEY = "SAVED_FILTERS";
   static final String sortOrderKey = "sort_order";
   AdvancedSearchBloc _advancedSearchBloc;
 
@@ -59,7 +65,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
             children: [
               Expanded(child: _clearFiltersButton()),
               Expanded(child: _editOrApplyButton(state)),
-              Expanded(child: _saveButton())
+              Expanded(child: _saveButton(state))
             ],
           );
         }
@@ -83,13 +89,18 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
   }
 
 
-  Widget _saveButton() {
+  Widget _saveButton(AdvancedSearchState state) {
     return Container(
       padding: EdgeInsets.all(1),
       child: RaisedButton.icon(
           onPressed: () {
-            _advancedSearchBloc.add(AdvancedSearchReset());
-            setState(() {});
+            // Need to prompt dialog with text prompt and store JSON object in shared prefs
+            if(state is AdvancedSearchCriteriaChanged) {
+              _showUserPromptToSaveFilters(state.selectedFilters);
+            }
+            else {
+              print("This shouldn't be happening... look into it....");
+            }
           },
           icon: Icon(Icons.save_sharp),
           label: Text("Save"),
@@ -133,6 +144,77 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
           color: Colors.teal
       ),
     );
+  }
+
+  Future<void> _showUserPromptToSaveFilters(Map<String, List<String>> selectedFilters) async {
+    final textEditingController = TextEditingController();
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Save Filter'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Please enter a name for your selection'),
+                Utils.Gap(),
+                Utils.Gap(),
+                TextField(
+                  controller: textEditingController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Filter Name"
+                  ),
+                )
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                   'Cancel',
+                    style: TextStyle(
+                      color: Colors.tealAccent
+                    ),
+                  ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(
+                'Save',
+                style: TextStyle(
+                    color: Colors.tealAccent
+                ),
+              ),
+              onPressed: () {
+                // Save to shared prefs here before popping
+                _saveChosenFilter(selectedFilters, textEditingController.text);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _saveChosenFilter(Map<String, List<String>> filters, String filterName) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var uuid = Uuid();
+    var filterId = uuid.v4();
+    var dataToStore = '{"id": "$filterId", "name": "$filterName", "selections": ${json.encode(filters)} }';
+
+    List<String> savedFiltersFromPrefs = prefs.getStringList(SAVED_FILTERS_KEY);
+    if(savedFiltersFromPrefs == null)
+      savedFiltersFromPrefs = [dataToStore];
+    else
+      savedFiltersFromPrefs.add(json.encode(filters));
+
+    await prefs.setStringList(SAVED_FILTERS_KEY, savedFiltersFromPrefs);
+    Utils.showSnackBar("Filter saved successfully!", context);
   }
 
   bool _areFiltersEmpty(Map<String, List<String>> filters) =>
