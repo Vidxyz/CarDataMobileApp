@@ -127,7 +127,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
                       color: Colors.red,
                       size: 35.0,
                     ),
-                    onPressed: _toggleFavourites,
+                    onPressed: _toggleFavouritesSharedPref,
                   ),
                 ],
               ),
@@ -169,7 +169,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
     ],
   );
 
-  void _toggleFavourites() async {
+  void _toggleFavouritesSharedPref() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var favouriteVehicleIds = prefs.getStringList(FAVOURITES);
     if (favouriteVehicleIds == null) {
@@ -194,8 +194,16 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
         vehicle.engine.fuelEconomy.isGuzzler
       ];
 
-      final headings = ["Supercharger", "Turbocharger", "Guzzler"];
-      final defaults = ["No", "No", "No"];
+      final headings = [
+        "Supercharger",
+        "Turbocharger",
+        "Guzzler"
+      ];
+      final defaults = [
+        "No",
+        "No",
+        "No"
+      ];
 
       return zip([specs, headings, defaults]).map((e) {
         if(e[2] != null || (e[0] != null && e[0] != 0)) { // If spec isn't null, or if a default is provided
@@ -235,7 +243,6 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
 
       }).expand((i) => i).toList();
   }
-
 
   List<Widget> generateFuelEconomySpecifics(Vehicle vehicle) {
     final fuelEconomies = [
@@ -315,10 +322,14 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
       vehicle.engine.fuelEmission.tailpipeCo2Secondary,
     ];
 
-    final headings = ["Greenhouse Score", "Greenhouse Score Secondary", "Tailpipe CO2",
-      "Tailpipe CO2 Seconadry"];
+    final headings = [
+      "Greenhouse Score",
+      "Greenhouse Score Secondary",
+      "Tailpipe CO2",
+      "Tailpipe CO2 Seconadry"
+    ];
 
-    final defaults = [null, null, null, null];
+    final defaults = headings.map((e) => null).toList();
 
     return zip([dimensions, headings, defaults]).map((e) {
       if(e[2] != null || (e[0] != null && e[0] != 0)) { // If spec isn't null, or if a default is provided
@@ -370,10 +381,16 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
       vehicle.dimensions.fourDoorLuggageVolume,
     ];
 
-    final headings = ["4Dr Luggage Volume", "4Dr Passenger Volume", "Hatchback Luggage Volume",
-      "Hatchback Passenger Volume", "2Dr Luggage Volume", "2Dr Passenger Volume"];
+    final headings = [
+      "4Dr Luggage Volume",
+      "4Dr Passenger Volume",
+      "Hatchback Luggage Volume",
+      "Hatchback Passenger Volume",
+      "2Dr Luggage Volume",
+      "2Dr Passenger Volume"
+    ];
 
-    final defaults = [null, null, null, null, null, null];
+    final defaults = headings.map((e) => null).toList();
 
     return zip([dimensions, headings, defaults]).map((e) {
       if(e[2] != null || (e[0] != null && e[0] != 0)) { // If spec isn't null, or if a default is provided

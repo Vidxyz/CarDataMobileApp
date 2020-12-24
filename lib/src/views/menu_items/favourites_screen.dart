@@ -6,6 +6,7 @@ import 'package:car_data_app/src/blocs/favourite_vehicles_bloc/favourite_vehicle
 import 'package:car_data_app/src/blocs/vehicle_images_bloc/vehicle_images_bloc.dart';
 import 'package:car_data_app/src/models/vehicle.dart';
 import 'package:car_data_app/src/repo/repo.dart';
+import 'package:car_data_app/src/utils/Utils.dart';
 import 'package:car_data_app/src/views/vehicle_detail_screen/vehicle_detail_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -123,15 +124,10 @@ class FavouritesScreenState extends State<FavouritesScreen> {
             key: UniqueKey(),
             onDismissed: (direction) {
               _removeFromFavourites(item.id);
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    duration: Duration(milliseconds: 1000),
-                    content: Text(
-                        "Removed ${item.make} ${item.model} ${item.year} from favourites",
-                        style: TextStyle(color: Colors.white)
-                    ),
-                backgroundColor: Theme.of(context).backgroundColor,
-              ));
+              Utils.showSnackBar(
+                  "Removed ${item.make} ${item.model} ${item.year} from favourites",
+                  context
+              );
             },
             background: Container(color: Colors.redAccent,),
             child: _searchResultItem(item),
