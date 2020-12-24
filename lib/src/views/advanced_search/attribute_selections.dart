@@ -30,27 +30,74 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
   @override
   bool wantKeepAlive = true;
 
-  static final List<String> listAttributes = ["make", "fuel_type", "engine_descriptor", "type"];
-  static final List<String> gridAttributes = ["fuel_type_primary", "fuel_type_secondary"];
-  static final List<String> integerSliderAttributes = ["year", "cylinders"];
+  static final List<String> listAttributes = [
+    "make",
+    "fuel_type",
+    "engine_descriptor",
+    "type"
+  ];
+  static final List<String> gridAttributes = [
+    "fuel_type_primary",
+    "fuel_type_secondary"
+  ];
+  static final List<String> integerSliderAttributes = [
+    "year",
+    "cylinders"
+  ];
   static final List<String> doubleSliderAttributes = ["displacement"];
-  static final List<String> sortByAttributesDisplay = ["City Mpg", "Highway Mpg", "Combined Mpg",
-    "Annual Fuel Cost", "Fuel Economy", "CO2 Emissions", "Greenhouse Score"];
+  static final List<String> sortByAttributesDisplay = [
+    "City Mpg",
+    "Highway Mpg",
+    "Combined Mpg",
+    "Annual Fuel Cost",
+    "Fuel Economy",
+    "CO2 Emissions",
+    "Greenhouse Score"
+  ];
   static final String sortBy = "sort_by";
 
-  static final List<String> displayNames = ["Make", "Year", "Primary Fuel",
-    "Secondary Fuel", "Fuel Grade", "Engine", "Transmission", "Cylinders",
-    "Displacement"];
-  static final List<String> attributesToDisplayListsFor = ["make", "year", "fuel_type_primary",
-    "fuel_type_secondary", "fuel_type", "engine_descriptor", "type",  "cylinders",
-    "displacement"];
+  static final List<String> displayNames = [
+    "Make",
+    "Year",
+    "Primary Fuel",
+    "Secondary Fuel",
+    "Fuel Grade",
+    "Engine",
+    "Transmission",
+    "Cylinders",
+    "Displacement"
+  ];
+  static final List<String> attributesToDisplayListsFor = [
+    "make",
+    "year",
+    "fuel_type_primary",
+    "fuel_type_secondary",
+    "fuel_type",
+    "engine_descriptor",
+    "type",
+    "cylinders",
+    "displacement"
+  ];
 
 
-  static final List<String> moreDisplayNames = ["City Mpg", "Highway Mpg", "Combined Mpg",
-    "Annual Fuel Cost (\$)", "Fuel Economy Score", "CO2 Emissions", "Greenhouse Gas Score"];
-  static final List<String> moreAttributesToDisplayListsFor = ["city_mpg_primary", "highway_mpg_primary",
-    "combined_mpg_primary", "annual_fuel_cost_primary", "fuel_economy_score", "tailpipe_co2_primary",
-    "gh_gas_score_primary"];
+  static final List<String> moreDisplayNames = [
+    "City Mpg",
+    "Highway Mpg",
+    "Combined Mpg",
+    "Annual Fuel Cost (\$)",
+    "Fuel Economy Score",
+    "CO2 Emissions",
+    "Greenhouse Gas Score"
+  ];
+  static final List<String> moreAttributesToDisplayListsFor = [
+    "city_mpg_primary",
+    "highway_mpg_primary",
+    "combined_mpg_primary",
+    "annual_fuel_cost_primary",
+    "fuel_economy_score",
+    "tailpipe_co2_primary",
+    "gh_gas_score_primary"
+  ];
 
   static final List<String> yesNoDisplayAttributes = ["Supercharged", "Turbocharged", "Guzzler"];
   static final List<String> yesNoRawAttributes = ["is_supercharged", "is_turbocharged", "is_guzzler"];

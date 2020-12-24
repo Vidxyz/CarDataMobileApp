@@ -49,17 +49,26 @@ class SavedFiltersScreenState extends State<SavedFiltersScreen> {
 
 
   Widget _searchResultItem(SavedFilter savedFilter) {
-    return ListTile(
-      title: Text(
-          savedFilter.name,
-          style: TextStyle(fontWeight: FontWeight.w500)
+    return Container(
+      padding: EdgeInsets.all(5),
+      child: ListTile(
+        title: Text(
+            savedFilter.name,
+            style: TextStyle(fontWeight: FontWeight.w500)
+        ),
+        trailing: Icon(Icons.format_align_left_sharp),
+        subtitle: Container(
+          padding: EdgeInsets.only(top: 5),
+            margin: EdgeInsets.only(top: 5),
+            child:
+            Text(
+                savedFilter.toString()
+            )
+        ),
+        onTap: () {
+          // Nothing doing yet
+        },
       ),
-      trailing: Icon(Icons.format_align_left_sharp),
-      subtitle: Text(savedFilter.selections.toString()),
-      leading: Icon(Icons.directions_car, color: Colors.teal),
-      onTap: () {
-        // Nothing doing yet
-      },
     );
   }
 
