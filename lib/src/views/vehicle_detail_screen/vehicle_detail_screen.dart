@@ -112,7 +112,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Gap(),
+              Utils.Gap(),
               Row(
                 children: <Widget>[
                   Text(
@@ -131,18 +131,18 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
                   ),
                 ],
               ),
-              Gap(),
+              Utils.Gap(),
               Text(
                 vehicle.vehicleClass, // Class
                 style: TextStyle(
                   fontSize: 18.0,
                 ),
               ),
-              Gap(),
+              Utils.Gap(),
               Text(vehicle.manufacturerCode ?? "N/A", style: TextStyle(fontSize: 15.0),), // Manufacturer code
-              Gap(),
+              Utils.Gap(),
               Divider(),
-              Gap(),
+              Utils.Gap(),
               Row(
                 children: [
                   Spacer(),
@@ -156,13 +156,13 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
                   Spacer()
                 ],
               ),
-              Gap(),
+              Utils.Gap(),
               Divider(),
             ]
                 + generateStaticSpecifications(vehicle) // other vehicle stats to show
-                + [Gap(), Divider()]
+                + [Utils.Gap(), Divider()]
                 + generateBooleanSpecifications(vehicle)
-                + [Gap(), Divider()]
+                + [Utils.Gap(), Divider()]
                 + generateAccordionLists(vehicle)
         ),
       ),
@@ -174,28 +174,17 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
     var favouriteVehicleIds = prefs.getStringList(FAVOURITES);
     if (favouriteVehicleIds == null) {
       favouriteVehicleIds =  [vehicle.id];
-      _showSnackBar("Added to Favourites!");
+      Utils.showSnackBar("Added to Favourites!", context);
     }
     else if (favouriteVehicleIds.contains(vehicle.id)) {
       favouriteVehicleIds.remove(vehicle.id);
-      _showSnackBar("Removed from Favourites");
+      Utils.showSnackBar("Removed from Favourites", context);
     }
     else {
       favouriteVehicleIds.add(vehicle.id);
-      _showSnackBar("Added to Favourites!");
+      Utils.showSnackBar("Added to Favourites!", context);
     }
     await prefs.setStringList(FAVOURITES, favouriteVehicleIds);
-  }
-
-  void _showSnackBar(String text) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      duration: Duration(milliseconds: 1000),
-      content: Text(
-        text,
-        style: TextStyle(color: Colors.white)
-      ),
-      backgroundColor: Theme.of(context).backgroundColor,
-    ));
   }
 
   List<Widget> generateBooleanSpecifications(Vehicle vehicle) {
@@ -211,7 +200,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
       return zip([specs, headings, defaults]).map((e) {
         if(e[2] != null || (e[0] != null && e[0] != 0)) { // If spec isn't null, or if a default is provided
           return <Widget>[
-            Gap(),
+            Utils.Gap(),
             Container(
               margin: EdgeInsets.only(left: 10),
               child: Row(
@@ -532,7 +521,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
     return zip([staticSpecs, headings, defaults]).map((e) {
       if(e[2] != null || (e[0] != null && e[0] != 0)) { // If spec isn't null, or if a default is provided
         return <Widget>[
-          Gap(),
+          Utils.Gap(),
           Container(
             margin: EdgeInsets.only(left: 10),
             child: Row(
@@ -576,7 +565,6 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
     );
   }
 
-  Widget Gap() => Container(margin: EdgeInsets.only(top: 8.0, bottom: 8.0));
   TextStyle _keyTextStyle() => TextStyle(fontSize: 15);
   TextStyle _valueTextStyle() => TextStyle(fontSize: 15, fontWeight: FontWeight.bold);
 
