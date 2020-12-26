@@ -48,6 +48,7 @@ class GlobalMenuDrawerState extends State<GlobalMenuDrawer> {
           return Scaffold(
             appBar: new AppBar(
               title: Text(_getAppBarText(selectedMenuItem)),
+              actions: _addAppBarIcons(selectedMenuItem),
             ),
             drawer: Drawer(
               child: ListView(
@@ -139,5 +140,22 @@ class GlobalMenuDrawerState extends State<GlobalMenuDrawer> {
       case "Credits": return "Credits";
       default: return "Not Found";
     }
+  }
+
+  List<Widget> _addAppBarIcons(String selectedMenuItem) {
+    if (selectedMenuItem == vehicleSearch) {
+      return [
+        IconButton(
+          icon: Icon(
+              Icons.filter_list_alt
+          ),
+          onPressed: () {
+            _menuNavigationBloc.add(MenuItemChosen(selectedMenuItem: savedFilters));
+          },
+        )
+      ];
+    }
+    else
+      return [];
   }
 }
