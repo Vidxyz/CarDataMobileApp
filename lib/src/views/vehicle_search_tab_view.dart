@@ -1,9 +1,9 @@
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_bloc.dart';
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_event.dart';
 import 'package:car_data_app/src/blocs/attribute_values_bloc/attribute_values_bloc.dart';
+import 'package:car_data_app/src/blocs/menu_navigation_bloc/menu_navigation_bloc.dart';
+import 'package:car_data_app/src/blocs/menu_navigation_bloc/menu_navigation_state.dart';
 import 'package:car_data_app/src/blocs/more_attribute_values_bloc/more_attribute_values_bloc.dart';
-import 'package:car_data_app/src/blocs/saved_filter_bloc/menu_navigation_bloc.dart';
-import 'package:car_data_app/src/blocs/saved_filter_bloc/menu_navigation_state.dart';
 import 'package:car_data_app/src/blocs/vehicle_search_bloc/vehicle_search_bloc.dart';
 import 'package:car_data_app/src/repo/repo.dart';
 import 'package:car_data_app/src/views/advanced_search/advanced_search.dart';

@@ -1,7 +1,7 @@
 import 'package:car_data_app/src/blocs/favourite_vehicles_bloc/favourite_vehicles_bloc.dart';
-import 'package:car_data_app/src/blocs/saved_filter_bloc/menu_navigation_bloc.dart';
-import 'package:car_data_app/src/blocs/saved_filter_bloc/menu_navigation_event.dart';
-import 'package:car_data_app/src/blocs/saved_filter_bloc/menu_navigation_state.dart';
+import 'package:car_data_app/src/blocs/menu_navigation_bloc/menu_navigation_bloc.dart';
+import 'package:car_data_app/src/blocs/menu_navigation_bloc/menu_navigation_event.dart';
+import 'package:car_data_app/src/blocs/menu_navigation_bloc/menu_navigation_state.dart';
 import 'package:car_data_app/src/repo/repo.dart';
 import 'package:car_data_app/src/views/menu_items/favourites_screen.dart';
 import 'package:car_data_app/src/views/menu_items/saved_filters.dart';
