@@ -19,4 +19,5 @@ class Utils {
   }
 
   static final String SAVED_FILTERS_KEY = "SAVED_FILTERS";
+  static final String FAVOURITES_KEY = "vehicle_favourites";
 }

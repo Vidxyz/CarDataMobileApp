@@ -23,18 +23,19 @@ class VehicleDetailScreen extends StatefulWidget {
 }
 
 class VehicleDetailScreenState extends State<VehicleDetailScreen> {
-  static final String FAVOURITES = "vehicle_favourites";
   final Vehicle vehicle;
-  
+
+  bool isVehicleInFavourites = false;
   VehicleImagesBloc vehicleImagesBloc;
   
   VehicleDetailScreenState({this.vehicle});
 
   @override
-  void didChangeDependencies() {
+  void initState() {
+    super.initState();
     vehicleImagesBloc = BlocProvider.of<VehicleImagesBloc>(context);
     vehicleImagesBloc.add(ImageFetchStarted(vehicleId: vehicle.id));
-    super.didChangeDependencies();
+    _checkIfVehicleInFavourites();
   }
 
   @override
@@ -123,7 +124,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
                   Spacer(),
                   IconButton(
                     icon: Icon(
-                      Icons.favorite,
+                      _getFavouriteIcon(isVehicleInFavourites),
                       color: Colors.red,
                       size: 35.0,
                     ),
@@ -168,24 +169,6 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
       ),
     ],
   );
-
-  void _toggleFavouritesSharedPref() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var favouriteVehicleIds = prefs.getStringList(FAVOURITES);
-    if (favouriteVehicleIds == null) {
-      favouriteVehicleIds =  [vehicle.id];
-      Utils.showSnackBar("Added to Favourites!", context);
-    }
-    else if (favouriteVehicleIds.contains(vehicle.id)) {
-      favouriteVehicleIds.remove(vehicle.id);
-      Utils.showSnackBar("Removed from Favourites", context);
-    }
-    else {
-      favouriteVehicleIds.add(vehicle.id);
-      Utils.showSnackBar("Added to Favourites!", context);
-    }
-    await prefs.setStringList(FAVOURITES, favouriteVehicleIds);
-  }
 
   List<Widget> generateBooleanSpecifications(Vehicle vehicle) {
       final specs = [
@@ -605,6 +588,43 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
           ),
         ),
       )).toList();
+  }
+
+  void _checkIfVehicleInFavourites() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var favouriteVehicleIds = prefs.getStringList(Utils.FAVOURITES_KEY);
+    setState(() {
+      isVehicleInFavourites = favouriteVehicleIds?.where((element) => element == vehicle.id)?.isNotEmpty;
+    });
+  }
+
+  IconData _getFavouriteIcon(bool isFavourite) {
+    if(isFavourite)
+      return Icons.favorite;
+    else
+      return Icons.favorite_outline;
+  }
+
+  void _toggleFavouritesSharedPref() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var favouriteVehicleIds = prefs.getStringList(Utils.FAVOURITES_KEY);
+    if (favouriteVehicleIds == null) {
+      favouriteVehicleIds =  [vehicle.id];
+      Utils.showSnackBar("Added to Favourites!", context);
+      isVehicleInFavourites = true;
     }
+    else if (favouriteVehicleIds.contains(vehicle.id)) {
+      favouriteVehicleIds.remove(vehicle.id);
+      Utils.showSnackBar("Removed from Favourites", context);
+      isVehicleInFavourites = false;
+    }
+    else {
+      favouriteVehicleIds.add(vehicle.id);
+      Utils.showSnackBar("Added to Favourites!", context);
+      isVehicleInFavourites = true;
+    }
+    await prefs.setStringList(Utils.FAVOURITES_KEY, favouriteVehicleIds);
+    setState(() {});
+  }
 
 }
