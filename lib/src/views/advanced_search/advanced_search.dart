@@ -98,6 +98,9 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
             if(state is AdvancedSearchCriteriaChanged) {
               _showUserPromptToSaveFilters(state.selectedFilters);
             }
+            else if (state is AdvancedSearchSuccess) {
+              _showUserPromptToSaveFilters(state.selectedFilters);
+            }
             else {
               print("This shouldn't be happening... look into it....");
             }

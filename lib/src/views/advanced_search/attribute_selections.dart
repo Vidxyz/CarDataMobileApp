@@ -113,7 +113,6 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
   @override
   void initState() {
     super.initState();
-    print("AttributeSelectionFiltersState init state method");
     _attributeValuesBloc = BlocProvider.of<AttributeValuesBloc>(context);
     _moreAttributeValuesBloc = BlocProvider.of<MoreAttributeValuesBloc>(context);
     _advancedSearchBloc = BlocProvider.of<AdvancedSearchBloc>(context);

@@ -1,5 +1,7 @@
+import 'package:car_data_app/src/blocs/saved_filter_bloc/menu_navigation_bloc.dart';
 import 'package:car_data_app/src/views/menu_drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class App extends StatelessWidget {
 
@@ -7,7 +9,10 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.dark(),
-      home: GlobalMenuDrawer()
+      home: BlocProvider(
+        create: (context) => MenuNavigationBloc(),
+        child: GlobalMenuDrawer(),
+      ),
     );
   }
 }

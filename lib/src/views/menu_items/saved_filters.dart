@@ -1,9 +1,12 @@
 import 'dart:convert';
 
+import 'package:car_data_app/src/blocs/saved_filter_bloc/menu_navigation_event.dart';
+import 'package:car_data_app/src/blocs/saved_filter_bloc/menu_navigation_bloc.dart';
 import 'package:car_data_app/src/models/saved_filter.dart';
 import 'package:car_data_app/src/utils/Utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SavedFiltersScreen extends StatefulWidget {
@@ -17,11 +20,13 @@ class SavedFiltersScreen extends StatefulWidget {
 class SavedFiltersScreenState extends State<SavedFiltersScreen> {
 
   List<SavedFilter> savedFilters;
+  MenuNavigationBloc _menuNavigationBloc;
 
   @override
   void initState() {
     super.initState();
     _getSavedFiltersFromSharedPrefs();
+    _menuNavigationBloc = BlocProvider.of<MenuNavigationBloc>(context);
   }
 
   @override
@@ -66,7 +71,7 @@ class SavedFiltersScreenState extends State<SavedFiltersScreen> {
             )
         ),
         onTap: () {
-          // Nothing doing yet
+          _menuNavigationBloc.add(SavedFilterChosen(selectedFilters: savedFilter.selections));
         },
       ),
     );
