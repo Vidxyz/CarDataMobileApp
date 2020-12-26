@@ -113,7 +113,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Utils.Gap(),
+              Utils.gap(),
               Row(
                 children: <Widget>[
                   Text(
@@ -132,18 +132,18 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
                   ),
                 ],
               ),
-              Utils.Gap(),
+              Utils.gap(),
               Text(
                 vehicle.vehicleClass, // Class
                 style: TextStyle(
                   fontSize: 18.0,
                 ),
               ),
-              Utils.Gap(),
+              Utils.gap(),
               Text(vehicle.manufacturerCode ?? "N/A", style: TextStyle(fontSize: 15.0),), // Manufacturer code
-              Utils.Gap(),
+              Utils.gap(),
               Divider(),
-              Utils.Gap(),
+              Utils.gap(),
               Row(
                 children: [
                   Spacer(),
@@ -157,13 +157,13 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
                   Spacer()
                 ],
               ),
-              Utils.Gap(),
+              Utils.gap(),
               Divider(),
             ]
                 + generateStaticSpecifications(vehicle) // other vehicle stats to show
-                + [Utils.Gap(), Divider()]
+                + [Utils.gap(), Divider()]
                 + generateBooleanSpecifications(vehicle)
-                + [Utils.Gap(), Divider()]
+                + [Utils.gap(), Divider()]
                 + generateAccordionLists(vehicle)
         ),
       ),
@@ -191,7 +191,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
       return zip([specs, headings, defaults]).map((e) {
         if(e[2] != null || (e[0] != null && e[0] != 0)) { // If spec isn't null, or if a default is provided
           return <Widget>[
-            Utils.Gap(),
+            Utils.gap(),
             Container(
               margin: EdgeInsets.only(left: 10),
               child: Row(
@@ -521,7 +521,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
     return zip([staticSpecs, headings, defaults]).map((e) {
       if(e[2] != null || (e[0] != null && e[0] != 0)) { // If spec isn't null, or if a default is provided
         return <Widget>[
-          Utils.Gap(),
+          Utils.gap(),
           Container(
             margin: EdgeInsets.only(left: 10),
             child: Row(

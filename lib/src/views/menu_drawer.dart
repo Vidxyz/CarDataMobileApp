@@ -2,8 +2,10 @@ import 'package:car_data_app/src/blocs/favourite_vehicles_bloc/favourite_vehicle
 import 'package:car_data_app/src/blocs/menu_navigation_bloc/menu_navigation_bloc.dart';
 import 'package:car_data_app/src/blocs/menu_navigation_bloc/menu_navigation_event.dart';
 import 'package:car_data_app/src/blocs/menu_navigation_bloc/menu_navigation_state.dart';
+import 'package:car_data_app/src/blocs/random_vehicle_bloc/random_vehicle_bloc.dart';
 import 'package:car_data_app/src/repo/repo.dart';
 import 'package:car_data_app/src/views/menu_items/favourites_screen.dart';
+import 'package:car_data_app/src/views/menu_items/random_vehicle_screen.dart';
 import 'package:car_data_app/src/views/menu_items/saved_filters.dart';
 import 'package:car_data_app/src/views/vehicle_search_tab_view.dart';
 import 'package:flutter/material.dart';
@@ -125,7 +127,11 @@ class GlobalMenuDrawerState extends State<GlobalMenuDrawer> {
         );
       case "Saved Filters":
         return  SavedFiltersScreen();
-      case "I'm Feeling Lucky": return Text("I'm Feeling Lucky");
+      case "I'm Feeling Lucky":
+        return BlocProvider(
+          create: (context) => RandomVehicleBloc(repository: Repo()),
+          child: RandomVehicleScreen(),
+        );
       case "Credits": return Text("Credits");
       default: return Text("Not Found");
     }

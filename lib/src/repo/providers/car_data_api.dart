@@ -22,6 +22,19 @@ class CarDataApi {
   static final Link _link = Link.from([_errorLink, _httpLink]);
   final GraphQLClient _client = GraphQLClient(link: _link, cache: InMemoryCache());
 
+  static final policies = Policies(
+    fetch: FetchPolicy.networkOnly,
+  );
+
+  final GraphQLClient _noCacheClient = GraphQLClient(
+    link: _link,
+    cache: InMemoryCache(),
+    defaultPolicies: DefaultPolicies(
+      watchQuery: policies,
+      query: policies,
+    )
+  );
+
   final int maxLimit = 500;
 
   static final sortCriteriaToRawMap = {
@@ -292,6 +305,74 @@ class CarDataApi {
   ''';
   }
 
+  String randomVehicleQuery() { return r'''
+  query RandomVehicle {
+    random_vehicle {
+      id
+      make
+      model 
+      year
+      primary_fuel
+      alternate_fuel
+      fuel_type
+      manufacturer_code
+      record_id
+      alternate_fuel_type
+      vehicle_class
+      dimensions {
+        hatchback_luggage_volume
+        hatchback_passenger_volume
+        two_door_luggage_volume
+        four_door_luggage_volume
+        two_door_passenger_volume
+        four_door_passenger_volume
+      }
+      transmission {
+        transmission_descriptor
+        type
+      }
+      engine {
+        cylinders
+        displacement
+        engine_id
+        engine_descriptor
+        ev_motor
+        is_supercharged
+        is_turbocharged
+        drive_type
+        fuel_economy {
+          barrels_per_year_primary
+          barrels_per_year_secondary
+          city_mpg_primary
+          city_mpg_secondary
+          highway_mpg_primary
+          highway_mpg_secondary
+          combined_mpg_primary
+          combined_mpg_secondary
+          annual_fuel_cost_primary
+          annual_fuel_cost_secondary
+          combined_power_consumption
+          fuel_economy_score
+          epa_range_secondary
+          epa_city_range_secondary
+          epa_highway_range_secondary
+          is_guzzler
+          time_to_charge_120v
+          time_to_charge_240v
+        }
+        fuel_emission {
+          tailpipe_co2_primary
+          tailpipe_co2_secondary
+          greenhouse_gas_score_primary
+          greenhouse_gas_score_secondary
+        }
+      }
+    }
+  }
+  ''';
+  }
+
+
   String vehicleSearchQuery() { return r'''
   query SearchVehicles($queryString: String!, $limit: int!, $offset: int!){
     search(query: $queryString, limit: $limit, offset: $offset) {
@@ -359,6 +440,14 @@ class CarDataApi {
   ''';
   }
 
+  Future<Vehicle> getRandomVehicle() async {
+    final QueryOptions options = QueryOptions(
+      documentNode: gql(randomVehicleQuery()),
+    );
+    QueryResult result = await _noCacheClient.query(options);
+    return Vehicle.fromJson(result.data['random_vehicle']);
+  }
+
   Future<List<Vehicle>> getVehiclesBySearchQuery(String query, int limit, int offset) async {
     final QueryOptions options = QueryOptions(
       documentNode: gql(vehicleSearchQuery()),
@@ -367,7 +456,6 @@ class CarDataApi {
         'limit': limit,
         'offset': offset
       },
-
     );
     QueryResult result = await _client.query(options);
     final List<dynamic> results = result.data['search'] as List<dynamic>;

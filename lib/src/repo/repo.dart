@@ -9,6 +9,9 @@ class Repo {
 
   final _carDataApiProvider = CarDataApi();
 
+  Future<Vehicle> getRandomVehicle() =>
+    _carDataApiProvider.getRandomVehicle();
+
   Future<List<Vehicle>> getVehiclesBySearchQuery(String query, int limit, int offset) =>
       _carDataApiProvider.getVehiclesBySearchQuery(query, limit, offset);
 

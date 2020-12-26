@@ -33,7 +33,6 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
 
   @override
   Widget build(BuildContext context) {
-    print("Advanced Search build method called");
     return Container(
         padding: EdgeInsets.all(10),
         child: Column(
@@ -161,8 +160,8 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
             child: ListBody(
               children: <Widget>[
                 Text('Please enter a name for your selection'),
-                Utils.Gap(),
-                Utils.Gap(),
+                Utils.gap(),
+                Utils.gap(),
                 TextField(
                   controller: textEditingController,
                   decoration: InputDecoration(
