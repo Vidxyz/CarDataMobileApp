@@ -66,6 +66,7 @@ class CarDataApi {
       $fuel_type: [String],
       $make: [String],
       $type: [String],
+      $vehicle_class: [String],
       $engine_descriptor: [String],
       $year: [int],
       $cylinders: [float],
@@ -91,6 +92,7 @@ class CarDataApi {
       fuel_type_primary: $fuel_type_primary,
       fuel_type_secondary: $fuel_type_secondary,
       type: $type,
+      vehicle_class: $vehicle_class,
       engine_descriptor: $engine_descriptor,
       displacement: $displacement,
       cylinders: $cylinders,
@@ -186,7 +188,8 @@ class CarDataApi {
         "type",
         "cylinders",
         "engine_descriptor"
-        "displacement"
+        "displacement",
+        "vehicle_class"
       ]) {
         fuel_type_primary,
         fuel_type_secondary,
@@ -196,7 +199,8 @@ class CarDataApi {
         type,
         cylinders,
         engine_descriptor,
-        displacement
+        displacement,
+        vehicle_class
       }
     }
     ''';
@@ -486,6 +490,7 @@ class CarDataApi {
     }
     else {
       print("Bad response: Status code " + response.statusCode.toString());
+      return null;
     }
   }
 
@@ -520,7 +525,6 @@ class CarDataApi {
     return MoreAttributeValues.fromJson(response);
   }
 
-  // This needs to modify certain attributes into double/int values based on their key
   Future<List<Vehicle>> getVehiclesBySelectedAttributes(Map<String, List<String>> selectedAttributes,
       int limit, int offset) async {
     final QueryOptions options = QueryOptions(
@@ -531,6 +535,7 @@ class CarDataApi {
         'fuel_type_primary': selectedAttributes['fuel_type_primary'] ?? [],
         'fuel_type_secondary': selectedAttributes['fuel_type_secondary'] ?? [],
         'type': selectedAttributes['type'] ?? [],
+        'vehicle_class': selectedAttributes['vehicle_class'] ?? [],
         'engine_descriptor': selectedAttributes['engine_descriptor'] ?? [],
         'displacement': selectedAttributes['displacement']?.map((e) => double.parse(e))?.toList() ?? [],
         'cylinders': selectedAttributes['cylinders']?.map((e) => double.parse(e))?.toList() ?? [],

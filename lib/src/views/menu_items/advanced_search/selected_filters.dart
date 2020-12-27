@@ -44,6 +44,7 @@ class _SelectedFilters extends State<SelectedFilters> {
     "displacement": "Displacement",
     "make": "Make",
     "year": "Year",
+    "vehicle_class": "Vehicle Type",
     "sort_by": "Sort",
     "is_supercharged": "Supercharged",
     "is_turbocharged": "Turbocharged",

@@ -11,6 +11,7 @@ class AttributeValues {
   List<String> _year;
   List<String> _transmissionType;
   List<String> _displacement;
+  List<String> _vehicleClass;
 
   AttributeValues.fromJson(Map<String, dynamic> parsedJson) {
     _cylinders = _getValues(parsedJson['cylinders']);
@@ -22,6 +23,7 @@ class AttributeValues {
     _make = _getValues(parsedJson['make']);
     _year = _getValues(parsedJson['year']);
     _transmissionType = _getValues(parsedJson['type']);
+    _vehicleClass = _getValues(parsedJson['vehicle_class']);
 
     attributeValues = {
       "cylinders": _cylinders,
@@ -32,7 +34,8 @@ class AttributeValues {
       "make": _make,
       "year": _year,
       "type": _transmissionType,
-      "displacement": _displacement
+      "displacement": _displacement,
+      "vehicle_class": _vehicleClass
     };
   }
 

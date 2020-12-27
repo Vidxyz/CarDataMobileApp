@@ -34,7 +34,8 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
     "make",
     "fuel_type",
     "engine_descriptor",
-    "type"
+    "type",
+    "vehicle_class"
   ];
   static final List<String> gridAttributes = [
     "fuel_type_primary",
@@ -59,6 +60,7 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
   static final List<String> displayNames = [
     "Make",
     "Year",
+    "Vehicle Type",
     "Primary Fuel",
     "Secondary Fuel",
     "Fuel Grade",
@@ -70,6 +72,7 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
   static final List<String> attributesToDisplayListsFor = [
     "make",
     "year",
+    "vehicle_class",
     "fuel_type_primary",
     "fuel_type_secondary",
     "fuel_type",
