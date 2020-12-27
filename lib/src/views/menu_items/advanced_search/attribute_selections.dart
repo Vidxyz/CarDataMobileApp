@@ -7,11 +7,11 @@ import 'package:car_data_app/src/blocs/attribute_values_bloc/attribute_values_st
 import 'package:car_data_app/src/blocs/more_attribute_values_bloc/more_attribute_values_bloc.dart';
 import 'package:car_data_app/src/blocs/more_attribute_values_bloc/more_attribute_values_event.dart';
 import 'package:car_data_app/src/blocs/more_attribute_values_bloc/more_attribute_values_state.dart';
-import 'package:car_data_app/src/views/advanced_search/advanced_search_body.dart';
-import 'package:car_data_app/src/views/advanced_search/attribute_values_grid.dart';
-import 'package:car_data_app/src/views/advanced_search/attribute_values_list.dart';
-import 'package:car_data_app/src/views/advanced_search/attribute_values_slider.dart';
-import 'package:car_data_app/src/views/advanced_search/attribute_values_grid_with_one_selection.dart';
+import 'package:car_data_app/src/views/menu_items/advanced_search/advanced_search_body.dart';
+import 'package:car_data_app/src/views/menu_items/advanced_search/attribute_values_grid.dart';
+import 'package:car_data_app/src/views/menu_items/advanced_search/attribute_values_list.dart';
+import 'package:car_data_app/src/views/menu_items/advanced_search/attribute_values_slider.dart';
+import 'package:car_data_app/src/views/menu_items/advanced_search/attribute_values_grid_with_one_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

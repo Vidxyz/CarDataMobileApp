@@ -6,8 +6,8 @@ import 'package:car_data_app/src/blocs/menu_navigation_bloc/menu_navigation_stat
 import 'package:car_data_app/src/blocs/more_attribute_values_bloc/more_attribute_values_bloc.dart';
 import 'package:car_data_app/src/blocs/vehicle_search_bloc/vehicle_search_bloc.dart';
 import 'package:car_data_app/src/repo/repo.dart';
-import 'package:car_data_app/src/views/advanced_search/advanced_search.dart';
-import 'package:car_data_app/src/views/basic_search/basic_search.dart';
+import 'package:car_data_app/src/views/menu_items/advanced_search/advanced_search.dart';
+import 'package:car_data_app/src/views/menu_items/basic_search/basic_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

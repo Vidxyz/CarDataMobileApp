@@ -5,8 +5,8 @@ import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_even
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_state.dart';
 import 'package:car_data_app/src/models/saved_filter.dart';
 import 'package:car_data_app/src/utils/Utils.dart';
-import 'package:car_data_app/src/views/advanced_search/attribute_selections.dart';
-import 'package:car_data_app/src/views/advanced_search/selected_filters.dart';
+import 'package:car_data_app/src/views/menu_items/advanced_search/attribute_selections.dart';
+import 'package:car_data_app/src/views/menu_items/advanced_search/selected_filters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
