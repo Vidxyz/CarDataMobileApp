@@ -76,8 +76,10 @@ class _SelectedFilters extends State<SelectedFilters> {
         });
       },
       child: AnimatedContainer(
+        constraints: BoxConstraints(
+          maxHeight: isExpanded ? maxHeight * 2 : maxHeight,
+        ),
         duration: Duration(milliseconds: 300),
-        height: isExpanded ? maxHeight * 2 : maxHeight,
         child: Container(
           decoration: BoxDecoration(border: Border.all(color: Colors.white)),
           child: BlocBuilder<AdvancedSearchBloc, AdvancedSearchState>(
