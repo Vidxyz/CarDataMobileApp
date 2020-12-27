@@ -22,7 +22,20 @@ class AdvancedSearch extends StatefulWidget {
 
 class _AdvancedSearchState extends State<AdvancedSearch> {
 
+  static final String sortBy = "sort_by";
   static final String sortOrderKey = "sort_order";
+  static final List<String> sortByAttributesDisplay = [
+    "City Mpg",
+    "Highway Mpg",
+    "Combined Mpg",
+    "Annual Fuel Cost",
+    "Fuel Economy",
+    "CO2 Emissions",
+    "Greenhouse Score"
+  ];
+
+  int sortOrderIndex = -1;
+  String sortOrderValue = "Descending";
   AdvancedSearchBloc _advancedSearchBloc;
 
   @override
@@ -55,6 +68,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
           return Row(
             children: [
               Expanded(child: _clearFiltersButton()),
+              Expanded(child: _sortButton()),
               Expanded(child: _editOrApplyButton(state))
             ],
           );
@@ -63,6 +77,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
           return Row(
             children: [
               Expanded(child: _clearFiltersButton()),
+              Expanded(child: _sortButton()),
               Expanded(child: _editOrApplyButton(state)),
               Expanded(child: _saveButton(state))
             ],
@@ -72,6 +87,55 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
     );
 
 
+  Widget _sortButton() {
+    return Container(
+      padding: EdgeInsets.all(1),
+      child: RaisedButton.icon(
+          onPressed: () {
+            final currentState = _advancedSearchBloc.state;
+            if(currentState is AdvancedSearchSuccess) {
+              // We force the UI to go back to the attribute selection screen by simulating
+              // a event with change in filters, while simply re-providing the same set of of filters
+              print("Re-adding same filters to go back to edit filters view");
+              _advancedSearchBloc.add(
+                  AdvancedSearchFiltersChanged(selectedFilters: currentState.selectedFilters));
+            }
+            else {
+              // We want to make sure that previous sorting selections are cleared before moving forward
+              // Additionally, we are making sure that selected criteria are highlighter upon dialog show
+              // This second check is strictly not necessary, as `sortOrderValue` and `sortOrderIndex` are
+              // persisted from last selection, but it's better to be safe than sorry
+              if(currentState is AdvancedSearchCriteriaChanged) {
+                if(currentState.selectedFilters[sortOrderKey] != null &&
+                    currentState.selectedFilters[sortOrderKey].isNotEmpty) {
+                  sortOrderValue = currentState.selectedFilters[sortOrderKey].first;
+                }
+                else {
+                  sortOrderValue = "Descending";
+                }
+                if(currentState.selectedFilters[sortBy] != null &&
+                    currentState.selectedFilters[sortBy].isNotEmpty) {
+                  sortOrderIndex = sortByAttributesDisplay.indexOf(currentState.selectedFilters[sortBy].first);
+                }
+                else {
+                  sortOrderIndex = -1;
+                }
+              }
+              else {
+                sortOrderIndex = -1;
+                sortOrderValue = "Descending";
+              }
+
+            }
+            return _showUserSortingCriteria();
+          },
+          icon: Icon(Icons.sort_sharp),
+          label: Text("Sort", style: _raisedButtonTextStyle()),
+          color: Colors.orangeAccent
+      ),
+    );
+  }
+
   Widget _clearFiltersButton() {
     return Container(
       padding: EdgeInsets.all(1),
@@ -80,8 +144,8 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
             _advancedSearchBloc.add(AdvancedSearchReset());
             setState(() {});
           },
-          icon: Icon(Icons.clear_all),
-          label: Text("Clear"),
+          icon: Icon(Icons.clear_sharp),
+          label: Text("Clear", style: _raisedButtonTextStyle()),
           color: Colors.redAccent
       ),
     );
@@ -105,7 +169,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
             }
           },
           icon: Icon(Icons.save_sharp),
-          label: Text("Save"),
+          label: Text("Save", style: _raisedButtonTextStyle()),
           color: Colors.blueAccent
       ),
     );
@@ -142,9 +206,149 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
             }
           },
           icon: state is AdvancedSearchSuccess ? Icon(Icons.edit_outlined) : Icon(Icons.search_sharp),
-          label: state is AdvancedSearchSuccess ? Text("Edit") : Text("Apply"),
+          label: state is AdvancedSearchSuccess ?
+            Text("Edit", style: _raisedButtonTextStyle()) :
+            Text("Go", style: _raisedButtonTextStyle()),
           color: Colors.teal
       ),
+    );
+  }
+
+  TextStyle _raisedButtonTextStyle() => TextStyle(fontSize: 14);
+
+  Future<void> _showUserSortingCriteria() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        int sortIndex = sortOrderIndex;
+        String sortOrder = sortOrderValue;
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                    'Close',
+                    style: TextStyle(
+                        color: Colors.tealAccent
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+              title: Text('Sort By', textAlign: TextAlign.center),
+              content: Container(
+                constraints: BoxConstraints(
+                  maxHeight: Utils.getScreenHeight(context) / 3,
+                  maxWidth: Utils.getScreenWidth(context) / 2,
+                ),
+                child: Container(
+                  height: Utils.getScreenHeight(context) / 2,
+                  width: Utils.getScreenWidth(context) / 2,
+                  child: Column(
+                      children: <Widget> [
+                        Expanded(
+                          flex: 2,
+                          child: RadioListTile<String>(
+                            title: Text("Ascending"),
+                            value: "Ascending",
+                            groupValue: sortOrder,
+                            onChanged: (String value) {
+                              setState(() {
+                                sortOrder = value;
+                                sortOrderValue = sortOrder;
+                                _advancedSearchBloc.add(
+                                    AdvancedSearchFiltersChanged(
+                                        selectedFilters: {sortOrderKey: [sortOrder]}
+                                    )
+                                );
+                              });
+                            },
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: RadioListTile<String>(
+                            title: Text("Descending"),
+                            value: "Descending",
+                            groupValue: sortOrder,
+                            onChanged: (String value) {
+                              setState(() {
+                                sortOrder = value;
+                                sortOrderValue = sortOrder;
+                                _advancedSearchBloc.add(
+                                    AdvancedSearchFiltersChanged(
+                                        selectedFilters: {sortOrderKey: [sortOrder]}
+                                    )
+                                );
+                              });
+                            },
+                          ),
+                        ),
+                        Expanded(flex: 2, child: Divider()),
+                        Expanded(
+                          flex: 10,
+                          child: Container(
+                            child: ListView(
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              children:
+                              List.generate(sortByAttributesDisplay.length,
+                                (index) =>
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: index == sortIndex ? Colors.tealAccent : Colors.transparent,
+                                        width: 1
+                                    ),
+                                  ),
+                                  padding: EdgeInsets.only(left:17, right: 17),
+                                  child: GestureDetector(
+                                    onTap: () => setState(() {
+                                      if(index == sortIndex) {
+                                        sortIndex = -1;
+                                        sortOrderIndex = sortIndex;
+                                        _advancedSearchBloc.add(AdvancedSearchFilterRemoved(
+                                            attributeName: sortBy,
+                                            attributeValue: sortByAttributesDisplay[index]
+                                        ));
+                                      }
+                                      else {
+                                        sortIndex = index;
+                                        sortOrderIndex = sortIndex;
+                                        _advancedSearchBloc.add(AdvancedSearchFiltersChanged(
+                                            selectedFilters: {
+                                              sortBy: [sortByAttributesDisplay[index]]
+                                            }));
+                                      }
+                                    }),
+                                    child: Container(
+                                      margin: EdgeInsets.all(2),
+                                      child: Text(
+                                        sortByAttributesDisplay[index].toString(),
+                                        style: TextStyle(
+                                            color: index == sortIndex ? Colors.tealAccent : Colors.white,
+                                            fontSize: 15
+                                        )
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ),
+                            ),
+                          )
+                        ),
+                      ]
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 

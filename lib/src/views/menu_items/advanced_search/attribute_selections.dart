@@ -1,5 +1,4 @@
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_bloc.dart';
-import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_event.dart';
 import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_state.dart';
 import 'package:car_data_app/src/blocs/attribute_values_bloc/attribute_values_bloc.dart';
 import 'package:car_data_app/src/blocs/attribute_values_bloc/attribute_values_event.dart';
@@ -46,16 +45,6 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
     "cylinders"
   ];
   static final List<String> doubleSliderAttributes = ["displacement"];
-  static final List<String> sortByAttributesDisplay = [
-    "City Mpg",
-    "Highway Mpg",
-    "Combined Mpg",
-    "Annual Fuel Cost",
-    "Fuel Economy",
-    "CO2 Emissions",
-    "Greenhouse Score"
-  ];
-  static final String sortBy = "sort_by";
 
   static final List<String> displayNames = [
     "Make",
@@ -108,7 +97,6 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
 
   AttributeValuesBloc _attributeValuesBloc;
   MoreAttributeValuesBloc _moreAttributeValuesBloc;
-  AdvancedSearchBloc _advancedSearchBloc;
 
   String sortOrder = "Descending";
   String sortOrderKey = "sort_order";
@@ -118,7 +106,6 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
     super.initState();
     _attributeValuesBloc = BlocProvider.of<AttributeValuesBloc>(context);
     _moreAttributeValuesBloc = BlocProvider.of<MoreAttributeValuesBloc>(context);
-    _advancedSearchBloc = BlocProvider.of<AdvancedSearchBloc>(context);
 
     _attributeValuesBloc.add(AttributeValuesRequested());
     _moreAttributeValuesBloc.add(MoreAttributeValuesRequested());
@@ -134,7 +121,7 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
               padding: EdgeInsets.only(top: 10),
               child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: attributesToDisplayListsFor.length + yesNoDisplayAttributes.length + 2, // +2 for sort criteria and more attributes
+                itemCount: attributesToDisplayListsFor.length + yesNoDisplayAttributes.length + 1, // +1 for more attributes
                 itemBuilder: (_, index) {
                   if (index < attributesToDisplayListsFor.length)
                     return Card(child: _displayAttributesNameValuesToUser(displayNames[index], attributesToDisplayListsFor[index]));
@@ -145,8 +132,6 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
                             yesNoRawAttributes[index - attributesToDisplayListsFor.length]
                         )
                     );
-                  else if (index == attributesToDisplayListsFor.length + yesNoDisplayAttributes.length)
-                    return Card(child: _displaySortingCriteria());
                   else
                     return Card(child: _displayMoreCriteria());
                 },
@@ -270,63 +255,6 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
               }
             }
           )
-        ]
-    );
-  }
-
-  Widget _displaySortingCriteria() {
-    return ExpansionTile(
-        title: Text(
-          "Sort By",
-          textAlign: TextAlign.start,
-          style: TextStyle(
-            fontSize: 18.0,
-          ),
-        ),
-        children: <Widget> [
-          Row(
-            children: [
-              Expanded(child:
-                RadioListTile<String>(
-                  title: Text("Ascending"),
-                  value: "Ascending",
-                  groupValue: sortOrder,
-                  onChanged: (String value) {
-                    setState(() {
-                      sortOrder = value;
-                      _advancedSearchBloc.add(
-                          AdvancedSearchFiltersChanged(
-                            selectedFilters: {sortOrderKey: [sortOrder]}
-                          )
-                      );
-                    });
-                  },
-                ),
-              ),
-              Expanded(child:
-                RadioListTile<String>(
-                  title: Text("Descending"),
-                  value: "Descending",
-                  groupValue: sortOrder,
-                  onChanged: (String value) {
-                    setState(() {
-                      sortOrder = value;
-                      _advancedSearchBloc.add(
-                          AdvancedSearchFiltersChanged(
-                            selectedFilters: {sortOrderKey: [sortOrder]}
-                          )
-                      );
-                    });
-                  },
-                ),
-              ),
-            ],
-          ),
-            Divider(),
-            AttributeValuesGridWithOneSelection(
-              attributeName: sortBy,
-              displayAttributeValues: sortByAttributesDisplay,
-            )
         ]
     );
   }
