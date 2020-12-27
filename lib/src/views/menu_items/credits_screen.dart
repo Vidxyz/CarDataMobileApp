@@ -57,7 +57,7 @@ class CreditsScreen extends StatelessWidget {
             ],
           ),
         ),
-        _addTextLink(Utils.serverUrl, "Powered by Phoenix/Elixir based server"),
+        _addTextLink(Utils.serverUrl, "Powered by Phoenix/Elixir/Absinthe based GraphQL server"),
         _addTextLink(Utils.datasetUrl, "Data sourced from the US Govt"),
         _addTextLink(Utils.dataPipelineUrl, "Dataset ingested using custom pipeline"),
       ],
