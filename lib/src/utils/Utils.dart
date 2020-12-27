@@ -23,4 +23,16 @@ class Utils {
 
   static final String appName = "CarStats";
   static final String version = "v1.0";
+
+  static final String appRepoUrl = "https://github.com/Vidxyz/CarDataMobileApp";
+  static final String serverUrl = "https://github.com/Vidxyz/CarDataApp";
+  static final String dataPipelineUrl = "https://github.com/Vidxyz/CarDataPipeline";
+  static final String datasetUrl = "https://www.fueleconomy.gov/feg/download.shtml";
+  static final String githubUrl = "https://github.com/Vidxyz";
+  static final String linkedInUrl = "https://www.linkedin.com/in/vidxyz";
+
+  static final String githubIconPath = "assets/github_icon.png";
+  static final String linkedInIconPath = "assets/linkedin_icon.png";
+  static final String creatorIconPath = "assets/creator.jpg";
+
 }

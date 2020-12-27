@@ -7,6 +7,7 @@ import 'package:car_data_app/src/blocs/menu_navigation_bloc/menu_navigation_stat
 import 'package:car_data_app/src/blocs/random_vehicle_bloc/random_vehicle_bloc.dart';
 import 'package:car_data_app/src/repo/repo.dart';
 import 'package:car_data_app/src/utils/Utils.dart';
+import 'package:car_data_app/src/views/menu_items/credits_screen.dart';
 import 'package:car_data_app/src/views/menu_items/favourites_screen.dart';
 import 'package:car_data_app/src/views/menu_items/random_vehicle_screen.dart';
 import 'package:car_data_app/src/views/menu_items/saved_filters.dart';
@@ -138,78 +139,14 @@ class GlobalMenuDrawerState extends State<GlobalMenuDrawer> {
             Expanded(
                 flex: 8,
                 child:
-                Center(
-                  child: GestureDetector(
-                    onTap: () async {
-                      const url = "https://github.com/Vidxyz/CarDataMobileApp";
-                      if (await canLaunch(url)) {
-                        await launch(url);
-                      }
-                      else {
-                        throw "Could not launch $url";
-                      }
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            image: AssetImage('assets/creator.jpg'),
-                            scale: 0.1,
-                            fit: BoxFit.contain
-                        ),
-                      ),
-                    ),
-                  ),
-                )
+                Center(child: _circleImageView(Utils.appRepoUrl, Utils.creatorIconPath))
             ),
             Expanded(
               flex: 2,
               child: Row(
                 children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () async {
-                        const url = "https://github.com/Vidxyz";
-                        if (await canLaunch(url)) {
-                          await launch(url);
-                        }
-                        else {
-                          throw "Could not launch $url";
-                        }
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              image: AssetImage('assets/github_icon.png'),
-                              fit: BoxFit.fitHeight
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () async {
-                        const url = "https://www.linkedin.com/in/vidxyz";
-                        if (await canLaunch(url)) {
-                          await launch(url);
-                        }
-                        else {
-                          throw "Could not launch $url";
-                        }
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                          image: DecorationImage(
-                              image: AssetImage('assets/linkedin_icon.png'),
-                              fit: BoxFit.fitHeight
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  Expanded(child: _circleImageView(Utils.githubUrl, Utils.githubIconPath)),
+                  Expanded(child: _circleImageView(Utils.linkedInUrl, Utils.linkedInIconPath)),
                 ],
               ),
             ),
@@ -227,6 +164,27 @@ class GlobalMenuDrawerState extends State<GlobalMenuDrawer> {
       ),
     );
 
+  Widget _circleImageView(String url, String assetPath) =>
+      GestureDetector(
+        onTap: () async {
+          if (await canLaunch(url)) {
+            await launch(url);
+          }
+          else {
+            throw "Could not launch $url";
+          }
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+                image: AssetImage(assetPath),
+                fit: BoxFit.fitHeight
+            ),
+          ),
+        ),
+      );
+
   Widget _generateBody(String selectedMenuItem) {
     switch(selectedMenuItem) {
       case "Vehicle Search":
@@ -243,8 +201,10 @@ class GlobalMenuDrawerState extends State<GlobalMenuDrawer> {
           create: (context) => RandomVehicleBloc(repository: Repo()),
           child: RandomVehicleScreen(),
         );
-      case "Credits": return Text("Credits");
-      default: return Text("Not Found");
+      case "Credits":
+        return CreditsScreen();
+      default:
+        return Text("Not Found");
     }
   }
 
