@@ -1,15 +1,19 @@
+import 'dart:ui';
+
 import 'package:car_data_app/src/blocs/favourite_vehicles_bloc/favourite_vehicles_bloc.dart';
 import 'package:car_data_app/src/blocs/menu_navigation_bloc/menu_navigation_bloc.dart';
 import 'package:car_data_app/src/blocs/menu_navigation_bloc/menu_navigation_event.dart';
 import 'package:car_data_app/src/blocs/menu_navigation_bloc/menu_navigation_state.dart';
 import 'package:car_data_app/src/blocs/random_vehicle_bloc/random_vehicle_bloc.dart';
 import 'package:car_data_app/src/repo/repo.dart';
+import 'package:car_data_app/src/utils/Utils.dart';
 import 'package:car_data_app/src/views/menu_items/favourites_screen.dart';
 import 'package:car_data_app/src/views/menu_items/random_vehicle_screen.dart';
 import 'package:car_data_app/src/views/menu_items/saved_filters.dart';
 import 'package:car_data_app/src/views/vehicle_search_tab_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class GlobalMenuDrawer extends StatefulWidget {
 
@@ -56,12 +60,7 @@ class GlobalMenuDrawerState extends State<GlobalMenuDrawer> {
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: <Widget>[
-                  DrawerHeader(
-                    child: Text('Drawer Header'),
-                    decoration: BoxDecoration(
-                      color: Colors.teal,
-                    ),
-                  ),
+                  _drawerHeader(),
                   ListTile(
                     title: Text(vehicleSearch),
                     onTap: () {
@@ -115,6 +114,118 @@ class GlobalMenuDrawerState extends State<GlobalMenuDrawer> {
         }
     );
   }
+
+  Widget _drawerHeader() =>
+    Container(
+      height: 300,
+      child: DrawerHeader(
+        child: Column(
+          children: [
+            Expanded(
+                flex: 3,
+                child:
+                  Center(
+                      child:
+                      Text(
+                        Utils.appName,
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold
+                        ),
+                      )
+                  )
+            ),
+            Expanded(
+                flex: 8,
+                child:
+                Center(
+                  child: GestureDetector(
+                    onTap: () async {
+                      const url = "https://github.com/Vidxyz/CarDataMobileApp";
+                      if (await canLaunch(url)) {
+                        await launch(url);
+                      }
+                      else {
+                        throw "Could not launch $url";
+                      }
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            image: AssetImage('assets/creator.jpg'),
+                            scale: 0.1,
+                            fit: BoxFit.contain
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+            ),
+            Expanded(
+              flex: 2,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () async {
+                        const url = "https://github.com/Vidxyz";
+                        if (await canLaunch(url)) {
+                          await launch(url);
+                        }
+                        else {
+                          throw "Could not launch $url";
+                        }
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              image: AssetImage('assets/github_icon.png'),
+                              fit: BoxFit.fitHeight
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () async {
+                        const url = "https://www.linkedin.com/in/vidxyz";
+                        if (await canLaunch(url)) {
+                          await launch(url);
+                        }
+                        else {
+                          throw "Could not launch $url";
+                        }
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                          image: DecorationImage(
+                              image: AssetImage('assets/linkedin_icon.png'),
+                              fit: BoxFit.fitHeight
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Container(
+                child: Text(Utils.version),
+              ) ,
+            )
+          ],
+        ),
+        decoration: BoxDecoration(
+          color: Colors.teal,
+        ),
+      ),
+    );
 
   Widget _generateBody(String selectedMenuItem) {
     switch(selectedMenuItem) {
