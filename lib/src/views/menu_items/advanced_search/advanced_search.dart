@@ -425,6 +425,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
 
   bool _areFiltersEmpty(Map<String, List<String>> filters) =>
     filters.entries
+        .where((element) => element.key != sortOrderKey)
         .map((e) => e.value)
         .map((e) => e.isEmpty)
         .toList()
