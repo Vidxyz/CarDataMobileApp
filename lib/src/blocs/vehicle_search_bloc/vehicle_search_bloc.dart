@@ -40,19 +40,21 @@ class VehicleSearchBloc extends Bloc<VehicleSearchEvent, VehicleSearchState> {
         try {
           if (currentState is SearchStateEmpty) {
             yield SearchStateLoading();
+            final resultCount = await repository.getVehiclesCountBySearchQuery(searchTerm);
             final results = await repository.getVehiclesBySearchQuery(searchTerm, pageSize, 0);
             yield results.length == pageSize ?
-              SearchStateSuccess(vehicles: results, hasReachedMax: false, searchQuery: searchTerm) :
-              SearchStateSuccess(vehicles: results, hasReachedMax: true, searchQuery: searchTerm);
+              SearchStateSuccess(vehicles: results, hasReachedMax: false, searchQuery: searchTerm, searchResultsCount: resultCount) :
+              SearchStateSuccess(vehicles: results, hasReachedMax: true, searchQuery: searchTerm, searchResultsCount: resultCount);
           }
           if (currentState is SearchStateSuccess) {
             final results = await repository.getVehiclesBySearchQuery(searchTerm, pageSize, currentState.vehicles.length);
             yield results.length != pageSize ?
               currentState.copyWith(hasReachedMax: true) :
               SearchStateSuccess(
-                  vehicles: currentState.vehicles + results,
-                  hasReachedMax: false,
-                  searchQuery: searchTerm
+                vehicles: currentState.vehicles + results,
+                hasReachedMax: false,
+                searchQuery: searchTerm,
+                searchResultsCount: currentState.searchResultsCount
               );
           }
         }

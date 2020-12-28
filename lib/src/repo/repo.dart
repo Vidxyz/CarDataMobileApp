@@ -12,6 +12,9 @@ class Repo {
   Future<Vehicle> getRandomVehicle() =>
     _carDataApiProvider.getRandomVehicle();
 
+  Future<int> getVehiclesCountBySearchQuery(String query) =>
+      _carDataApiProvider.getVehiclesCountBySearchQuery(query);
+
   Future<List<Vehicle>> getVehiclesBySearchQuery(String query, int limit, int offset) =>
       _carDataApiProvider.getVehiclesBySearchQuery(query, limit, offset);
 

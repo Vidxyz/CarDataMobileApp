@@ -58,13 +58,24 @@ class BasicSearchBodyState extends State<BasicSearchBody> {
         if (state is SearchStateSuccess) {
           return state.vehicles.isEmpty
               ? Expanded(child: Center(child: Text('No Results')))
-              : Expanded(child: _searchResults(state.vehicles, state.hasReachedMax)
-          );
+              : Expanded(child: _displayResults(state));
         }
         else {
           return Center(child: Text("Error: Something went wrong"));
         }
       },
+    );
+  }
+
+  Widget _displayResults(SearchStateSuccess state) {
+    return Column(
+      children: [
+        ListTile(
+          title: Text("Total Results", style: TextStyle(color: Colors.tealAccent)),
+          trailing: Text(state.searchResultsCount.toString(), style: TextStyle(color: Colors.tealAccent)),
+        ),
+        Expanded(child: _searchResults(state.vehicles, state.hasReachedMax))
+      ],
     );
   }
 

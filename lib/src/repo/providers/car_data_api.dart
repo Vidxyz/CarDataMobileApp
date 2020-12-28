@@ -430,6 +430,13 @@ class CarDataApi {
   ''';
   }
 
+  String vehicleCountSearchQuery() { return r'''
+  query CountSearchVehicles($queryString: String!){
+    searchCount(query: $queryString)
+  }
+  ''';
+  }
+
 
   String vehicleSearchQuery() { return r'''
   query SearchVehicles($queryString: String!, $limit: int!, $offset: int!){
@@ -504,6 +511,18 @@ class CarDataApi {
     );
     QueryResult result = await _noCacheClient.query(options);
     return Vehicle.fromJson(result.data['random_vehicle']);
+  }
+
+  Future<int> getVehiclesCountBySearchQuery(String query) async {
+    final QueryOptions options = QueryOptions(
+      documentNode: gql(vehicleCountSearchQuery()),
+      variables: <String, dynamic> {
+        'queryString': query,
+      },
+    );
+    QueryResult result = await _client.query(options);
+    final int resultCount = result.data['searchCount'] as int;
+    return resultCount;
   }
 
   Future<List<Vehicle>> getVehiclesBySearchQuery(String query, int limit, int offset) async {
