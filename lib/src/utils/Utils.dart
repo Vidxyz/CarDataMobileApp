@@ -21,7 +21,7 @@ class Utils {
   static final String SAVED_FILTERS_KEY = "SAVED_FILTERS";
   static final String FAVOURITES_KEY = "vehicle_favourites";
 
-  static final String appName = "CarStats";
+  static final String appName = "CarPedia";
   static final String version = "v1.0";
 
   static final String appRepoUrl = "https://github.com/Vidxyz/CarDataMobileApp";
