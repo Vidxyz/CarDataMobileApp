@@ -54,12 +54,13 @@ class AdvancedSearchBloc extends Bloc<AdvancedSearchEvent, AdvancedSearchState> 
     if(event is AdvancedSearchButtonPressed && currentState is AdvancedSearchCriteriaChanged) {
       yield AdvancedSearchLoading();
       try {
+        final resultCount = await repository.getVehicleCountBySelectedAttributes(currentState.selectedFilters);
         final results = await repository.getVehiclesBySelectedAttributes(currentState.selectedFilters, pageSize, 0);
-        // print(results);
         yield AdvancedSearchSuccess(
-            vehicles: results,
-            selectedFilters: currentState.selectedFilters,
-            hasReachedMax: results.length == pageSize ? false : true
+          vehicles: results,
+          selectedFilters: currentState.selectedFilters,
+          hasReachedMax: results.length == pageSize ? false : true,
+          totalResultCount: resultCount
         );
       } catch (error) {
         yield AdvancedSearchError("An error occurred fetching vehicle data: ${error.toString()}");
@@ -70,11 +71,11 @@ class AdvancedSearchBloc extends Bloc<AdvancedSearchEvent, AdvancedSearchState> 
       print("Lazyloading is called pressed with state $currentState");
       try {
         final results = await repository.getVehiclesBySelectedAttributes(currentState.selectedFilters, pageSize, currentState.vehicles.length);
-        // print(results);
         yield AdvancedSearchSuccess(
-            vehicles: currentState.vehicles + results,
-            selectedFilters: currentState.selectedFilters,
-            hasReachedMax: results.length == pageSize ? false : true
+          vehicles: currentState.vehicles + results,
+          selectedFilters: currentState.selectedFilters,
+          hasReachedMax: results.length == pageSize ? false : true,
+          totalResultCount: currentState.totalResultCount
         );
       } catch (error) {
         yield AdvancedSearchError("An error occurred fetching vehicle data: ${error.toString()}");

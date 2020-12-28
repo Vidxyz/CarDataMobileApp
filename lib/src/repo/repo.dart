@@ -29,4 +29,7 @@ class Repo {
   Future<List<Vehicle>> getVehiclesBySelectedAttributes(Map<String, List<String>> selectedAttributes, int limit, int offset) =>
       _carDataApiProvider.getVehiclesBySelectedAttributes(selectedAttributes, limit, offset);
 
+  Future<int> getVehicleCountBySelectedAttributes(Map<String, List<String>> selectedAttributes) =>
+      _carDataApiProvider.getVehicleCountBySelectedAttributes(selectedAttributes);
+
 }

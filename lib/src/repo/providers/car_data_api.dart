@@ -58,6 +58,60 @@ class CarDataApi {
     "No": false,
   };
 
+  String vehicleSearchCountByAttributesQuery() {
+    return r'''
+    query CountVehiclesByAttributes(
+      $fuel_type_primary: [String],
+      $fuel_type_secondary: [String],
+      $fuel_type: [String],
+      $make: [String],
+      $type: [String],
+      $vehicle_class: [String],
+      $engine_descriptor: [String],
+      $year: [int],
+      $cylinders: [float],
+      $displacement: [float],
+      $is_supercharged: [boolean],
+      $is_turbocharged: [boolean],
+      $is_guzzler: [boolean],
+      $city_mpg_primary: [int],
+      $highway_mpg_primary: [int],
+      $combined_mpg_primary: [int],
+      $annual_fuel_cost_primary: [int],
+      $fuel_economy_score: [int],
+      $tailpipe_co2_primary: [float],
+      $gh_gas_score_primary: [int],
+      $sort_by: String!,
+      $order: String!) {
+      
+      attributeSearchCount(
+        make: $make, 
+        fuel_type: $fuel_type,
+        fuel_type_primary: $fuel_type_primary,
+        fuel_type_secondary: $fuel_type_secondary,
+        type: $type,
+        vehicle_class: $vehicle_class,
+        engine_descriptor: $engine_descriptor,
+        displacement: $displacement,
+        cylinders: $cylinders,
+        year: $year, 
+        is_supercharged: $is_supercharged, 
+        is_turbocharged: $is_turbocharged, 
+        is_guzzler: $is_guzzler, 
+        city_mpg_primary: $city_mpg_primary,
+        highway_mpg_primary: $highway_mpg_primary,
+        combined_mpg_primary: $combined_mpg_primary,
+        annual_fuel_cost_primary: $annual_fuel_cost_primary,
+        fuel_economy_score: $fuel_economy_score,
+        tailpipe_co2_primary: $tailpipe_co2_primary,
+        gh_gas_score_primary: $gh_gas_score_primary,
+        sort_by: $sort_by,
+        order: $order
+      ) 
+    }
+    ''';
+  }
+
   String vehicleSearchByAttributesQuery() {
     return r'''
     query SearchVehiclesByAttributes(
@@ -523,6 +577,42 @@ class CarDataApi {
     QueryResult result = await _client.query(options);
     final response = result.data['attributeValues'] as Map<dynamic, dynamic>;
     return MoreAttributeValues.fromJson(response);
+  }
+
+  Future<int> getVehicleCountBySelectedAttributes(Map<String, List<String>> selectedAttributes) async {
+    final QueryOptions options = QueryOptions(
+      documentNode: gql(vehicleSearchCountByAttributesQuery()),
+      variables: <String, dynamic> {
+        'make': selectedAttributes['make'] ?? [],
+        'fuel_type': selectedAttributes['fuel_type'] ?? [],
+        'fuel_type_primary': selectedAttributes['fuel_type_primary'] ?? [],
+        'fuel_type_secondary': selectedAttributes['fuel_type_secondary'] ?? [],
+        'type': selectedAttributes['type'] ?? [],
+        'vehicle_class': selectedAttributes['vehicle_class'] ?? [],
+        'engine_descriptor': selectedAttributes['engine_descriptor'] ?? [],
+        'displacement': selectedAttributes['displacement']?.map((e) => double.parse(e))?.toList() ?? [],
+        'cylinders': selectedAttributes['cylinders']?.map((e) => double.parse(e))?.toList() ?? [],
+        'year': selectedAttributes['year']?.map((e) => int.parse(e))?.toList() ?? [],
+        'is_supercharged': selectedAttributes['is_supercharged']?.map((e) => yesNoToBooleanMap[e])?.toList() ?? [],
+        'is_turbocharged': selectedAttributes['is_turbocharged']?.map((e) => yesNoToBooleanMap[e])?.toList() ?? [],
+        'is_guzzler': selectedAttributes['is_guzzler']?.map((e) => yesNoToBooleanMap[e])?.toList() ?? [],
+        'city_mpg_primary': selectedAttributes['city_mpg_primary']?.map((e) => int.parse(e))?.toList() ?? [],
+        'highway_mpg_primary': selectedAttributes['highway_mpg_primary']?.map((e) => int.parse(e))?.toList() ?? [],
+        'combined_mpg_primary': selectedAttributes['combined_mpg_primary']?.map((e) => int.parse(e))?.toList() ?? [],
+        'annual_fuel_cost_primary': selectedAttributes['annual_fuel_cost_primary']?.map((e) => int.parse(e))?.toList() ?? [],
+        'fuel_economy_score': selectedAttributes['fuel_economy_score']?.map((e) => int.parse(e))?.toList() ?? [],
+        'gh_gas_score_primary': selectedAttributes['gh_gas_score_primary']?.map((e) => int.parse(e))?.toList() ?? [],
+        'tailpipe_co2_primary': selectedAttributes['tailpipe_co2_primary']?.map((e) => double.parse(e))?.toList() ?? [],
+        'sort_by': selectedAttributes['sort_by'] == null ? "" :
+        (selectedAttributes['sort_by'].isEmpty ? "" : sortCriteriaToRawMap[selectedAttributes['sort_by'].first]),
+        'order': selectedAttributes['sort_order'] == null ? "desc" :
+        (selectedAttributes['sort_order'].isEmpty ? "desc" : sortOrderToRawMap[selectedAttributes['sort_order'].first]),
+      },
+
+    );
+    QueryResult result = await _client.query(options);
+    final int resultCount = result.data['attributeSearchCount'] as int;
+    return resultCount;
   }
 
   Future<List<Vehicle>> getVehiclesBySelectedAttributes(Map<String, List<String>> selectedAttributes,

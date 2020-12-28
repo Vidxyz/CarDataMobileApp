@@ -326,7 +326,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                                       }
                                     }),
                                     child: Container(
-                                      margin: EdgeInsets.all(2),
+                                      margin: EdgeInsets.all(3),
                                       child: Text(
                                         sortByAttributesDisplay[index].toString(),
                                         style: TextStyle(

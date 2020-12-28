@@ -153,6 +153,7 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
                 child: AdvancedSearchBody(
                   vehicles: state.vehicles,
                   hasReachedMax: state.hasReachedMax,
+                  totalResultCount: state.totalResultCount,
                 )
             );
           else {
@@ -161,6 +162,7 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
                   vehicles: state.vehicles,
                   hasReachedMax: state.hasReachedMax,
                   sortMetric: state.selectedFilters['sort_by'].first,
+                  totalResultCount: state.totalResultCount,
                 )
             );
           }

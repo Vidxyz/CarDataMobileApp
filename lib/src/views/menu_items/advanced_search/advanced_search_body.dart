@@ -13,12 +13,14 @@ class AdvancedSearchBody extends StatefulWidget {
   final List<Vehicle> vehicles;
   final bool hasReachedMax;
   final String sortMetric;
+  final int totalResultCount;
 
   AdvancedSearchBody({
     Key key,
     this.vehicles,
     this.hasReachedMax,
     this.sortMetric,
+    this.totalResultCount
   }):super(key: key);
 
   @override
@@ -61,7 +63,15 @@ class AdvancedSearchBodyState extends State<AdvancedSearchBody> {
   @override
   Widget build(BuildContext context) {
     if (widget.vehicles.isNotEmpty)
-      return _searchResults(widget.vehicles, widget.hasReachedMax);
+      return Column(
+        children: [
+            ListTile(
+              title: Text("Total Results", style: TextStyle(color: Colors.tealAccent)),
+              trailing: Text(widget.totalResultCount.toString(), style: TextStyle(color: Colors.tealAccent)),
+            ),
+          Expanded(child: _searchResults(widget.vehicles, widget.hasReachedMax))
+        ],
+      );
     else
       return Center(child: Text('No Results'));
   }

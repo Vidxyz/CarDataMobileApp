@@ -52,11 +52,13 @@ class AdvancedSearchSuccess extends AdvancedSearchState {
   final Map<String, List<String>> selectedFilters;
   final List<Vehicle> vehicles;
   final bool hasReachedMax;
+  final totalResultCount;
 
   const AdvancedSearchSuccess({
     this.selectedFilters,
     this.vehicles,
-    this.hasReachedMax
+    this.hasReachedMax,
+    this.totalResultCount
   });
 
   AdvancedSearchCriteriaChanged removeFilters({
