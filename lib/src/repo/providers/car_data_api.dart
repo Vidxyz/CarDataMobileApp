@@ -10,8 +10,11 @@ import 'package:http/http.dart' show Client;
 
 class CarDataApi {
 
-  static final String BASE_URL = "http://localhost:4000/api/vehicle/image?vehicle_id=";
-  static final HttpLink _httpLink = HttpLink(uri: 'http://localhost:4000/api/graphql');
+  static final String host = "localhost";
+  static final String port = "4000";
+  static final String protocol = "http";
+  static final String IMAGE_BASE_URL = "$protocol://$host:$port/api/vehicle/image?vehicle_id=";
+  static final HttpLink _httpLink = HttpLink(uri: '$protocol://$host:$port/api/graphql');
   static final Client httpClient = Client();
 
   static final ErrorLink _errorLink = ErrorLink(errorHandler: (ErrorResponse response) {
@@ -556,7 +559,7 @@ class CarDataApi {
 
 
   Future<List<VehicleImage>> getVehicleImages(String vehicleId) async {
-    final response = await httpClient.get("$BASE_URL$vehicleId");
+    final response = await httpClient.get("$IMAGE_BASE_URL$vehicleId");
     if (response.statusCode == 200) {
       final List<dynamic> results = json.decode(response.body)['data'] as List<dynamic>;
       return results.map<VehicleImage>((json) => VehicleImage.fromJson(json)).toList();
