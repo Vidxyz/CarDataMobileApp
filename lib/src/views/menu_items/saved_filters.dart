@@ -31,25 +31,30 @@ class SavedFiltersScreenState extends State<SavedFiltersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: savedFilters?.length ?? 0,
-      itemBuilder: (BuildContext context, int index) {
-        final item = savedFilters[index];
-        return Dismissible(
-          key: UniqueKey(),
-          onDismissed: (direction) {
-            savedFilters.removeWhere((element) => element.id == item.id);
-            _replaceSavedFiltersSharedPrefs(savedFilters);
-            Utils.showSnackBar(
-                "Removed ${item.name} from saved filters",
-                context
-            );
-          },
-          background: Container(color: Colors.redAccent),
-          child: _searchResultItem(item),
-        );
-      },
-    );
+    if(savedFilters?.isEmpty ?? true) {
+      return Center(child: Text('No Saved Filters'));
+    }
+    else {
+      return ListView.builder(
+        itemCount: savedFilters?.length ?? 0,
+        itemBuilder: (BuildContext context, int index) {
+          final item = savedFilters[index];
+          return Dismissible(
+            key: UniqueKey(),
+            onDismissed: (direction) {
+              savedFilters.removeWhere((element) => element.id == item.id);
+              _replaceSavedFiltersSharedPrefs(savedFilters);
+              Utils.showSnackBar(
+                  "Removed ${item.name} from saved filters",
+                  context
+              );
+            },
+            background: Container(color: Colors.redAccent),
+            child: _searchResultItem(item),
+          );
+        },
+      );
+    }
   }
 
 
