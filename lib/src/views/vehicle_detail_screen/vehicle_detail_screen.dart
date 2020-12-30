@@ -13,8 +13,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class VehicleDetailScreen extends StatefulWidget {
   final Vehicle vehicle;
+  final bool isPartOfSeparateContainer;
 
-  VehicleDetailScreen({this.vehicle});
+  VehicleDetailScreen({
+    this.vehicle,
+    this.isPartOfSeparateContainer = false
+  });
 
   @override
   State createState() {
@@ -40,62 +44,71 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        top: true,
-        bottom: false,
-        child: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                SliverAppBar(
-                  expandedHeight: 220.0,
-                  floating: false,
-                  pinned: true,
-                  elevation: 0.0,
-                  flexibleSpace: FlexibleSpaceBar(
-                    centerTitle: true,
-                    titlePadding:  EdgeInsets.zero,
-                    title: DynamicFlexibleSpaceBarTitle(
-                        child: Container(
-                          child: FittedBox(
-                            fit: BoxFit.fitWidth,
-                            child: Text(
-                                vehicle.make + " " + vehicle.model + " " + vehicle.year.toString(),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 25.0,
-                                  fontWeight: FontWeight.bold,
-                                )
-                              ),
-                          ),
-                        )
-                        ),
-                    background: BlocBuilder<VehicleImagesBloc, VehicleImagesState>(
-                      builder: (BuildContext context, VehicleImagesState state) {
-                        if (state is ImageFetchLoading || state is ImageFetchInitial) {
-                          return Center(
-                              child: CircularProgressIndicator()
-                          );
-                        }
-                        if (state is ImageFetchError) return Expanded(child: Center(child: Text(state.error)));
+    if(widget.isPartOfSeparateContainer){
+      return _mainBody();
+    }
+    else {
+      return Scaffold(
+        body: SafeArea(
+          top: true,
+          bottom: false,
+          child: _mainBody(),
+        ),
+      );
+    }
+  }
 
-                        if (state is ImageFetchSuccess) {
-                          return state.vehicleImages.isEmpty
-                              ? noImage()
-                              : imageLayout(vehicle, state.vehicleImages, Utils.getScreenWidth(context), Utils.getScreenHeight(context));
-                        }
-                        else return Center(child: Text("Error: Something went wrong"));
-                      },
-                    ),
+  Widget _mainBody() =>
+      NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverAppBar(
+                leading: widget.isPartOfSeparateContainer ? Container() : BackButton(),
+                expandedHeight: 220.0,
+                floating: false,
+                pinned: true,
+                elevation: 0.0,
+                flexibleSpace: FlexibleSpaceBar(
+                  centerTitle: true,
+                  titlePadding:  EdgeInsets.zero,
+                  title: DynamicFlexibleSpaceBarTitle(
+                      child: Container(
+                        child: FittedBox(
+                          fit: BoxFit.fitWidth,
+                          child: Text(
+                              vehicle.make + " " + vehicle.model + " " + vehicle.year.toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 25.0,
+                                fontWeight: FontWeight.bold,
+                              )
+                          ),
+                        ),
+                      )
+                  ),
+                  background: BlocBuilder<VehicleImagesBloc, VehicleImagesState>(
+                    builder: (BuildContext context, VehicleImagesState state) {
+                      if (state is ImageFetchLoading || state is ImageFetchInitial) {
+                        return Center(
+                            child: CircularProgressIndicator()
+                        );
+                      }
+                      if (state is ImageFetchError) return Expanded(child: Center(child: Text(state.error)));
+
+                      if (state is ImageFetchSuccess) {
+                        return state.vehicleImages.isEmpty
+                            ? noImage()
+                            : imageLayout(vehicle, state.vehicleImages, Utils.getScreenWidth(context), Utils.getScreenHeight(context));
+                      }
+                      else return Center(child: Text("Error: Something went wrong"));
+                    },
                   ),
                 ),
-              ];
-            },
-            body: _buildVehicleStats()
-        ),
-      ),
-    );
-  }
+              ),
+            ];
+          },
+          body: _buildVehicleStats()
+      );
 
 
   Widget _buildVehicleStats() => ListView(

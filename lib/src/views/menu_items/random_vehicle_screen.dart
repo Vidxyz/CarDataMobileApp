@@ -71,7 +71,10 @@ class RandomVehicleScreenState extends State<RandomVehicleScreen> {
         child: Center(
             child: BlocProvider(
               create: (context) => VehicleImagesBloc(repository: Repo()),
-              child: VehicleDetailScreen(vehicle: state.vehicle,),
+              child: VehicleDetailScreen(
+                  vehicle: state.vehicle,
+                  isPartOfSeparateContainer: true
+              ),
             )
         ),
       );
