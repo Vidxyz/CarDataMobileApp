@@ -44,7 +44,21 @@ class BasicSearchBodyState extends State<BasicSearchBody> {
     return BlocBuilder<VehicleSearchBloc, VehicleSearchState>(
       builder: (BuildContext context, VehicleSearchState state) {
         if (state is SearchStateEmpty) {
-          return Expanded(child: Center(child: Text('Search for a vehicle by make/model/year')));
+          return Expanded(
+            child: GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.transparent)
+                ),
+                child: Center(
+                  child: Text(
+                    'Search for a vehicle by make/model/year'
+                  )
+                ),
+              ),
+            )
+          );
         }
         if (state is SearchStateLoading) {
           return Container(
