@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.car_data_app">
+    package="com.example.CarPedia">
    <application
-        android:label="car_data_app"
+        android:label="CarPedia"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

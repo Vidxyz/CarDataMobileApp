@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:car_data_app/src/blocs/vehicle_search_bloc/vehicle_search_event.dart';
-import 'package:car_data_app/src/blocs/vehicle_search_bloc/vehicle_search_state.dart';
-import 'package:car_data_app/src/repo/repo.dart';
+import 'package:CarPedia/src/blocs/vehicle_search_bloc/vehicle_search_event.dart';
+import 'package:CarPedia/src/blocs/vehicle_search_bloc/vehicle_search_state.dart';
+import 'package:CarPedia/src/repo/repo.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:bloc/bloc.dart';

@@ -1,6 +1,6 @@
-import 'package:car_data_app/src/blocs/favourite_vehicles_bloc/favourite_vehicles_event.dart';
-import 'package:car_data_app/src/blocs/favourite_vehicles_bloc/favourite_vehicles_state.dart';
-import 'package:car_data_app/src/repo/repo.dart';
+import 'package:CarPedia/src/blocs/favourite_vehicles_bloc/favourite_vehicles_event.dart';
+import 'package:CarPedia/src/blocs/favourite_vehicles_bloc/favourite_vehicles_state.dart';
+import 'package:CarPedia/src/repo/repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:rxdart/rxdart.dart';

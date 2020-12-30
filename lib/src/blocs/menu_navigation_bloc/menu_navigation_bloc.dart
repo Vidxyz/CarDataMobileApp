@@ -1,5 +1,5 @@
-import 'package:car_data_app/src/blocs/menu_navigation_bloc/menu_navigation_event.dart';
-import 'package:car_data_app/src/blocs/menu_navigation_bloc/menu_navigation_state.dart';
+import 'package:CarPedia/src/blocs/menu_navigation_bloc/menu_navigation_event.dart';
+import 'package:CarPedia/src/blocs/menu_navigation_bloc/menu_navigation_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:rxdart/rxdart.dart';

@@ -1,4 +1,4 @@
-# car_data_app
+# CarPedia
 
 Car Data Mobile App
 

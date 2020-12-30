@@ -1,10 +1,10 @@
-import 'package:car_data_app/src/blocs/vehicle_images_bloc/vehicle_images_bloc.dart';
-import 'package:car_data_app/src/blocs/vehicle_images_bloc/vehicle_images_event.dart';
-import 'package:car_data_app/src/blocs/vehicle_images_bloc/vehicle_images_state.dart';
-import 'package:car_data_app/src/custom_widgets/dynamic_flexible_space_bar_title.dart';
-import 'package:car_data_app/src/models/vehicle.dart';
-import 'package:car_data_app/src/models/vehicle_image.dart';
-import 'package:car_data_app/src/utils/Utils.dart';
+import 'package:CarPedia/src/blocs/vehicle_images_bloc/vehicle_images_bloc.dart';
+import 'package:CarPedia/src/blocs/vehicle_images_bloc/vehicle_images_event.dart';
+import 'package:CarPedia/src/blocs/vehicle_images_bloc/vehicle_images_state.dart';
+import 'package:CarPedia/src/custom_widgets/dynamic_flexible_space_bar_title.dart';
+import 'package:CarPedia/src/models/vehicle.dart';
+import 'package:CarPedia/src/models/vehicle_image.dart';
+import 'package:CarPedia/src/utils/Utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

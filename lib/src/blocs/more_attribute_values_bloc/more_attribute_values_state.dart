@@ -1,4 +1,4 @@
-import 'package:car_data_app/src/models/more_attribute_values.dart';
+import 'package:CarPedia/src/models/more_attribute_values.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class MoreAttributeValuesState extends Equatable {

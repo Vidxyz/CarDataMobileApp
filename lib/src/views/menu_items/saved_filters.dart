@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:car_data_app/src/blocs/menu_navigation_bloc/menu_navigation_bloc.dart';
-import 'package:car_data_app/src/blocs/menu_navigation_bloc/menu_navigation_event.dart';
-import 'package:car_data_app/src/models/saved_filter.dart';
-import 'package:car_data_app/src/utils/Utils.dart';
+import 'package:CarPedia/src/blocs/menu_navigation_bloc/menu_navigation_bloc.dart';
+import 'package:CarPedia/src/blocs/menu_navigation_bloc/menu_navigation_event.dart';
+import 'package:CarPedia/src/models/saved_filter.dart';
+import 'package:CarPedia/src/utils/Utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

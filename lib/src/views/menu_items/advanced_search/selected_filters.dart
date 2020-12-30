@@ -1,6 +1,6 @@
-import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_bloc.dart';
-import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_event.dart';
-import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_state.dart';
+import 'package:CarPedia/src/blocs/advanced_search_bloc/advanced_search_bloc.dart';
+import 'package:CarPedia/src/blocs/advanced_search_bloc/advanced_search_event.dart';
+import 'package:CarPedia/src/blocs/advanced_search_bloc/advanced_search_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quiver/iterables.dart';

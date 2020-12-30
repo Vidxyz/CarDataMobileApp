@@ -1,6 +1,6 @@
-import 'package:car_data_app/src/blocs/more_attribute_values_bloc/more_attribute_values_event.dart';
-import 'package:car_data_app/src/blocs/more_attribute_values_bloc/more_attribute_values_state.dart';
-import 'package:car_data_app/src/repo/repo.dart';
+import 'package:CarPedia/src/blocs/more_attribute_values_bloc/more_attribute_values_event.dart';
+import 'package:CarPedia/src/blocs/more_attribute_values_bloc/more_attribute_values_state.dart';
+import 'package:CarPedia/src/repo/repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:rxdart/rxdart.dart';

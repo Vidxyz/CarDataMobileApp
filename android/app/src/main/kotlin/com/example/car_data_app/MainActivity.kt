@@ -1,4 +1,4 @@
-package com.example.car_data_app
+package com.example.CarPedia
 
 import io.flutter.embedding.android.FlutterActivity
 

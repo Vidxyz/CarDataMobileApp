@@ -1,8 +1,8 @@
-import 'package:car_data_app/src/models/attribute_values.dart';
-import 'package:car_data_app/src/models/more_attribute_values.dart';
-import 'package:car_data_app/src/models/search_suggestion.dart';
-import 'package:car_data_app/src/models/vehicle.dart';
-import 'package:car_data_app/src/models/vehicle_image.dart';
+import 'package:CarPedia/src/models/attribute_values.dart';
+import 'package:CarPedia/src/models/more_attribute_values.dart';
+import 'package:CarPedia/src/models/search_suggestion.dart';
+import 'package:CarPedia/src/models/vehicle.dart';
+import 'package:CarPedia/src/models/vehicle_image.dart';
 import 'package:graphql/client.dart';
 import 'dart:async';
 import 'dart:convert';
