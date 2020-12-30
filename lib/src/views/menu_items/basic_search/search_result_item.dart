@@ -29,7 +29,7 @@ class SearchResultItem extends StatelessWidget {
             MaterialPageRoute(
                 builder: (context) => BlocProvider(
                   create: (context) => VehicleImagesBloc(repository: Repo()),
-                  child: VehicleDetailScreen(vehicle: vehicle),
+                  child: VehicleDetailScreen(vehicle: vehicle, isPartOfSeparateContainer: false),
                 )
             )
         );

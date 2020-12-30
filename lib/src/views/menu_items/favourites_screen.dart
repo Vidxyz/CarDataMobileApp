@@ -160,7 +160,7 @@ class FavouritesScreenState extends State<FavouritesScreen> {
             MaterialPageRoute(
                 builder: (context) => BlocProvider(
                   create: (context) => VehicleImagesBloc(repository: Repo()),
-                  child: VehicleDetailScreen(vehicle: vehicle),
+                  child: VehicleDetailScreen(vehicle: vehicle, isPartOfSeparateContainer: false),
                 )
             )
         ).then((value) {

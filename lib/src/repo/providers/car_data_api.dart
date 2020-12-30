@@ -10,7 +10,7 @@ import 'package:http/http.dart' show Client;
 
 class CarDataApi {
 
-  static final String host = "localhost";
+  static final String host = "192.168.2.27";
   static final String port = "4000";
   static final String protocol = "http";
   static final String IMAGE_BASE_URL = "$protocol://$host:$port/api/vehicle/image?vehicle_id=";

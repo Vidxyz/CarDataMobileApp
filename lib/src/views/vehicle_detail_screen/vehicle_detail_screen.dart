@@ -17,7 +17,7 @@ class VehicleDetailScreen extends StatefulWidget {
 
   VehicleDetailScreen({
     this.vehicle,
-    this.isPartOfSeparateContainer = false
+    this.isPartOfSeparateContainer
   });
 
   @override
@@ -607,7 +607,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var favouriteVehicleIds = prefs.getStringList(Utils.FAVOURITES_KEY);
     setState(() {
-      isVehicleInFavourites = favouriteVehicleIds?.where((element) => element == vehicle.id)?.isNotEmpty;
+      isVehicleInFavourites = favouriteVehicleIds?.where((element) => element == vehicle.id)?.isNotEmpty ?? false;
     });
   }
 
