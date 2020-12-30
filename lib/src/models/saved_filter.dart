@@ -47,6 +47,7 @@ class SavedFilter {
     "tailpipe_co2_primary": "CO2 Emissions",
     "gh_gas_score_primary": "Greenhouse Gas Score",
     "sort_by": "Sort By",
+    "sort_order": "Sort Order",
   };
 
 }
