@@ -1,6 +1,6 @@
 {
-    "name": "CarPedia",
-    "short_name": "CarPedia",
+    "name": "car_data_app",
+    "short_name": "car_data_app",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -1,7 +1,7 @@
-import 'package:CarPedia/src/blocs/vehicle_search_bloc/vehicle_search_bloc.dart';
-import 'package:CarPedia/src/blocs/vehicle_search_bloc/vehicle_search_event.dart';
-import 'package:CarPedia/src/models/search_suggestion.dart';
-import 'package:CarPedia/src/repo/repo.dart';
+import 'package:car_data_app/src/blocs/vehicle_search_bloc/vehicle_search_bloc.dart';
+import 'package:car_data_app/src/blocs/vehicle_search_bloc/vehicle_search_event.dart';
+import 'package:car_data_app/src/models/search_suggestion.dart';
+import 'package:car_data_app/src/repo/repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';

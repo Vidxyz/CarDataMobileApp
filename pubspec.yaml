@@ -1,4 +1,4 @@
-name: CarPedia
+name: car_data_app
 description: Mobile app providing data related to vehicles
 
 # The following line prevents the package from being accidentally published to

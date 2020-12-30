@@ -1,6 +1,6 @@
-import 'package:CarPedia/src/blocs/vehicle_images_bloc/vehicle_images_event.dart';
-import 'package:CarPedia/src/blocs/vehicle_images_bloc/vehicle_images_state.dart';
-import 'package:CarPedia/src/repo/repo.dart';
+import 'package:car_data_app/src/blocs/vehicle_images_bloc/vehicle_images_event.dart';
+import 'package:car_data_app/src/blocs/vehicle_images_bloc/vehicle_images_state.dart';
+import 'package:car_data_app/src/repo/repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:rxdart/rxdart.dart';

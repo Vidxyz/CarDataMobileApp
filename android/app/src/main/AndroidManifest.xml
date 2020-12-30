@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.CarPedia">
+    package="com.example.car_data_app">
    <application
         android:label="CarPedia"
         android:icon="@mipmap/ic_launcher">

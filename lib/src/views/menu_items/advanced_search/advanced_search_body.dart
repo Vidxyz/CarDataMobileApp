@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:CarPedia/src/blocs/advanced_search_bloc/advanced_search_bloc.dart';
-import 'package:CarPedia/src/blocs/advanced_search_bloc/advanced_search_event.dart';
-import 'package:CarPedia/src/blocs/advanced_search_bloc/advanced_search_state.dart';
-import 'package:CarPedia/src/models/vehicle.dart';
-import 'package:CarPedia/src/views/menu_items/basic_search/search_result_item.dart';
+import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_bloc.dart';
+import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_event.dart';
+import 'package:car_data_app/src/blocs/advanced_search_bloc/advanced_search_state.dart';
+import 'package:car_data_app/src/models/vehicle.dart';
+import 'package:car_data_app/src/views/menu_items/basic_search/search_result_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

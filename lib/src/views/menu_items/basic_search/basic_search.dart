@@ -1,5 +1,5 @@
-import 'package:CarPedia/src/views/menu_items/basic_search/basic_search_bar.dart';
-import 'package:CarPedia/src/views/menu_items/basic_search/basic_search_body.dart';
+import 'package:car_data_app/src/views/menu_items/basic_search/basic_search_bar.dart';
+import 'package:car_data_app/src/views/menu_items/basic_search/basic_search_body.dart';
 import 'package:flutter/material.dart';
 
 

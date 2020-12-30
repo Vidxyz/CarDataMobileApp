@@ -1,5 +1,5 @@
-import 'package:CarPedia/src/models/fuel_economy.dart';
-import 'package:CarPedia/src/models/fuel_emission.dart';
+import 'package:car_data_app/src/models/fuel_economy.dart';
+import 'package:car_data_app/src/models/fuel_emission.dart';
 
 class Engine {
   double _cylinders;

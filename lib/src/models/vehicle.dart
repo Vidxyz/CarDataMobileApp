@@ -1,6 +1,6 @@
-import 'package:CarPedia/src/models/dimensions.dart';
-import 'package:CarPedia/src/models/engine.dart';
-import 'package:CarPedia/src/models/transmission.dart';
+import 'package:car_data_app/src/models/dimensions.dart';
+import 'package:car_data_app/src/models/engine.dart';
+import 'package:car_data_app/src/models/transmission.dart';
 
 class
 Vehicle {

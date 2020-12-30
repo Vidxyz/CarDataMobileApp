@@ -1,4 +1,4 @@
-import 'package:CarPedia/src/utils/Utils.dart';
+import 'package:car_data_app/src/utils/Utils.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 

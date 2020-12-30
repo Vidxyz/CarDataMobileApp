@@ -1,4 +1,4 @@
-import 'package:CarPedia/src/models/vehicle.dart';
+import 'package:car_data_app/src/models/vehicle.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class AdvancedSearchState extends Equatable {
