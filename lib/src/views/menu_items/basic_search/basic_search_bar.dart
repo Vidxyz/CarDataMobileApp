@@ -44,6 +44,7 @@ class BasicSearchBarState extends State<BasicSearchBar> with AutomaticKeepAliveC
     return Padding(
         padding: const EdgeInsets.all(10.0),
         child: TypeAheadField<SearchSuggestion>(
+          hideSuggestionsOnKeyboardHide: false,
           suggestionsBoxController: _suggestionsController,
           textFieldConfiguration: TextFieldConfiguration(
               onSubmitted: (value) {
@@ -94,6 +95,9 @@ class BasicSearchBarState extends State<BasicSearchBar> with AutomaticKeepAliveC
 
   void startFreshSearch(String searchQuery) {
     _vehicleSearchBloc.add(SearchQueryReset());
-    _vehicleSearchBloc.add(SearchQueryChanged(text: searchQuery));
+    // Slight delay because events don't register or else
+    Future.delayed(Duration(milliseconds: 25), () =>
+        _vehicleSearchBloc.add(SearchQueryChanged(text: searchQuery))
+    );
   }
 }
