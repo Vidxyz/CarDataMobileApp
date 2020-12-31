@@ -18,6 +18,8 @@ class Utils {
     ));
   }
 
+  static void hideKeyboard(BuildContext context) => FocusScope.of(context).unfocus();
+
   static final String SAVED_FILTERS_KEY = "SAVED_FILTERS";
   static final String FAVOURITES_KEY = "vehicle_favourites";
 
