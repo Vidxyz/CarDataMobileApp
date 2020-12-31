@@ -14,7 +14,10 @@ class BasicSearchBar extends StatefulWidget {
   }
 }
 
-class BasicSearchBarState extends State<BasicSearchBar> {
+class BasicSearchBarState extends State<BasicSearchBar> with AutomaticKeepAliveClientMixin {
+
+  @override
+  bool wantKeepAlive = true;
 
   VehicleSearchBloc _vehicleSearchBloc;
 
@@ -43,6 +46,11 @@ class BasicSearchBarState extends State<BasicSearchBar> {
         child: TypeAheadField<SearchSuggestion>(
           suggestionsBoxController: _suggestionsController,
           textFieldConfiguration: TextFieldConfiguration(
+              onSubmitted: (value) {
+                _searchTextController.text = value.toString();
+                startFreshSearch(_searchTextController.value.text);
+              },
+              autocorrect: false,
               onTap: () => _suggestionsController.toggle(),
               onChanged: (text) {
                 shouldShow = true;
@@ -57,13 +65,7 @@ class BasicSearchBarState extends State<BasicSearchBar> {
                     onPressed: () {
                       _suggestionsController.close();
                       shouldShow = false;
-                      _vehicleSearchBloc.add(SearchQueryReset());
-                      // This is so that debounce filter is avoided
-                      Future.delayed(Duration(milliseconds: 350), () =>
-                          _vehicleSearchBloc.add(
-                              SearchQueryChanged(
-                                  text: _searchTextController.value.text
-                              )));
+                      startFreshSearch(_searchTextController.value.text);
                     },
                     icon: Icon(Icons.search),
                   )
@@ -81,9 +83,17 @@ class BasicSearchBarState extends State<BasicSearchBar> {
               subtitle: Text(s.year.toString()),
             );
           },
-          onSuggestionSelected: (suggestion) => _searchTextController.text = suggestion.toString(),
+          onSuggestionSelected: (suggestion) {
+            _searchTextController.text = suggestion.toString();
+            startFreshSearch(_searchTextController.value.text);
+          },
           hideOnEmpty: true,
         )
     );
+  }
+
+  void startFreshSearch(String searchQuery) {
+    _vehicleSearchBloc.add(SearchQueryReset());
+    _vehicleSearchBloc.add(SearchQueryChanged(text: searchQuery));
   }
 }

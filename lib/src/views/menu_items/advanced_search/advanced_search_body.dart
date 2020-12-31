@@ -40,7 +40,6 @@ class AdvancedSearchBodyState extends State<AdvancedSearchBody> {
     if (_debounce?.isActive ?? false) _debounce.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () {
       if(_scrollController.hasClients) {
-        // do something with _searchQuery.text
         final maxScroll = _scrollController.position.maxScrollExtent;
         final currentScroll = _scrollController.position.pixels;
         final currentBlocState = _advancedSearchBloc.state;
@@ -50,7 +49,6 @@ class AdvancedSearchBodyState extends State<AdvancedSearchBody> {
         }
       }
     });
-
   }
 
   @override

@@ -22,7 +22,6 @@ class VehicleSearchBloc extends Bloc<VehicleSearchEvent, VehicleSearchState> {
       Stream<Transition<VehicleSearchEvent, VehicleSearchState>> Function(VehicleSearchEvent event, ) transitionFn,
       ) {
     return events
-        .debounceTime(const Duration(milliseconds: 300))
         .switchMap(transitionFn);
   }
 
