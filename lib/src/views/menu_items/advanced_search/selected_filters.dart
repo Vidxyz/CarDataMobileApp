@@ -82,7 +82,7 @@ class _SelectedFilters extends State<SelectedFilters> {
         ),
         duration: Duration(milliseconds: 300),
         child: Container(
-          decoration: BoxDecoration(border: Border.all(color: Colors.white)),
+          decoration: BoxDecoration(border: Border.all(color: Colors.tealAccent)),
           child: BlocBuilder<AdvancedSearchBloc, AdvancedSearchState>(
             builder: (BuildContext context, AdvancedSearchState state) {
               if (state is AdvancedSearchEmpty) {
@@ -283,88 +283,55 @@ class _SelectedFilters extends State<SelectedFilters> {
     if(displayAttributeName == "Sort") {
       final sortOrder = selectedFilters[sortOrderKey] == null ? "Descending" :
       (selectedFilters[sortOrderKey].isEmpty ? "Descending" : selectedFilters[sortOrderKey].first);
-      return attributeValues.map((attributeValue) => Stack(
-          children: [
-            Container(
-              padding: EdgeInsets.only(right: 15, left: 5),
-              decoration: BoxDecoration(
-                  color: Colors.teal[700],
-                  border: Border.all(
-                      color: Colors.teal[700],
-                      width: 1
-                  ),
-                  borderRadius: BorderRadius.all(Radius.circular(10))
-              ),
-              child: Text(
-                "$attributeValue - $sortOrder",
-                style: TextStyle(fontSize: 15, color: Colors.white),
-              ),
-            ),
-            Positioned(
-              right: 5.0,
-              top: 1,
-              child: GestureDetector(
-                onTap: (){
-                  _advancedSearchBloc.add(
-                      AdvancedSearchFilterRemoved(
-                          attributeName: attributeNamesToDisplayNames.keys.firstWhere((element) => attributeNamesToDisplayNames[element] == displayAttributeName),
-                          attributeValue: attributeValue));
-                },
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: CircleAvatar(
-                    radius: 5.0,
-                    backgroundColor: Colors.red,
-                    child: Icon(Icons.close, color: Colors.white, size: 10,),
-                  ),
-                ),
-              ),
-            ),
-          ]
-      )
-      ).toList();
+      return attributeValues
+          .map((attributeValue) => _displaySingleAttributeValue("$attributeValue - $sortOrder", displayAttributeName))
+          .toList();
     }
     else {
-      return attributeValues.map((attributeValue) => Stack(
-          children: [
-            Container(
-              padding: EdgeInsets.only(right: 15, left: 5),
-              decoration: BoxDecoration(
-                  color: Colors.teal[700],
-                  border: Border.all(
-                      color: Colors.teal[700],
-                      width: 1
-                  ),
-                  borderRadius: BorderRadius.all(Radius.circular(10))
-              ),
-              child: Text(
-                attributeValue,
-                style: TextStyle(fontSize: 15, color: Colors.white),
-              ),
+      return attributeValues
+          .map((attributeValue) => _displaySingleAttributeValue(attributeValue, displayAttributeName))
+          .toList();
+    }
+  }
+
+  Widget  _displaySingleAttributeValue(String attributeValue, String displayAttributeName) =>
+    Stack(
+        children: [
+          Container(
+            padding: EdgeInsets.only(right: 15, left: 5),
+            decoration: BoxDecoration(
+                color: Colors.teal[700],
+                border: Border.all(
+                    color: Colors.teal[700],
+                    width: 1
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(10))
             ),
-            Positioned(
-              right: 5.0,
-              top: 1,
-              child: GestureDetector(
-                onTap: (){
-                  _advancedSearchBloc.add(
-                      AdvancedSearchFilterRemoved(
-                          attributeName: attributeNamesToDisplayNames.keys.firstWhere((element) => attributeNamesToDisplayNames[element] == displayAttributeName),
-                          attributeValue: attributeValue));
-                },
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: CircleAvatar(
-                    radius: 5.0,
-                    backgroundColor: Colors.red,
-                    child: Icon(Icons.close, color: Colors.white, size: 10,),
-                  ),
+            child: Text(
+              attributeValue + " ",
+              style: TextStyle(fontSize: 15, color: Colors.white),
+            ),
+          ),
+          Positioned(
+            right: 2.5,
+            top: 1,
+            child: GestureDetector(
+              onTap: (){
+                _advancedSearchBloc.add(
+                    AdvancedSearchFilterRemoved(
+                        attributeName: attributeNamesToDisplayNames.keys.firstWhere((element) => attributeNamesToDisplayNames[element] == displayAttributeName),
+                        attributeValue: attributeValue));
+              },
+              child: Align(
+                alignment: Alignment.topRight,
+                child: CircleAvatar(
+                  radius: 7.5,
+                  backgroundColor: Colors.red,
+                  child: Icon(Icons.close, color: Colors.white, size: 13.5,),
                 ),
               ),
             ),
-          ]
-      )
-      ).toList();
-    }
-  }
+          ),
+        ]
+    );
 }
