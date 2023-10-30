@@ -23,12 +23,12 @@ class BasicSearchBodyState extends State<BasicSearchBody> with AutomaticKeepAliv
 
   static final double _scrollThreshold = 200.0;
 
-  VehicleSearchBloc _vehicleSearchBloc;
+  late VehicleSearchBloc _vehicleSearchBloc;
   final _scrollController = ScrollController();
-  Timer _debounce;
+  Timer? _debounce;
 
   void _onScroll() {
-    if (_debounce?.isActive ?? false) _debounce.cancel();
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () {
       if(_scrollController.hasClients) {
         final maxScroll = _scrollController.position.maxScrollExtent;

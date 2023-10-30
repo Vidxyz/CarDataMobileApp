@@ -25,14 +25,14 @@ class VehicleSearchTabState extends State<VehicleSearchTabView> with SingleTicke
   static final int MAX_TABS = 2;
 
   bool hasForceNavigationToAdvancedSearchTabOccurred = false;
-  TabController _tabController;
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(vsync: this, length: MAX_TABS);
-    _tabController.addListener(() {
-      if(_tabController.index == 1)  {
+    _tabController!.addListener(() {
+      if(_tabController!.index == 1)  {
         Utils.hideKeyboard(context);
       }
       else {
@@ -43,7 +43,7 @@ class VehicleSearchTabState extends State<VehicleSearchTabView> with SingleTicke
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _tabController!.dispose();
     super.dispose();
   }
 
@@ -52,7 +52,7 @@ class VehicleSearchTabState extends State<VehicleSearchTabView> with SingleTicke
     return BlocBuilder<MenuNavigationBloc, MenuNavigationState>(
       builder: (BuildContext context, MenuNavigationState state) {
         if(state is SavedFilterSelected && !hasForceNavigationToAdvancedSearchTabOccurred) {
-          _tabController.animateTo(1);
+          _tabController!.animateTo(1);
           hasForceNavigationToAdvancedSearchTabOccurred = true;
         }
         else {

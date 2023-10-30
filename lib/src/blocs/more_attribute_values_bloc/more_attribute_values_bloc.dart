@@ -11,29 +11,19 @@ import 'dart:async';
 class MoreAttributeValuesBloc extends Bloc<MoreAttributeValuesEvent, MoreAttributeValuesState> {
   final Repo repository;
 
-  MoreAttributeValuesBloc({@required this.repository}): super(MoreAttributeValuesInitial());
-
-  @override
-  Stream<Transition<MoreAttributeValuesEvent, MoreAttributeValuesState>> transformEvents(
-      Stream<MoreAttributeValuesEvent> events,
-      Stream<Transition<MoreAttributeValuesEvent, MoreAttributeValuesState>> Function(MoreAttributeValuesEvent event, ) transitionFn,
-      ) {
-    return events
-        .debounceTime(const Duration(milliseconds: 300))
-        .switchMap(transitionFn);
+  MoreAttributeValuesBloc({required this.repository}): super(MoreAttributeValuesInitial()) {
+    on<MoreAttributeValuesRequested>(_moreAttributeValuesRequested);
   }
 
-  @override
-  Stream<MoreAttributeValuesState> mapEventToState(MoreAttributeValuesEvent event) async* {
-    if(event is MoreAttributeValuesRequested) {
-      try {
-        // write code here
-        yield MoreAttributeValuesLoading();
-        final attributeValues = await repository.getMoreAttributeValues();
-        yield MoreAttributeValuesSuccess(attributeValues: attributeValues);
-      } catch (error) {
-        yield MoreAttributeValuesError('An error occurred fetching vehicle images: ${error.toString()}');
-      }
+  void _moreAttributeValuesRequested(MoreAttributeValuesRequested event, Emitter<MoreAttributeValuesState> emit) async {
+    try {
+      // write code here
+      emit(MoreAttributeValuesLoading());
+      final attributeValues = await repository.getMoreAttributeValues();
+      emit(MoreAttributeValuesSuccess(attributeValues: attributeValues));
+    } catch (error) {
+      emit(MoreAttributeValuesError('An error occurred fetching vehicle images: ${error.toString()}'));
     }
   }
+
 }

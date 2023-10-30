@@ -8,7 +8,7 @@ class MenuItemChosen extends MenuNavigationEvent {
   final String selectedMenuItem;
 
   const MenuItemChosen({
-    this.selectedMenuItem
+    required this.selectedMenuItem
   });
 
   @override
@@ -22,7 +22,7 @@ class SavedFilterChosen extends MenuNavigationEvent {
   final Map<String, List<String>> selectedFilters;
 
   const SavedFilterChosen({
-    this.selectedFilters
+    required this.selectedFilters
   });
 
   @override

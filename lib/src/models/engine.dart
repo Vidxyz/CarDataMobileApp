@@ -2,16 +2,29 @@ import 'package:car_data_app/src/models/fuel_economy.dart';
 import 'package:car_data_app/src/models/fuel_emission.dart';
 
 class Engine {
-  double _cylinders;
-  double _displacement;
-  String _driveTrain;
-  String _engineType;
-  String _evMotor;
-  bool _isTurbocharged;
-  bool _isSupercharged;
+  double _cylinders = 0;
+  double _displacement = 0;
+  String _driveTrain = "";
+  String _engineType = "";
+  String _evMotor = "";
+  bool _isTurbocharged = false;
+  bool _isSupercharged = false;
 
-  FuelEconomy _fuelEconomy;
-  FuelEmission _fuelEmission;
+  FuelEconomy _fuelEconomy = FuelEconomy();
+  FuelEmission _fuelEmission = FuelEmission();
+
+
+  Engine() {
+    _cylinders = 0;
+    _displacement = 0;
+    _driveTrain = "";
+    _engineType = "";
+    _evMotor = "";
+    _isTurbocharged = false;
+    _isSupercharged = false;
+    _fuelEconomy = FuelEconomy();
+    _fuelEmission = FuelEmission();
+  }
 
   Engine.fromJson(Map<String, dynamic> parsedJson) {
     _cylinders = parsedJson['cylinders'];

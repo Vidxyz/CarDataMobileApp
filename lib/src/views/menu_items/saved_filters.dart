@@ -19,8 +19,8 @@ class SavedFiltersScreen extends StatefulWidget {
 
 class SavedFiltersScreenState extends State<SavedFiltersScreen> {
 
-  List<SavedFilter> savedFilters;
-  MenuNavigationBloc _menuNavigationBloc;
+  List<SavedFilter> savedFilters = [];
+  late MenuNavigationBloc _menuNavigationBloc;
 
   @override
   void initState() {
@@ -93,8 +93,8 @@ class SavedFiltersScreenState extends State<SavedFiltersScreen> {
     savedFilters = preferences
         .getStringList(Utils.SAVED_FILTERS_KEY)
         ?.map((e) => json.decode(e))
-        ?.map((e) => SavedFilter.fromJson(e))
-        ?.toList();
+        .map((e) => SavedFilter.fromJson(e))
+        .toList() ?? [];
     setState(() {});
   }
 }

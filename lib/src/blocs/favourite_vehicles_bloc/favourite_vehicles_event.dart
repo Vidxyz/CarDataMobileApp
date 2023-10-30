@@ -18,7 +18,7 @@ class FavouriteVehiclesRequested extends FavouriteVehiclesEvent {
   final List<String> favouriteVehicleIds;
 
   const FavouriteVehiclesRequested({
-    this.favouriteVehicleIds
+    required this.favouriteVehicleIds
   });
 
   @override

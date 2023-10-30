@@ -13,7 +13,7 @@ class MenuItemSelected extends MenuNavigationState {
   final String selectedMenuItem;
 
   const MenuItemSelected({
-    this.selectedMenuItem
+    required this.selectedMenuItem
   });
 
   @override
@@ -27,7 +27,7 @@ class SavedFilterSelected extends MenuNavigationState {
   final Map<String, List<String>> selectedFilters;
 
   const SavedFilterSelected({
-    this.selectedFilters
+    required this.selectedFilters
   });
 
   @override

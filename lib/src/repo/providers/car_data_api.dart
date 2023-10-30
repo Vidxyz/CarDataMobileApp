@@ -14,16 +14,16 @@ class CarDataApi {
   static final String port = "4000";
   static final String protocol = "http";
   static final String IMAGE_BASE_URL = "$protocol://$host:$port/api/vehicle/image?vehicle_id=";
-  static final HttpLink _httpLink = HttpLink(uri: '$protocol://$host:$port/api/graphql');
+  static final HttpLink _httpLink = HttpLink('$protocol://$host:$port/api/graphql');
   static final Client httpClient = Client();
 
-  static final ErrorLink _errorLink = ErrorLink(errorHandler: (ErrorResponse response) {
-    OperationException exception = response.exception;
-    print(exception.toString());
+  static final ErrorLink _errorLink = ErrorLink(onGraphQLError: (request, fwd, response) {
+    // OperationException exception = response.errors.first.;
+    // print(exception.toString());
   });
 
   static final Link _link = Link.from([_errorLink, _httpLink]);
-  final GraphQLClient _client = GraphQLClient(link: _link, cache: InMemoryCache());
+  final GraphQLClient _client = GraphQLClient(link: _link, cache: GraphQLCache());
 
   static final policies = Policies(
     fetch: FetchPolicy.networkOnly,
@@ -31,7 +31,7 @@ class CarDataApi {
 
   final GraphQLClient _noCacheClient = GraphQLClient(
     link: _link,
-    cache: InMemoryCache(),
+    cache: GraphQLCache(),
     defaultPolicies: DefaultPolicies(
       watchQuery: policies,
       query: policies,
@@ -510,27 +510,27 @@ class CarDataApi {
 
   Future<Vehicle> getRandomVehicle() async {
     final QueryOptions options = QueryOptions(
-      documentNode: gql(randomVehicleQuery()),
+      document: gql(randomVehicleQuery()),
     );
     QueryResult result = await _noCacheClient.query(options);
-    return Vehicle.fromJson(result.data['random_vehicle']);
+    return Vehicle.fromJson(result.data!['random_vehicle']);
   }
 
   Future<int> getVehiclesCountBySearchQuery(String query) async {
     final QueryOptions options = QueryOptions(
-      documentNode: gql(vehicleCountSearchQuery()),
+      document: gql(vehicleCountSearchQuery()),
       variables: <String, dynamic> {
         'queryString': query,
       },
     );
     QueryResult result = await _client.query(options);
-    final int resultCount = result.data['searchCount'] as int;
+    final int resultCount = result.data!['searchCount'] as int;
     return resultCount;
   }
 
   Future<List<Vehicle>> getVehiclesBySearchQuery(String query, int limit, int offset) async {
     final QueryOptions options = QueryOptions(
-      documentNode: gql(vehicleSearchQuery()),
+      document: gql(vehicleSearchQuery()),
       variables: <String, dynamic> {
         'queryString': query,
         'limit': limit,
@@ -538,13 +538,13 @@ class CarDataApi {
       },
     );
     QueryResult result = await _client.query(options);
-    final List<dynamic> results = result.data['search'] as List<dynamic>;
+    final List<dynamic> results = result.data!['search'] as List<dynamic>;
     return results.map<Vehicle>((json) => Vehicle.fromJson(json)).toList();
   }
 
   Future<List<Vehicle>> getVehiclesByIds(List<String> vehicleIds, int limit, int offset) async {
     final QueryOptions options = QueryOptions(
-      documentNode: gql(fetchVehiclesByIds()),
+      document: gql(fetchVehiclesByIds()),
       variables: <String, dynamic> {
         'vehicleIds': vehicleIds,
         'limit': limit,
@@ -553,57 +553,57 @@ class CarDataApi {
 
     );
     QueryResult result = await _client.query(options);
-    final List<dynamic> results = result.data['vehicles_by_id'] as List<dynamic>;
+    final List<dynamic> results = result.data!['vehicles_by_id'] as List<dynamic>;
     return results.map<Vehicle>((json) => Vehicle.fromJson(json)).toList();
   }
 
 
   Future<List<VehicleImage>> getVehicleImages(String vehicleId) async {
-    final response = await httpClient.get("$IMAGE_BASE_URL$vehicleId");
+    final response = await httpClient.get(Uri.parse("$IMAGE_BASE_URL$vehicleId"));
     if (response.statusCode == 200) {
       final List<dynamic> results = json.decode(response.body)['data'] as List<dynamic>;
       return results.map<VehicleImage>((json) => VehicleImage.fromJson(json)).toList();
     }
     else {
       print("Bad response: Status code " + response.statusCode.toString());
-      return null;
+      return [];
     }
   }
 
   Future<List<SearchSuggestion>> getSuggestions(String query) async {
     final QueryOptions options = QueryOptions(
-      documentNode: gql(searchSuggestionsQuery()),
+      document: gql(searchSuggestionsQuery()),
       variables: <String, dynamic> {
         'queryString': query
       },
     );
     QueryResult result = await _client.query(options);
-    final List<dynamic> results = result.data['search'] as List<dynamic>;
+    final List<dynamic> results = result.data!['search'] as List<dynamic>;
     return results.map<SearchSuggestion>((json) => SearchSuggestion.fromJson(json)).toList();
 
   }
 
   Future<AttributeValues> getAttributeValues() async {
     final QueryOptions options = QueryOptions(
-      documentNode: gql(attributeValuesQuery()),
+      document: gql(attributeValuesQuery()),
     );
     QueryResult result = await _client.query(options);
-    final response = result.data['attributeValues'] as Map<dynamic, dynamic>;
+    final response = result.data!['attributeValues'] as Map<String, dynamic>;
     return AttributeValues.fromJson(response);
   }
 
   Future<MoreAttributeValues> getMoreAttributeValues() async {
     final QueryOptions options = QueryOptions(
-      documentNode: gql(moreAttributeValuesQuery()),
+      document: gql(moreAttributeValuesQuery()),
     );
     QueryResult result = await _client.query(options);
-    final response = result.data['attributeValues'] as Map<dynamic, dynamic>;
+    final response = result.data!['attributeValues'] as Map<String, dynamic>;
     return MoreAttributeValues.fromJson(response);
   }
 
   Future<int> getVehicleCountBySelectedAttributes(Map<String, List<String>> selectedAttributes) async {
     final QueryOptions options = QueryOptions(
-      documentNode: gql(vehicleSearchCountByAttributesQuery()),
+      document: gql(vehicleSearchCountByAttributesQuery()),
       variables: <String, dynamic> {
         'make': selectedAttributes['make'] ?? [],
         'fuel_type': selectedAttributes['fuel_type'] ?? [],
@@ -626,21 +626,21 @@ class CarDataApi {
         'gh_gas_score_primary': selectedAttributes['gh_gas_score_primary']?.map((e) => int.parse(e))?.toList() ?? [],
         'tailpipe_co2_primary': selectedAttributes['tailpipe_co2_primary']?.map((e) => double.parse(e))?.toList() ?? [],
         'sort_by': selectedAttributes['sort_by'] == null ? "" :
-        (selectedAttributes['sort_by'].isEmpty ? "" : sortCriteriaToRawMap[selectedAttributes['sort_by'].first]),
+        (selectedAttributes['sort_by']!.isEmpty ? "" : sortCriteriaToRawMap[selectedAttributes['sort_by']!.first]),
         'order': selectedAttributes['sort_order'] == null ? "desc" :
-        (selectedAttributes['sort_order'].isEmpty ? "desc" : sortOrderToRawMap[selectedAttributes['sort_order'].first]),
+        (selectedAttributes['sort_order']!.isEmpty ? "desc" : sortOrderToRawMap[selectedAttributes['sort_order']!.first]),
       },
 
     );
     QueryResult result = await _client.query(options);
-    final int resultCount = result.data['attributeSearchCount'] as int;
+    final int resultCount = result.data!['attributeSearchCount']! as int;
     return resultCount;
   }
 
   Future<List<Vehicle>> getVehiclesBySelectedAttributes(Map<String, List<String>> selectedAttributes,
       int limit, int offset) async {
     final QueryOptions options = QueryOptions(
-      documentNode: gql(vehicleSearchByAttributesQuery()),
+      document: gql(vehicleSearchByAttributesQuery()),
       variables: <String, dynamic> {
         'make': selectedAttributes['make'] ?? [],
         'fuel_type': selectedAttributes['fuel_type'] ?? [],
@@ -665,14 +665,14 @@ class CarDataApi {
         'limit': limit,
         'offset': offset,
         'sort_by': selectedAttributes['sort_by'] == null ? "" :
-        (selectedAttributes['sort_by'].isEmpty ? "" : sortCriteriaToRawMap[selectedAttributes['sort_by'].first]),
+        (selectedAttributes['sort_by']!.isEmpty ? "" : sortCriteriaToRawMap[selectedAttributes['sort_by']!.first]),
         'order': selectedAttributes['sort_order'] == null ? "desc" :
-        (selectedAttributes['sort_order'].isEmpty ? "desc" : sortOrderToRawMap[selectedAttributes['sort_order'].first]),
+        (selectedAttributes['sort_order']!.isEmpty ? "desc" : sortOrderToRawMap[selectedAttributes['sort_order']!.first]),
       },
 
     );
     QueryResult result = await _client.query(options);
-    final List<dynamic> results = result.data['attributeSearch'] as List<dynamic>;
+    final List<dynamic> results = result.data!['attributeSearch']! as List<dynamic>;
     return results.map<Vehicle>((json) => Vehicle.fromJson(json)).toList();
   }
 

@@ -7,7 +7,7 @@ abstract class VehicleImagesEvent extends Equatable {
 class ImageFetchStarted extends VehicleImagesEvent {
   final String vehicleId;
 
-  const ImageFetchStarted({this.vehicleId});
+  const ImageFetchStarted({required this.vehicleId});
 
   @override
   List<Object> get props => [vehicleId];

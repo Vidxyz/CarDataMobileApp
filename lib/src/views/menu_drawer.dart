@@ -34,7 +34,7 @@ class GlobalMenuDrawerState extends State<GlobalMenuDrawer> {
 
   String selectedMenuItem = vehicleSearch;
 
-  MenuNavigationBloc _menuNavigationBloc;
+  late MenuNavigationBloc _menuNavigationBloc;
 
   @override
   void initState() {
@@ -168,7 +168,7 @@ class GlobalMenuDrawerState extends State<GlobalMenuDrawer> {
       GestureDetector(
         onTap: () async {
           if (await canLaunch(url)) {
-            await launch(url);
+            await launchUrl(Uri.parse(url));
           }
           else {
             throw "Could not launch $url";

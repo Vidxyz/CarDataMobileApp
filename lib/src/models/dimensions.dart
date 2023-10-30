@@ -1,10 +1,20 @@
 class Dimensions {
-  int _fourDoorLuggageVolume;
-  int _fourDoorPassengerVolume;
-  int _hatchbackLuggageVolume;
-  int _hatchbackPassengerVolume;
-  int _twoDoorLuggageVolume;
-  int _twoDoorPassengerVolume;
+  int _fourDoorLuggageVolume = 0;
+  int _fourDoorPassengerVolume = 0;
+  int _hatchbackLuggageVolume = 0;
+  int _hatchbackPassengerVolume = 0;
+  int _twoDoorLuggageVolume = 0;
+  int _twoDoorPassengerVolume = 0;
+
+
+  Dimensions() {
+    _fourDoorLuggageVolume = 0;
+    _fourDoorPassengerVolume = 0;
+    _hatchbackLuggageVolume = 0;
+    _hatchbackPassengerVolume = 0;
+    _twoDoorLuggageVolume = 0;
+    _twoDoorPassengerVolume = 0;
+  }
 
   Dimensions.fromJson(Map<String, dynamic> parsedJson) {
     _fourDoorLuggageVolume = parsedJson['four_door_luggage_volume'];

@@ -36,7 +36,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
 
   int sortOrderIndex = -1;
   String sortOrderValue = "Descending";
-  AdvancedSearchBloc _advancedSearchBloc;
+  late AdvancedSearchBloc _advancedSearchBloc;
 
   @override
   void initState() {
@@ -90,7 +90,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
   Widget _sortButton() {
     return Container(
       padding: EdgeInsets.all(1),
-      child: RaisedButton.icon(
+      child: ElevatedButton.icon(
           onPressed: () {
             final currentState = _advancedSearchBloc.state;
             if(currentState is AdvancedSearchSuccess) {
@@ -107,15 +107,15 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
               // persisted from last selection, but it's better to be safe than sorry
               if(currentState is AdvancedSearchCriteriaChanged) {
                 if(currentState.selectedFilters[sortOrderKey] != null &&
-                    currentState.selectedFilters[sortOrderKey].isNotEmpty) {
-                  sortOrderValue = currentState.selectedFilters[sortOrderKey].first;
+                    currentState.selectedFilters[sortOrderKey]!.isNotEmpty) {
+                  sortOrderValue = currentState.selectedFilters[sortOrderKey]!.first;
                 }
                 else {
                   sortOrderValue = "Descending";
                 }
                 if(currentState.selectedFilters[sortBy] != null &&
-                    currentState.selectedFilters[sortBy].isNotEmpty) {
-                  sortOrderIndex = sortByAttributesDisplay.indexOf(currentState.selectedFilters[sortBy].first);
+                    currentState.selectedFilters[sortBy]!.isNotEmpty) {
+                  sortOrderIndex = sortByAttributesDisplay.indexOf(currentState.selectedFilters[sortBy]!.first);
                 }
                 else {
                   sortOrderIndex = -1;
@@ -127,11 +127,11 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
               }
 
             }
-            return _showUserSortingCriteria();
+            _showUserSortingCriteria();
           },
           icon: Icon(Icons.sort_sharp),
           label: Text("Sort", style: _raisedButtonTextStyle()),
-          color: Colors.orangeAccent
+          // color: Colors.orangeAccent
       ),
     );
   }
@@ -139,14 +139,14 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
   Widget _clearFiltersButton() {
     return Container(
       padding: EdgeInsets.all(1),
-      child: RaisedButton.icon(
+      child: ElevatedButton.icon(
           onPressed: () {
             _advancedSearchBloc.add(AdvancedSearchReset());
             setState(() {});
           },
           icon: Icon(Icons.clear_sharp),
           label: Text("Clear", style: _raisedButtonTextStyle()),
-          color: Colors.redAccent
+          // color: Colors.redAccent
       ),
     );
   }
@@ -155,7 +155,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
   Widget _saveButton(AdvancedSearchState state) {
     return Container(
       padding: EdgeInsets.all(1),
-      child: RaisedButton.icon(
+      child: ElevatedButton.icon(
           onPressed: () {
             // Need to prompt dialog with text prompt and store JSON object in shared prefs
             if(state is AdvancedSearchCriteriaChanged) {
@@ -170,7 +170,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
           },
           icon: Icon(Icons.save_sharp),
           label: Text("Save", style: _raisedButtonTextStyle()),
-          color: Colors.blueAccent
+          // color: Colors.blueAccent
       ),
     );
   }
@@ -178,7 +178,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
   Widget _editOrApplyButton(AdvancedSearchState state) {
     return Container(
       padding: EdgeInsets.all(1),
-      child: RaisedButton.icon(
+      child: ElevatedButton.icon(
           onPressed: () {
             final currentState =_advancedSearchBloc.state;
             if(currentState is AdvancedSearchCriteriaChanged){
@@ -209,7 +209,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
           label: state is AdvancedSearchSuccess ?
             Text("Edit", style: _raisedButtonTextStyle()) :
             Text("Go", style: _raisedButtonTextStyle()),
-          color: Colors.teal
+          // color: Colors.teal
       ),
     );
   }
@@ -256,9 +256,9 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                             title: Text("Ascending"),
                             value: "Ascending",
                             groupValue: sortOrder,
-                            onChanged: (String value) {
+                            onChanged: (String? value) {
                               setState(() {
-                                sortOrder = value;
+                                sortOrder = value!;
                                 sortOrderValue = sortOrder;
                                 _advancedSearchBloc.add(
                                     AdvancedSearchFiltersChanged(
@@ -275,9 +275,9 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
                             title: Text("Descending"),
                             value: "Descending",
                             groupValue: sortOrder,
-                            onChanged: (String value) {
+                            onChanged: (String? value) {
                               setState(() {
-                                sortOrder = value;
+                                sortOrder = value!;
                                 sortOrderValue = sortOrder;
                                 _advancedSearchBloc.add(
                                     AdvancedSearchFiltersChanged(
@@ -413,7 +413,7 @@ class _AdvancedSearchState extends State<AdvancedSearch> {
     var filterId = uuid.v4();
     var savedFilter = SavedFilter.from(filterId, filterName, filters);
 
-    List<String> savedFiltersFromPrefs = prefs.getStringList(Utils.SAVED_FILTERS_KEY);
+    List<String> savedFiltersFromPrefs = prefs.getStringList(Utils.SAVED_FILTERS_KEY) ?? [];
     if(savedFiltersFromPrefs == null)
       savedFiltersFromPrefs = [json.encode(savedFilter.toJson())];
     else

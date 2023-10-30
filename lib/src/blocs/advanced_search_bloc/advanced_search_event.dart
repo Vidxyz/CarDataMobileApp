@@ -21,8 +21,8 @@ class AdvancedSearchFilterRemoved extends AdvancedSearchEvent {
 
 
   const AdvancedSearchFilterRemoved({
-    this.attributeName,
-    this.attributeValue
+    required this.attributeName,
+    required this.attributeValue
   });
 
   @override
@@ -37,7 +37,7 @@ class AdvancedSearchFiltersChanged extends AdvancedSearchEvent {
   final Map<String, List<String>> selectedFilters;
 
   const AdvancedSearchFiltersChanged({
-    this.selectedFilters
+    required this.selectedFilters
   });
 
   @override
@@ -52,7 +52,7 @@ class AdvancedSearchButtonPressed extends AdvancedSearchEvent {
   final Map<String, List<String>> selectedFilters;
 
   const AdvancedSearchButtonPressed({
-    this.selectedFilters
+    required this.selectedFilters
   });
 
   @override

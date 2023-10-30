@@ -16,8 +16,8 @@ class VehicleDetailScreen extends StatefulWidget {
   final bool isPartOfSeparateContainer;
 
   VehicleDetailScreen({
-    this.vehicle,
-    this.isPartOfSeparateContainer
+    required this.vehicle,
+    required this.isPartOfSeparateContainer
   });
 
   @override
@@ -30,9 +30,9 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
   final Vehicle vehicle;
 
   bool isVehicleInFavourites = false;
-  VehicleImagesBloc vehicleImagesBloc;
+  late VehicleImagesBloc vehicleImagesBloc;
   
-  VehicleDetailScreenState({this.vehicle});
+  VehicleDetailScreenState({required this.vehicle});
 
   @override
   void initState() {
@@ -213,7 +213,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
                       flex: 5,
                       child: Container(
                         child: Text( // Spec name
-                          e[1],
+                          e[1]! as String,
                           style: _keyTextStyle(),
                           textAlign: TextAlign.left,
                         ),
@@ -225,7 +225,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
                         margin: EdgeInsets.only(left:15),
                         decoration: BoxDecoration(), // this is left in to be filled later
                         child: Text( // Spec value
-                          e[0] ? "Yes" : e[2],
+                          e[0]! as bool ? "Yes" : e[2]! as String,
                           style: _valueTextStyle(),
                           textAlign: TextAlign.left,
                         ),
@@ -282,7 +282,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
                     flex: 5,
                     child: Container(
                       child: Text( // Spec name
-                        e[1],
+                        e[1]! as String,
                         style: _keyTextStyle(),
                         textAlign: TextAlign.left,
                       ),
@@ -338,7 +338,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
                     flex: 5,
                     child: Container(
                       child: Text( // Spec name
-                        e[1],
+                        e[1]! as String,
                         style: _keyTextStyle(),
                         textAlign: TextAlign.left,
                       ),
@@ -368,7 +368,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
 
 
   List<Widget> generateDimensionSpecs(Vehicle vehicle) {
-    final dimensions = [
+    final List<int> dimensions = [
       vehicle.dimensions.fourDoorLuggageVolume,
       vehicle.dimensions.fourDoorPassengerVolume,
       vehicle.dimensions.hatchbackLuggageVolume,
@@ -377,7 +377,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
       vehicle.dimensions.fourDoorLuggageVolume,
     ];
 
-    final headings = [
+    final List<String> headings = [
       "4Dr Luggage Volume",
       "4Dr Passenger Volume",
       "Hatchback Luggage Volume",
@@ -399,7 +399,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
                         flex: 5,
                         child: Container(
                           child: Text( // Spec name
-                            e[1],
+                            e[1]! as String,
                             style: _keyTextStyle(),
                             textAlign: TextAlign.left,
                           ),
@@ -493,7 +493,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
       vehicle.engine.driveTrain,
     ];
 
-    final headings = [
+    final List<String?> headings = [
       "Fuel",
       "Alternate Fuel",
       "Fuel Type",
@@ -512,7 +512,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
       "Drive Train"
     ];
 
-    final defaults = [
+    final List<String?> defaults = [
       null,
       null,
       null,
@@ -543,7 +543,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
                     flex: 5,
                     child: Container(
                       child: Text( // Spec name
-                        e[1],
+                        e[1]! as String,
                         style: _keyTextStyle(),
                         textAlign: TextAlign.left,
                       ),
@@ -555,7 +555,7 @@ class VehicleDetailScreenState extends State<VehicleDetailScreen> {
                       margin: EdgeInsets.only(left:15),
                       decoration: BoxDecoration(), // this is left in to be filled later
                       child: Text( // Spec value
-                          e[0] != null ? e[0].toString() : e[2],
+                          e[0] != null ? e[0]! as String : e[2]! as String,
                           style: _valueTextStyle(),
                           textAlign: TextAlign.left,
                       ),

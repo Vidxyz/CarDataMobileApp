@@ -1,7 +1,7 @@
 class SearchSuggestion {
-  String _make;
-  String _model;
-  int _year;
+  String _make = "";
+  String _model = "";
+  int _year = 0;
 
   SearchSuggestion.fromJson(Map<String, dynamic> parsedJson) {
     _make = parsedJson['make'];

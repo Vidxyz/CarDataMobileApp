@@ -11,29 +11,19 @@ import 'dart:async';
 class AttributeValuesBloc extends Bloc<AttributeValueEvent, AttributeValuesState> {
   final Repo repository;
 
-  AttributeValuesBloc({@required this.repository}): super(AttributeValuesInitial());
-
-  @override
-  Stream<Transition<AttributeValueEvent, AttributeValuesState>> transformEvents(
-      Stream<AttributeValueEvent> events,
-      Stream<Transition<AttributeValueEvent, AttributeValuesState>> Function(AttributeValueEvent event, ) transitionFn,
-      ) {
-    return events
-        .debounceTime(const Duration(milliseconds: 300))
-        .switchMap(transitionFn);
+  AttributeValuesBloc({ required this.repository}): super(AttributeValuesInitial()) {
+    on<AttributeValuesRequested>(_attributeValuesRequested);
   }
 
-  @override
-  Stream<AttributeValuesState> mapEventToState(AttributeValueEvent event) async* {
-    if(event is AttributeValuesRequested) {
-      try {
-        // write code here
-        yield AttributeValuesLoading();
-        final attributeValues = await repository.getAttributeValues();
-        yield AttributeValuesSuccess(attributeValues: attributeValues);
-      } catch (error) {
-        yield AttributeValuesError('An error occurred fetching vehicle images: ${error.toString()}');
-      }
+  void _attributeValuesRequested(AttributeValuesRequested event, Emitter<AttributeValuesState> emit) async {
+    try {
+      // write code here
+      emit(AttributeValuesLoading());
+      final attributeValues = await repository.getAttributeValues();
+      emit(AttributeValuesSuccess(attributeValues: attributeValues));
+    } catch (error) {
+      emit(AttributeValuesError('An error occurred fetching vehicle images: ${error.toString()}'));
     }
   }
+
 }

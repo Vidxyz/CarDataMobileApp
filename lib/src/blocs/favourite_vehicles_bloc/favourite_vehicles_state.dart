@@ -17,8 +17,8 @@ class FavouriteVehiclesSuccess extends FavouriteVehiclesState {
   final bool hasReachedMax;
 
   const FavouriteVehiclesSuccess({
-    this.favouriteVehicles,
-    this.hasReachedMax
+    required this.favouriteVehicles,
+    required this.hasReachedMax
   });
 
   @override

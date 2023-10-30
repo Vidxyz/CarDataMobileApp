@@ -1,17 +1,17 @@
 class AttributeValues {
 
-  Map<String, List<String>> attributeValues;
+  Map<String, List<String>> attributeValues = {};
 
-  List<String> _cylinders;
-  List<String> _engineDescriptor;
-  List<String> _fuelType;
-  List<String> _fuelTypePrimary;
-  List<String> _fuelTypeSecondary;
-  List<String> _make;
-  List<String> _year;
-  List<String> _transmissionType;
-  List<String> _displacement;
-  List<String> _vehicleClass;
+  List<String> _cylinders = [];
+  List<String> _engineDescriptor = [];
+  List<String> _fuelType = [];
+  List<String> _fuelTypePrimary = [];
+  List<String> _fuelTypeSecondary = [];
+  List<String> _make = [];
+  List<String> _year = [];
+  List<String> _transmissionType = [];
+  List<String> _displacement = [];
+  List<String> _vehicleClass = [];
 
   AttributeValues.fromJson(Map<String, dynamic> parsedJson) {
     _cylinders = _getValues(parsedJson['cylinders']);

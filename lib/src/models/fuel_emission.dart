@@ -1,8 +1,16 @@
 class FuelEmission {
-  int _greenhouseScorePrimary;
-  int _greenhouseScoreSecondary;
-  double _tailpipeCo2Primary;
-  double _tailpipeCo2Secondary;
+  int _greenhouseScorePrimary = 0;
+  int _greenhouseScoreSecondary = 0;
+  double _tailpipeCo2Primary = 0;
+  double _tailpipeCo2Secondary = 0;
+
+
+  FuelEmission() {
+    _greenhouseScorePrimary = 0;
+    _greenhouseScoreSecondary = 0;
+    _tailpipeCo2Primary = 0;
+    _tailpipeCo2Secondary = 0;
+  }
 
   FuelEmission.fromJson(Map<String, dynamic> parsedJson) {
     _greenhouseScorePrimary = parsedJson['greenhouse_gas_score_primary'];

@@ -16,7 +16,7 @@ class RandomVehicleSuccess extends RandomVehicleState {
   final Vehicle vehicle;
 
   const RandomVehicleSuccess({
-    this.vehicle
+    required this.vehicle
   });
 
   @override

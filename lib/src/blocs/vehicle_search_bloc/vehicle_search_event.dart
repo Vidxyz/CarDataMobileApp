@@ -17,7 +17,7 @@ class SearchQueryReset extends VehicleSearchEvent {
 class SearchQueryChanged extends VehicleSearchEvent {
   final String text;
 
-  const SearchQueryChanged({this.text});
+  const SearchQueryChanged({required this.text});
 
   @override
   List<Object> get props => [text];

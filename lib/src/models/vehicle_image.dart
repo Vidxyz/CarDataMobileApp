@@ -4,14 +4,16 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 class VehicleImage {
-  String _id;
-  String _vehicle_id;
-  int _width;
-  int _height;
-  String _image64;
+  String _id = "";
+  String _vehicle_id = "";
+  int _width = 0;
+  int _height = 0;
+  String _image64 = "";
+
+
 
   Completer<ImageInfo> completer = new Completer<ImageInfo>();
-  Image _image;
+  Image? _image;
 
   String get id => _id;
 
@@ -23,7 +25,7 @@ class VehicleImage {
 
   int get width => _width;
 
-  Image get image => _image;
+  Image? get image => _image;
 
   VehicleImage.fromJson(Map<String, dynamic> parsedJson) {
     _id = parsedJson['id'];

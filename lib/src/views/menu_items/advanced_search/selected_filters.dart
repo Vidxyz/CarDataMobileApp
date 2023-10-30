@@ -58,7 +58,7 @@ class _SelectedFilters extends State<SelectedFilters> {
     "gh_gas_score_primary": "Greenhouse Gas Score",
   };
 
-  AdvancedSearchBloc _advancedSearchBloc;
+  late AdvancedSearchBloc _advancedSearchBloc;
   Map<String, List<String>> selectedFilters = {};
   bool isExpanded = false;
 
@@ -141,9 +141,9 @@ class _SelectedFilters extends State<SelectedFilters> {
         shrinkWrap: true,
         itemBuilder: (_, index) {
           return displaySelectedAttributeValues(
-              attributeNamesToDisplayNames[keys[index]],
+              attributeNamesToDisplayNames[keys[index]]!,
               keys[index],
-              f[keys[index]]
+              f[keys[index]]!
           );
         }
       ),
@@ -192,7 +192,7 @@ class _SelectedFilters extends State<SelectedFilters> {
               decoration: BoxDecoration(
                   color: Colors.teal[700],
                   border: Border.all(
-                      color: Colors.teal[700],
+                      color: Colors.teal[700]!,
                       width: 1
                   ),
                   borderRadius: BorderRadius.all(Radius.circular(10))
@@ -239,13 +239,13 @@ class _SelectedFilters extends State<SelectedFilters> {
               decoration: BoxDecoration(
                   color: Colors.teal[700],
                   border: Border.all(
-                      color: Colors.teal[700],
+                      color: Colors.teal[700]!,
                       width: 1
                   ),
                   borderRadius: BorderRadius.all(Radius.circular(10))
               ),
               child: Text(
-                isDouble ? "${minimum.toStringAsFixed(2)} - ${maximum.toStringAsFixed(2)}" : "$minimum - $maximum",
+                isDouble ? "${minimum?.toStringAsFixed(2)} - ${maximum?.toStringAsFixed(2)}" : "$minimum - $maximum",
                 style: TextStyle(fontSize: 15, color: Colors.white),
               ),
             ),
@@ -282,7 +282,7 @@ class _SelectedFilters extends State<SelectedFilters> {
   List<Widget> _displayAttributeValues(String displayAttributeName, List<String> attributeValues) {
     if(displayAttributeName == "Sort") {
       final sortOrder = selectedFilters[sortOrderKey] == null ? "Descending" :
-      (selectedFilters[sortOrderKey].isEmpty ? "Descending" : selectedFilters[sortOrderKey].first);
+      (selectedFilters[sortOrderKey]!.isEmpty ? "Descending" : selectedFilters[sortOrderKey]!.first);
       return attributeValues
           .map((attributeValue) => _displaySingleAttributeValue("$attributeValue - $sortOrder", displayAttributeName))
           .toList();
@@ -302,7 +302,7 @@ class _SelectedFilters extends State<SelectedFilters> {
             decoration: BoxDecoration(
                 color: Colors.teal[700],
                 border: Border.all(
-                    color: Colors.teal[700],
+                    color: Colors.teal[700]!,
                     width: 1
                 ),
                 borderRadius: BorderRadius.all(Radius.circular(10))

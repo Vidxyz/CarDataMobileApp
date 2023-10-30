@@ -6,14 +6,14 @@ class DynamicFlexibleSpaceBarTitle extends StatefulWidget {
   @required
   final Widget child;
 
-  DynamicFlexibleSpaceBarTitle({this.child});
+  DynamicFlexibleSpaceBarTitle({required this.child});
 
   @override
   State<StatefulWidget> createState() => _DynamicFlexibleSpaceBarTitleState();
 }
 
 class _DynamicFlexibleSpaceBarTitleState extends State<DynamicFlexibleSpaceBarTitle> {
-  ScrollPosition _position;
+  late ScrollPosition? _position;
   double _bottomPadding = 16; /// default padding
   EdgeInsets _dynamicMargin = EdgeInsets.only();
   double _dynamicOpacity = 0.0;
@@ -45,12 +45,11 @@ class _DynamicFlexibleSpaceBarTitleState extends State<DynamicFlexibleSpaceBarTi
 
   void _positionListener() {
     /// when scroll position changes widget will be rebuilt
-    final FlexibleSpaceBarSettings settings =
-    context.dependOnInheritedWidgetOfExactType();
+    final FlexibleSpaceBarSettings? settings = context.dependOnInheritedWidgetOfExactType();
     setState(() {
-      _bottomPadding = getPadding(settings.minExtent.toInt(), settings.maxExtent.toInt(), settings.currentExtent.toInt());
-      _dynamicMargin = getMargin(settings.minExtent.toInt(), settings.maxExtent.toInt(), settings.currentExtent.toInt());
-      _dynamicOpacity = getOpacity(settings.minExtent.toInt(), settings.maxExtent.toInt(), settings.currentExtent.toInt());
+      _bottomPadding = getPadding(settings!.minExtent.toInt(), settings!.maxExtent.toInt(), settings.currentExtent.toInt());
+      _dynamicMargin = getMargin(settings!.minExtent.toInt(), settings!.maxExtent.toInt(), settings.currentExtent.toInt());
+      _dynamicOpacity = getOpacity(settings!.minExtent.toInt(), settings!.maxExtent.toInt(), settings.currentExtent.toInt());
     });
   }
 

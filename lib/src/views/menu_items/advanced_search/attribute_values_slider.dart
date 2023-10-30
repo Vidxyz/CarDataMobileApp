@@ -10,7 +10,12 @@ class AttributeValuesSlider extends StatefulWidget {
   final List<String> attributeValues;
   final bool isDoubleValue;
 
-  AttributeValuesSlider({Key key, this.attributeName, this.attributeValues, this.isDoubleValue}):
+  AttributeValuesSlider({
+    Key? key,
+    required this.attributeName,
+    required this.attributeValues,
+    required this.isDoubleValue
+  }):
         super(key: key);
 
   @override
@@ -21,7 +26,7 @@ class AttributeValuesSlider extends StatefulWidget {
 
 class _AttributeValuesSliderState extends State<AttributeValuesSlider> {
 
-  AdvancedSearchBloc _advancedSearchBloc;
+  late AdvancedSearchBloc _advancedSearchBloc;
 
   Map<String, RangeValues> _selectedSliderAttributeValues = {
     "year": RangeValues(1984, 2021),
@@ -88,7 +93,7 @@ class _AttributeValuesSliderState extends State<AttributeValuesSlider> {
         .toList();
     var minimum = min(numericalValues);
     var maximum = max(numericalValues);
-    final rangeValues = _selectedSliderAttributeValues[widget.attributeName];
+    final rangeValues = _selectedSliderAttributeValues[widget.attributeName]!;
     return Container(
       padding: EdgeInsets.only(bottom: 10),
       child: Column(
@@ -112,8 +117,8 @@ class _AttributeValuesSliderState extends State<AttributeValuesSlider> {
                 divisions: numericalValues.length,
                 activeColor: Colors.teal[700],
                 inactiveColor: Colors.tealAccent[300],
-                min: minimum.toDouble(),
-                max: maximum.toDouble(),
+                min: minimum!.toDouble(),
+                max: maximum!.toDouble(),
                 values: rangeValues,
                 labels: widget.isDoubleValue ?
                 RangeLabels(rangeValues.start.toStringAsFixed(2), rangeValues.end.toStringAsFixed(2)) :

@@ -12,15 +12,15 @@ class AdvancedSearchBody extends StatefulWidget {
 
   final List<Vehicle> vehicles;
   final bool hasReachedMax;
-  final String sortMetric;
+  final String? sortMetric;
   final int totalResultCount;
 
   AdvancedSearchBody({
-    Key key,
-    this.vehicles,
-    this.hasReachedMax,
+    Key? key,
+    required this.vehicles,
+    required this.hasReachedMax,
+    required this.totalResultCount,
     this.sortMetric,
-    this.totalResultCount
   }):super(key: key);
 
   @override
@@ -32,12 +32,12 @@ class AdvancedSearchBody extends StatefulWidget {
 class AdvancedSearchBodyState extends State<AdvancedSearchBody> {
   static final double _scrollThreshold = 200.0;
 
-  AdvancedSearchBloc _advancedSearchBloc;
+  late AdvancedSearchBloc _advancedSearchBloc;
   final _scrollController = ScrollController();
-  Timer _debounce;
+  Timer? _debounce;
 
   void _onScroll() {
-    if (_debounce?.isActive ?? false) _debounce.cancel();
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () {
       if(_scrollController.hasClients) {
         final maxScroll = _scrollController.position.maxScrollExtent;
@@ -87,7 +87,7 @@ class AdvancedSearchBodyState extends State<AdvancedSearchBody> {
           return SearchResultItem(
             vehicle: vehicles[index],
             sortMetric: widget.sortMetric,
-            sortMetricValue: sortMetricToValueMap(vehicles[index], widget.sortMetric),
+            sortMetricValue: sortMetricToValueMap(vehicles[index], widget.sortMetric!),
           );
         }
       },

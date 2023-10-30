@@ -95,8 +95,8 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
   static final List<String> yesNoRawAttributes = ["is_supercharged", "is_turbocharged", "is_guzzler"];
   static final List<String> yesNoOptions = ["Yes", "No"];
 
-  AttributeValuesBloc _attributeValuesBloc;
-  MoreAttributeValuesBloc _moreAttributeValuesBloc;
+  late AttributeValuesBloc _attributeValuesBloc;
+  late MoreAttributeValuesBloc _moreAttributeValuesBloc;
 
   String sortOrder = "Descending";
   String sortOrderKey = "sort_order";
@@ -148,7 +148,7 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
           );
         }
         else if (state is AdvancedSearchSuccess){
-          if (state.selectedFilters['sort_by'] == null || state.selectedFilters['sort_by'].isEmpty)
+          if (state.selectedFilters['sort_by'] == null || state.selectedFilters['sort_by']!.isEmpty)
             return Expanded(
                 child: AdvancedSearchBody(
                   vehicles: state.vehicles,
@@ -161,7 +161,7 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
                 child: AdvancedSearchBody(
                   vehicles: state.vehicles,
                   hasReachedMax: state.hasReachedMax,
-                  sortMetric: state.selectedFilters['sort_by'].first,
+                  sortMetric: state.selectedFilters['sort_by']!.first,
                   totalResultCount: state.totalResultCount,
                 )
             );
@@ -240,7 +240,7 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
                               children: [
                                 AttributeValuesSlider(
                                   attributeName: attributeName,
-                                  attributeValues: state.attributeValues.attributeValues[attributeName],
+                                  attributeValues: state.attributeValues.attributeValues[attributeName]!,
                                   isDoubleValue: attributeName == "tailpipe_co2_primary"
                                 )
                               ]
@@ -289,30 +289,30 @@ class _AttributeSelectionFiltersState extends State<AttributeSelectionFilters> w
                 if(listAttributes.contains(attributeName))
                   return AttributeValuesList(
                       attributeName: attributeName,
-                      attributeValues: state.attributeValues.attributeValues[attributeName],
+                      attributeValues: state.attributeValues.attributeValues[attributeName]!,
                       shouldShowSearchBar: attributeName != "fuel_type");
 
                 else if(gridAttributes.contains(attributeName))
                   return AttributeValuesGrid(
                       attributeName: attributeName,
-                      attributeValues: state.attributeValues.attributeValues[attributeName]);
+                      attributeValues: state.attributeValues.attributeValues[attributeName]!);
 
                 else if(integerSliderAttributes.contains(attributeName))
                   return AttributeValuesSlider(
                       attributeName: attributeName,
-                      attributeValues: state.attributeValues.attributeValues[attributeName],
+                      attributeValues: state.attributeValues.attributeValues[attributeName]!,
                       isDoubleValue: false);
 
                 else if(doubleSliderAttributes.contains(attributeName))
                   return AttributeValuesSlider(
                       attributeName: attributeName,
-                      attributeValues: state.attributeValues.attributeValues[attributeName],
+                      attributeValues: state.attributeValues.attributeValues[attributeName]!,
                       isDoubleValue: true);
 
                 else // This should ideally not be reached
                   return AttributeValuesList(
                       attributeName: attributeName,
-                      attributeValues: state.attributeValues.attributeValues[attributeName],
+                      attributeValues: state.attributeValues.attributeValues[attributeName]!,
                       shouldShowSearchBar: attributeName != "fuel_type");
               }
               else { // this should not be reached ideally

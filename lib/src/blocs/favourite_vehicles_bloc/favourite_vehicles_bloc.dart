@@ -12,49 +12,43 @@ class FavouriteVehiclesBloc extends Bloc<FavouriteVehiclesEvent, FavouriteVehicl
   static final int pageSize = 15;
   final Repo repository;
 
-  FavouriteVehiclesBloc({@required this.repository}): super(FavouriteVehiclesInitial());
-
-  @override
-  Stream<Transition<FavouriteVehiclesEvent, FavouriteVehiclesState>> transformEvents(
-      Stream<FavouriteVehiclesEvent> events,
-      Stream<Transition<FavouriteVehiclesEvent, FavouriteVehiclesState>> Function(FavouriteVehiclesEvent event, ) transitionFn,
-      ) {
-    return events
-        .switchMap(transitionFn);
+  FavouriteVehiclesBloc({required this.repository}): super(FavouriteVehiclesInitial()) {
+    on<FavouriteVehiclesReset>(favouriteVehiclesReset);
+    on<FavouriteVehiclesRequested>(favouriteVehiclesRequested);
   }
 
-  @override
-  Stream<FavouriteVehiclesState> mapEventToState(FavouriteVehiclesEvent event) async* {
-    final currentState = state;
-    if(event is FavouriteVehiclesReset) {
-      yield FavouriteVehiclesInitial();
-    }
+  void favouriteVehiclesReset(FavouriteVehiclesReset event, Emitter<FavouriteVehiclesState> emit) async {
+    emit(FavouriteVehiclesInitial());
+  }
 
-    if(event is FavouriteVehiclesRequested && currentState is FavouriteVehiclesInitial) {
+  void favouriteVehiclesRequested(FavouriteVehiclesRequested event, Emitter<FavouriteVehiclesState> emit) async {
+    final currentState = state;
+    if(currentState is FavouriteVehiclesInitial) {
       try {
-        yield FavouriteVehiclesLoading();
+        emit(FavouriteVehiclesLoading());
         final results = await repository.getVehiclesByIds(event.favouriteVehicleIds, pageSize, 0);
-        yield FavouriteVehiclesSuccess(
+        emit(FavouriteVehiclesSuccess(
             favouriteVehicles: results,
             hasReachedMax: results.length == pageSize ? false : true
-        );
+        ));
       } catch (error) {
-        yield FavouriteVehiclesError("An error occurred fetching vehicle data: ${error.toString()}");
+        emit(FavouriteVehiclesError("An error occurred fetching vehicle data: ${error.toString()}"));
       }
     }
 
-    if(event is FavouriteVehiclesRequested && currentState is FavouriteVehiclesSuccess) {
+    if(currentState is FavouriteVehiclesSuccess) {
       try {
         final results = await repository.getVehiclesByIds(
             event.favouriteVehicleIds, pageSize, currentState.favouriteVehicles.length);
-        yield FavouriteVehiclesSuccess(
+        emit(FavouriteVehiclesSuccess(
             favouriteVehicles: currentState.favouriteVehicles + results,
             hasReachedMax: results.length == pageSize ? false : true
-        );
+        ));
       }
       catch (error) {
-        yield FavouriteVehiclesError("An error occurred fetching vehicle data: ${error.toString()}");
+        emit(FavouriteVehiclesError("An error occurred fetching vehicle data: ${error.toString()}"));
       }
     }
   }
+
 }

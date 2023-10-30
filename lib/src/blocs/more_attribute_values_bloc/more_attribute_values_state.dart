@@ -16,7 +16,7 @@ class MoreAttributeValuesSuccess extends MoreAttributeValuesState {
   final MoreAttributeValues attributeValues;
 
   const MoreAttributeValuesSuccess({
-    this.attributeValues
+    required this.attributeValues
   });
 
   @override

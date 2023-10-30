@@ -19,17 +19,17 @@ class SearchStateSuccess extends VehicleSearchState {
   final int searchResultsCount;
 
   const SearchStateSuccess({
-    this.vehicles,
-    this.hasReachedMax,
-    this.searchQuery,
-    this.searchResultsCount
+    required this.vehicles,
+    required this.hasReachedMax,
+    required this.searchQuery,
+    required this.searchResultsCount
   });
 
   SearchStateSuccess copyWith({
-    List<Vehicle> vehicles,
-    bool hasReachedMax,
-    String searchQuery,
-    int searchResultsCount
+    List<Vehicle>? vehicles,
+    bool? hasReachedMax,
+    String? searchQuery,
+    int? searchResultsCount
   }) {
     return SearchStateSuccess(
         vehicles: vehicles ?? this.vehicles,

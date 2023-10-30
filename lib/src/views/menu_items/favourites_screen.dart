@@ -28,12 +28,12 @@ class FavouritesScreenState extends State<FavouritesScreen> {
   String searchQuery = "";
   TextEditingController controller = new TextEditingController();
 
-  FavouriteVehiclesBloc _favouriteVehiclesBloc;
+  late FavouriteVehiclesBloc _favouriteVehiclesBloc;
   final _scrollController = ScrollController();
-  Timer _debounce;
+  Timer? _debounce;
 
   void _onScroll() {
-    if (_debounce?.isActive ?? false) _debounce.cancel();
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () {
       if(_scrollController.hasClients) {
         final maxScroll = _scrollController.position.maxScrollExtent;
@@ -140,7 +140,7 @@ class FavouritesScreenState extends State<FavouritesScreen> {
   // Assumption here is that this vehicle will always be present in the list
   void _removeFromFavourites(String vehicleId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var favouriteVehicleIds = prefs.getStringList(FAVOURITES);
+    var favouriteVehicleIds = prefs.getStringList(FAVOURITES) ?? [];
     favouriteVehicleIds.remove(vehicleId);
     await prefs.setStringList(FAVOURITES, favouriteVehicleIds);
   }

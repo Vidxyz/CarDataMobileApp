@@ -7,11 +7,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SearchResultItem extends StatelessWidget {
   final Vehicle vehicle;
-  final String sortMetric;
-  final String sortMetricValue;
+  final String? sortMetric;
+  final String? sortMetricValue;
 
-  const SearchResultItem({Key key,
-    @required this.vehicle,
+  const SearchResultItem({Key? key,
+    required this.vehicle,
     this.sortMetric,
     this.sortMetricValue
   }) : super(key: key);
@@ -40,8 +40,8 @@ class SearchResultItem extends StatelessWidget {
   Widget _showSortMetric() {
     return Column(
       children: [
-        Expanded(child: Text(sortMetric, style: TextStyle(fontSize: 13))),
-        Expanded(child: Text(sortMetricValue, style: TextStyle(fontSize: 13)))
+        Expanded(child: Text(sortMetric!, style: TextStyle(fontSize: 13))),
+        Expanded(child: Text(sortMetricValue!, style: TextStyle(fontSize: 13)))
       ],
     );
   }

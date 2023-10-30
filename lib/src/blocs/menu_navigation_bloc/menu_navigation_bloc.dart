@@ -8,25 +8,18 @@ import 'dart:async';
 
 class MenuNavigationBloc extends Bloc<MenuNavigationEvent, MenuNavigationState> {
 
-  MenuNavigationBloc(): super(MenuNavigationInitial());
-
-  @override
-  Stream<Transition<MenuNavigationEvent, MenuNavigationState>> transformEvents(
-      Stream<MenuNavigationEvent> events,
-      Stream<Transition<MenuNavigationEvent, MenuNavigationState>> Function(MenuNavigationEvent event, ) transitionFn,
-      ) {
-    return events
-        .debounceTime(const Duration(milliseconds: 300))
-        .switchMap(transitionFn);
+  MenuNavigationBloc(): super(MenuNavigationInitial()) {
+    on<MenuItemChosen>(menuItemChosen);
+    on<SavedFilterChosen>(savedFilterChosen);
   }
 
-  @override
-  Stream<MenuNavigationState> mapEventToState(MenuNavigationEvent event) async* {
-    if(event is SavedFilterChosen) {
-      yield SavedFilterSelected(selectedFilters: event.selectedFilters);
-    }
-    if(event is MenuItemChosen) {
-      yield MenuItemSelected(selectedMenuItem: event.selectedMenuItem);
-    }
+  void menuItemChosen(MenuItemChosen event, Emitter<MenuNavigationState> emit) async {
+    emit(MenuItemSelected(selectedMenuItem: event.selectedMenuItem));
   }
+
+  void savedFilterChosen(SavedFilterChosen event, Emitter<MenuNavigationState> emit) async {
+    emit(SavedFilterSelected(selectedFilters: event.selectedFilters));
+  }
+
+
 }

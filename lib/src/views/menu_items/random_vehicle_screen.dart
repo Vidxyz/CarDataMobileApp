@@ -18,7 +18,7 @@ class RandomVehicleScreen extends StatefulWidget {
 
 class RandomVehicleScreenState extends State<RandomVehicleScreen> {
 
-  RandomVehicleBloc _randomVehicleBloc;
+  late RandomVehicleBloc _randomVehicleBloc;
 
   @override
   void initState() {
@@ -88,7 +88,7 @@ class RandomVehicleScreenState extends State<RandomVehicleScreen> {
 
   Widget _goButton() =>
     Center(
-      child: RaisedButton(
+      child: ElevatedButton(
           onPressed: () {
             _randomVehicleBloc.add(RandomVehicleRequested());
           },
@@ -101,7 +101,7 @@ class RandomVehicleScreenState extends State<RandomVehicleScreen> {
               ),
             ),
           ),
-          color: Colors.teal
+          // color: Colors.teal
       ),
     );
 }

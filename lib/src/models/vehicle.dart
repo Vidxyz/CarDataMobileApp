@@ -4,21 +4,21 @@ import 'package:car_data_app/src/models/transmission.dart';
 
 class
 Vehicle {
-  String _id;
-  String _make;
-  String _model;
-  int _year;
-  String _primaryFuel;
-  String _secondaryFuel;
-  String _fuelType;
-  String _manufacturerCode;
-  int _recordId;
-  String _alternateFuelType;
-  String _vehicleClass;
+  String _id = "";
+  String _make = "";
+  String _model = "";
+  int _year = 0;
+  String _primaryFuel = "";
+  String _secondaryFuel = "";
+  String _fuelType = "";
+  String _manufacturerCode = "";
+  int _recordId = 0;
+  String _alternateFuelType = "";
+  String _vehicleClass = "";
 
-  Transmission _transmission;
-  Engine _engine;
-  Dimensions _dimensions;
+  Transmission _transmission = Transmission("", "");
+  Engine _engine = Engine();
+  Dimensions _dimensions = Dimensions();
 
   Vehicle.fromJson(Map<String, dynamic> parsedJson) {
     _id = parsedJson['id'];

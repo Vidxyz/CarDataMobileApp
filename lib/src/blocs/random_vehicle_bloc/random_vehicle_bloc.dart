@@ -11,28 +11,18 @@ import 'dart:async';
 class RandomVehicleBloc extends Bloc<RandomVehicleEvent, RandomVehicleState> {
   final Repo repository;
 
-  RandomVehicleBloc({@required this.repository}): super(RandomVehicleInitial());
-
-  @override
-  Stream<Transition<RandomVehicleEvent, RandomVehicleState>> transformEvents(
-      Stream<RandomVehicleEvent> events,
-      Stream<Transition<RandomVehicleEvent, RandomVehicleState>> Function(RandomVehicleEvent event, ) transitionFn,
-      ) {
-    return events
-        .debounceTime(const Duration(milliseconds: 300))
-        .switchMap(transitionFn);
+  RandomVehicleBloc({required this.repository}): super(RandomVehicleInitial()) {
+    on<RandomVehicleRequested>(_randomVehicleRequested);
   }
 
-  @override
-  Stream<RandomVehicleState> mapEventToState(RandomVehicleEvent event) async* {
-    if(event is RandomVehicleRequested) {
-      try {
-        yield RandomVehicleLoading();
-        final vehicle = await repository.getRandomVehicle();
-        yield RandomVehicleSuccess(vehicle: vehicle);
-      } catch (error) {
-        yield RandomVehicleError('An error occurred fetching random vehicle: ${error.toString()}');
-      }
+  void _randomVehicleRequested(RandomVehicleRequested event, Emitter<RandomVehicleState> emit) async {
+    try {
+      emit(RandomVehicleLoading());
+      final vehicle = await repository.getRandomVehicle();
+      emit(RandomVehicleSuccess(vehicle: vehicle));
+    } catch (error) {
+      emit(RandomVehicleError('An error occurred fetching random vehicle: ${error.toString()}'));
     }
   }
+
 }

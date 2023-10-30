@@ -1,23 +1,44 @@
 class FuelEconomy {
-  int _annualFuelCostPrimary;
-  int _annualFuelCostSecondary;
-  double _barrelsPerYearPrimary;
-  double _barrelsPerYearSecondary;
-  int _cityMpgPrimary;
-  int _cityMpgSecondary;
-  int _highwayMpgPrimary;
-  int _highwayMpgSecondary;
-  int _combinedMpgPrimary;
-  int _combinedMpgSecondary;
-  double _epaCityRangeSecondary;
-  double _epaHighwayRangeSecondary;
-  String _epaRangeSecondary;
-  int _fuelEconomyScore;
-  bool _isGuzzler;
-  double _timeToCharge120v;
-  double _timeToCharge240v;
-  double _combinedPowerConsumption;
+  int _annualFuelCostPrimary=  0;
+  int _annualFuelCostSecondary=  0;
+  double _barrelsPerYearPrimary=  0;
+  double _barrelsPerYearSecondary=  0;
+  int _cityMpgPrimary=  0;
+  int _cityMpgSecondary=  0;
+  int _highwayMpgPrimary=  0;
+  int _highwayMpgSecondary=  0;
+  int _combinedMpgPrimary=  0;
+  int _combinedMpgSecondary=  0;
+  double _epaCityRangeSecondary=  0;
+  double _epaHighwayRangeSecondary =  0;
+  String _epaRangeSecondary = "";
+  int _fuelEconomyScore = 0;
+  bool _isGuzzler = false;
+  double _timeToCharge120v = 0;
+  double _timeToCharge240v = 0;
+  double _combinedPowerConsumption = 0;
 
+
+  FuelEconomy() {
+    _annualFuelCostPrimary=  0;
+    _annualFuelCostSecondary=  0;
+    _barrelsPerYearPrimary=  0;
+    _barrelsPerYearSecondary=  0;
+    _cityMpgPrimary=  0;
+    _cityMpgSecondary=  0;
+    _highwayMpgPrimary=  0;
+    _highwayMpgSecondary=  0;
+    _combinedMpgPrimary=  0;
+    _combinedMpgSecondary=  0;
+    _epaCityRangeSecondary=  0;
+    _epaHighwayRangeSecondary =  0;
+    _epaRangeSecondary = "";
+    _fuelEconomyScore = 0;
+    _isGuzzler = false;
+    _timeToCharge120v = 0;
+    _timeToCharge240v = 0;
+    _combinedPowerConsumption = 0;
+  }
 
   FuelEconomy.fromJson(Map<String, dynamic> parsedJson) {
     _annualFuelCostPrimary = parsedJson['annual_fuel_cost_primary'];

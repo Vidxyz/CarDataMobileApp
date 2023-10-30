@@ -1,14 +1,14 @@
 class MoreAttributeValues {
 
-  Map<String, List<String>> attributeValues;
+  Map<String, List<String>> attributeValues = {};
 
-  List<String> _cityMpg;
-  List<String> _highwayMpg;
-  List<String> _combinedMpg;
-  List<String> _annualFuelCost;
-  List<String> _tailpipeCO2;
-  List<String> _ghScore;
-  List<String> _fuelEconomyScore;
+  List<String> _cityMpg = [];
+  List<String> _highwayMpg = [];
+  List<String> _combinedMpg = [];
+  List<String> _annualFuelCost = [];
+  List<String> _tailpipeCO2 = [];
+  List<String> _ghScore = [];
+  List<String> _fuelEconomyScore = [];
 
 
   MoreAttributeValues.fromJson(Map<String, dynamic> parsedJson) {

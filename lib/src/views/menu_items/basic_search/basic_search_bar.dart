@@ -19,7 +19,7 @@ class BasicSearchBarState extends State<BasicSearchBar> with AutomaticKeepAliveC
   @override
   bool wantKeepAlive = true;
 
-  VehicleSearchBloc _vehicleSearchBloc;
+  late VehicleSearchBloc _vehicleSearchBloc;
 
   final _searchTextController = TextEditingController();
   final _suggestionsController = SuggestionsBoxController();

@@ -12,74 +12,71 @@ class AdvancedSearchBloc extends Bloc<AdvancedSearchEvent, AdvancedSearchState> 
   static final int pageSize = 15;
   final Repo repository;
 
-  AdvancedSearchBloc({@required this.repository}): super(AdvancedSearchEmpty());
-
-  @override
-  Stream<Transition<AdvancedSearchEvent, AdvancedSearchState>> transformEvents(
-      Stream<AdvancedSearchEvent> events,
-      Stream<Transition<AdvancedSearchEvent, AdvancedSearchState>> Function(AdvancedSearchEvent event, ) transitionFn,
-      ) {
-    return events
-        .switchMap(transitionFn);
+  AdvancedSearchBloc({required this.repository}): super(AdvancedSearchEmpty()) {
+    on<AdvancedSearchReset>(advancedSearchReset);
+    on<AdvancedSearchFilterRemoved>(advancedSearchFilterRemoved);
+    on<AdvancedSearchFiltersChanged>(advancedSearchFiltersChanged);
+    on<AdvancedSearchButtonPressed>(advancedSearchButtonPressed);
   }
 
-  @override
-  Stream<AdvancedSearchState> mapEventToState(AdvancedSearchEvent event) async* {
+  void advancedSearchReset(AdvancedSearchReset event, Emitter<AdvancedSearchState> emit) async {
+    emit(AdvancedSearchEmpty());
+  }
+
+  void advancedSearchFilterRemoved(AdvancedSearchFilterRemoved event, Emitter<AdvancedSearchState> emit) async {
     final currentState = state;
-    if (event is AdvancedSearchReset) {
-      yield AdvancedSearchEmpty();
+    if(currentState is AdvancedSearchCriteriaChanged) {
+      emit(AdvancedSearchEmpty());
+      emit(currentState.removeFilters(attributeName: event.attributeName, attributeValue: event.attributeValue));
     }
-
-    // Filters can only be removed when something has been set, thus state is AdvancedSearchFiltersChanged
-    if(event is AdvancedSearchFilterRemoved) {
-      if(currentState is AdvancedSearchCriteriaChanged) {
-        yield AdvancedSearchEmpty();
-        yield currentState.removeFilters(attributeName: event.attributeName, attributeValue: event.attributeValue);
-      }
-      else if (currentState is AdvancedSearchSuccess) {
-        yield AdvancedSearchEmpty();
-        yield currentState.removeFilters(attributeName: event.attributeName, attributeValue: event.attributeValue);
-      }
-      else { // this should never be reached ideally
-        print("This should not be reached...");
-        yield currentState;
-      }
+    else if (currentState is AdvancedSearchSuccess) {
+      emit(AdvancedSearchEmpty());
+      emit(currentState.removeFilters(attributeName: event.attributeName, attributeValue: event.attributeValue));
     }
-
-    if (event is AdvancedSearchFiltersChanged) {
-      if(currentState is AdvancedSearchCriteriaChanged) yield currentState.copyWith(updatedFilters: event.selectedFilters);
-      else yield AdvancedSearchCriteriaChanged(selectedFilters: event.selectedFilters);
+    else { // this should never be reached ideally
+      print("This should not be reached...");
+      emit(currentState);
     }
+  }
 
-    if(event is AdvancedSearchButtonPressed && currentState is AdvancedSearchCriteriaChanged) {
-      yield AdvancedSearchLoading();
+  void advancedSearchFiltersChanged(AdvancedSearchFiltersChanged event, Emitter<AdvancedSearchState> emit) async {
+    final currentState = state;
+    if(currentState is AdvancedSearchCriteriaChanged)  emit(currentState.copyWith(updatedFilters: event.selectedFilters));
+    else emit(AdvancedSearchCriteriaChanged(selectedFilters: event.selectedFilters));
+  }
+
+  void advancedSearchButtonPressed(AdvancedSearchButtonPressed event, Emitter<AdvancedSearchState> emit) async {
+    final currentState = state;
+    if(currentState is AdvancedSearchCriteriaChanged) {
+      emit(AdvancedSearchLoading());
       try {
         final resultCount = await repository.getVehicleCountBySelectedAttributes(currentState.selectedFilters);
         final results = await repository.getVehiclesBySelectedAttributes(currentState.selectedFilters, pageSize, 0);
-        yield AdvancedSearchSuccess(
-          vehicles: results,
-          selectedFilters: currentState.selectedFilters,
-          hasReachedMax: results.length == pageSize ? false : true,
-          totalResultCount: resultCount
-        );
+        emit(AdvancedSearchSuccess(
+            vehicles: results,
+            selectedFilters: currentState.selectedFilters,
+            hasReachedMax: results.length == pageSize ? false : true,
+            totalResultCount: resultCount
+        ));
       } catch (error) {
-        yield AdvancedSearchError("An error occurred fetching vehicle data: ${error.toString()}");
+        emit(AdvancedSearchError("An error occurred fetching vehicle data: ${error.toString()}"));
       }
     }
 
-    if(event is AdvancedSearchButtonPressed && currentState is AdvancedSearchSuccess) {
+    if(currentState is AdvancedSearchSuccess) {
       print("Lazyloading is called pressed with state $currentState");
       try {
         final results = await repository.getVehiclesBySelectedAttributes(currentState.selectedFilters, pageSize, currentState.vehicles.length);
-        yield AdvancedSearchSuccess(
-          vehicles: currentState.vehicles + results,
-          selectedFilters: currentState.selectedFilters,
-          hasReachedMax: results.length == pageSize ? false : true,
-          totalResultCount: currentState.totalResultCount
-        );
+        emit(AdvancedSearchSuccess(
+            vehicles: currentState.vehicles + results,
+            selectedFilters: currentState.selectedFilters,
+            hasReachedMax: results.length == pageSize ? false : true,
+            totalResultCount: currentState.totalResultCount
+        ));
       } catch (error) {
-        yield AdvancedSearchError("An error occurred fetching vehicle data: ${error.toString()}");
+        emit(AdvancedSearchError("An error occurred fetching vehicle data: ${error.toString()}"));
       }
     }
   }
+
 }

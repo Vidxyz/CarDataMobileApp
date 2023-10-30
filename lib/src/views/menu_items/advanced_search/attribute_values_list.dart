@@ -11,10 +11,10 @@ class AttributeValuesList extends StatefulWidget {
   final bool shouldShowSearchBar;
 
   AttributeValuesList({
-    Key key,
-    this.attributeName,
-    this.attributeValues,
-    this.shouldShowSearchBar
+    Key? key,
+    required this.attributeName,
+    required this.attributeValues,
+    required this.shouldShowSearchBar
   }):
         super(key: key);
 
@@ -26,7 +26,7 @@ class AttributeValuesList extends StatefulWidget {
 
 class _AttributeValuesListState extends State<AttributeValuesList> {
 
-  AdvancedSearchBloc _advancedSearchBloc;
+  late AdvancedSearchBloc _advancedSearchBloc;
   List<String> _selectedItems = [];
   List<String> filteredAttributeValues = [];
 

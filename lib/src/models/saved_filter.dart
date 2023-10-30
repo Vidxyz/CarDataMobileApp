@@ -1,7 +1,7 @@
 class SavedFilter {
-  String id;
-  String name;
-  Map<String, List<String>> selections;
+  String id = "";
+  String name = "";
+  Map<String, List<String>> selections = {};
 
   SavedFilter.from(String fId, String fName, Map<String, List<String>> fSelections) {
     id = fId;

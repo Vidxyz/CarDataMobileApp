@@ -11,28 +11,17 @@ import 'dart:async';
 class VehicleImagesBloc extends Bloc<VehicleImagesEvent, VehicleImagesState> {
   final Repo repository;
 
-  VehicleImagesBloc({@required this.repository}): super(ImageFetchInitial());
-
-  @override
-  Stream<Transition<VehicleImagesEvent, VehicleImagesState>> transformEvents(
-      Stream<VehicleImagesEvent> events,
-      Stream<Transition<VehicleImagesEvent, VehicleImagesState>> Function(VehicleImagesEvent event, ) transitionFn,
-      ) {
-    return events
-        .debounceTime(const Duration(milliseconds: 300))
-        .switchMap(transitionFn);
+  VehicleImagesBloc({required this.repository}): super(ImageFetchInitial()) {
+    on<ImageFetchStarted>(imageFetchStarted);
   }
 
-  @override
-  Stream<VehicleImagesState> mapEventToState(VehicleImagesEvent event) async* {
-    if(event is ImageFetchStarted) {
-      try {
-        yield ImageFetchLoading();
-        final results = await repository.getVehicleImages(event.vehicleId);
-        yield ImageFetchSuccess(results);
-      } catch (error) {
-        yield ImageFetchError('An error occurred fetching vehicle images: ${error.toString()}');
-      }
+  void imageFetchStarted(ImageFetchStarted event, Emitter<VehicleImagesState> emit) async {
+    try {
+      emit(ImageFetchLoading());
+      final results = await repository.getVehicleImages(event.vehicleId);
+      emit(ImageFetchSuccess(results));
+    } catch (error) {
+      emit(ImageFetchError('An error occurred fetching vehicle images: ${error.toString()}'));
     }
   }
 }

@@ -14,12 +14,12 @@ class AdvancedSearchCriteriaChanged extends AdvancedSearchState {
   final Map<String, List<String>> selectedFilters;
 
   const AdvancedSearchCriteriaChanged({
-    this.selectedFilters
+    required this.selectedFilters
   });
 
 
   AdvancedSearchCriteriaChanged copyWith({
-    Map<String, List<String>> updatedFilters
+    required Map<String, List<String>> updatedFilters
   }) {
     return AdvancedSearchCriteriaChanged(
       selectedFilters: {...selectedFilters, ...updatedFilters}
@@ -27,10 +27,10 @@ class AdvancedSearchCriteriaChanged extends AdvancedSearchState {
   }
 
   AdvancedSearchCriteriaChanged removeFilters({
-    String attributeName,
-    String attributeValue
+    required String attributeName,
+    required String attributeValue
   }) {
-    var attributeValuesHavingRemovedChosenOne = selectedFilters[attributeName];
+    var attributeValuesHavingRemovedChosenOne = selectedFilters[attributeName]!;
     attributeValuesHavingRemovedChosenOne.remove(attributeValue);
     selectedFilters[attributeName] = attributeValuesHavingRemovedChosenOne;
     return AdvancedSearchCriteriaChanged(
@@ -55,17 +55,17 @@ class AdvancedSearchSuccess extends AdvancedSearchState {
   final totalResultCount;
 
   const AdvancedSearchSuccess({
-    this.selectedFilters,
-    this.vehicles,
-    this.hasReachedMax,
+    required this.selectedFilters,
+    required this.vehicles,
+    required this.hasReachedMax,
     this.totalResultCount
   });
 
   AdvancedSearchCriteriaChanged removeFilters({
-    String attributeName,
-    String attributeValue
+    required String attributeName,
+    required String attributeValue
   }) {
-    var attributeValuesHavingRemovedChosenOne = selectedFilters[attributeName];
+    var attributeValuesHavingRemovedChosenOne = selectedFilters[attributeName]!;
     attributeValuesHavingRemovedChosenOne.remove(attributeValue);
     selectedFilters[attributeName] = attributeValuesHavingRemovedChosenOne;
     return AdvancedSearchCriteriaChanged(

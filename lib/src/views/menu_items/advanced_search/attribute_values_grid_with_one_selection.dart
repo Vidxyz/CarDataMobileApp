@@ -10,9 +10,9 @@ class AttributeValuesGridWithOneSelection extends StatefulWidget {
   final List<String> displayAttributeValues;
 
   AttributeValuesGridWithOneSelection({
-    Key key,
-    this.attributeName,
-    this.displayAttributeValues
+    Key? key,
+    required this.attributeName,
+    required this.displayAttributeValues
   }):
         super(key: key);
 
@@ -24,7 +24,7 @@ class AttributeValuesGridWithOneSelection extends StatefulWidget {
 
 class _AttributeValuesGridWithOneSelectionState extends State<AttributeValuesGridWithOneSelection> {
 
-  AdvancedSearchBloc _advancedSearchBloc;
+  late AdvancedSearchBloc _advancedSearchBloc;
   int _selectedIndex = -1;
 
   @override

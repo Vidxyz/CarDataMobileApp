@@ -9,7 +9,10 @@ class AttributeValuesGrid extends StatefulWidget {
   final String attributeName;
   final List<String> attributeValues;
 
-  AttributeValuesGrid({Key key, this.attributeName, this.attributeValues}):
+  AttributeValuesGrid({
+    Key? key,
+    required this.attributeName,
+    required this.attributeValues}):
         super(key: key);
 
   @override
@@ -20,7 +23,7 @@ class AttributeValuesGrid extends StatefulWidget {
 
 class _AttributeValuesGridState extends State<AttributeValuesGrid> {
 
-  AdvancedSearchBloc _advancedSearchBloc;
+  late AdvancedSearchBloc _advancedSearchBloc;
   List<int> _selectedIndices = [];
 
   @override
@@ -86,7 +89,7 @@ class _AttributeValuesGridState extends State<AttributeValuesGrid> {
   }
 
   List<String> _getSelectedAttributeValues(List<String> values, List<int> selectedIndices) {
-    var selectedTypes = List<String>();
+    final List<String> selectedTypes = [];
     for (var i = 0; i < selectedIndices.length; i++) {
       selectedTypes.add(values[selectedIndices[i]]);
     }
